@@ -8,5 +8,6 @@ class Piece(ABC):
         self.color: bool = color
         self.position: int = position
         self.pinned: bool = False
+        self.move_set: list = []
         self.possible_moves: list = []
 
