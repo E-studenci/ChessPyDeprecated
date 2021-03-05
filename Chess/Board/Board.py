@@ -7,3 +7,4 @@ class Board:
 
     def __init__(self):
         self.board: list
+        print("jebac pycharma")
