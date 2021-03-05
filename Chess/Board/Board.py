@@ -7,4 +7,5 @@ class Board:
 
     def __init__(self):
         self.board: list
-        print("jebac pycharma")
+        self.fifty_move_rule = 0
+        self.move_count = 0
