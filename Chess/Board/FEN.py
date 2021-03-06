@@ -1,4 +1,5 @@
 from Chess.Pieces import Bishop, King, Knight, Pawn, Piece, Queen, Rook
+from Chess.Board import Converter as Converter
 
 
 def initialize_list_from_FEN(fen: str):
@@ -34,7 +35,7 @@ def initialize_list_from_FEN(fen: str):
             elif char.isalpha():
                 result_list[index] = piece_dictionary[char]()
                 result_list[index].position = index
-                if char is 'k' or char is 'K':
+                if char == 'k' or char == 'K':
                     add_castle_flags_to_king(result_list[index], char, castling_ability)
                 index += 1
             else:
@@ -42,29 +43,32 @@ def initialize_list_from_FEN(fen: str):
         else:
             index -= 16
 
-    return result_list, side_to_move
+    if fen_string_list[3] != '-':
+        add_en_passant_flag_to_pawn(result_list, fen_string_list[3])
+
+    halfmove_clock: int = int(fen_string_list[4])
+
+    fullmove_counter: int = int(fen_string_list[5])
+
+    return result_list, side_to_move, halfmove_clock, fullmove_counter
 
 
 def add_castle_flags_to_king(king, char, castling_ability) -> None:
-    if char is 'k':
+    if char == 'k':
         king.castle_king_side = castling_ability[0]
         king.castle_queen_side = castling_ability[1]
-    elif char is 'K':
+    elif char == 'K':
         king.castle_king_side = castling_ability[2]
         king.castle_queen_side = castling_ability[3]
 
 
-def add_en_passant_flag_to_pawn(pawn, char) -> None:
-    pass
+def add_en_passant_flag_to_pawn(result_list, string) -> None:
+    index: int = 0
+    if string[1] == '3':
+        index = Converter.convert_chess_notation_into_index(string) + 8
+    elif string[1] == '6':
+        index = Converter.convert_chess_notation_into_index(string) - 8
 
+    if type(result_list[index]) is Pawn.Pawn:
+        result_list[index].en_passant = True
 
-# def show_list(result_list):
-#     index = 0
-#     for obj in result_list:
-#         if index % 8 == 0:
-#             print('')
-#         if obj is not None:
-#             print(obj.position, ' ', end='')
-#         else:
-#             print('    ', end='')
-#         index += 1
