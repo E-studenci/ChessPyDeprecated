@@ -1,5 +1,5 @@
-from Chess.Pieces import Bishop, King, Knight, Pawn, Piece, Queen, Rook
-from Chess.Board import Converter as Converter
+from Chess.Pieces import Bishop, King, Knight, Pawn, Queen, Rook
+from Chess.Board.Converters import ChessNotationConverter as Converter
 
 
 def initialize_list_from_FEN(fen: str):
