@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+from Chess.Pieces import Constants
+
 
 class Piece(ABC):
 
@@ -16,25 +18,28 @@ class Piece(ABC):
     def get_possible_moves(self):
         return self.possible_moves
 
-    def calculate_legal_moves(self, board):
+    def calculate_legal_moves(self, chess_board):
         legal_moves = []
-        for index in range (len(possible_moves)):
-            temp = self.possible_moves[index]
+        for index in range(len(self.move_set)):
+            interrupted = False
+            temp = self.move_set[index]
             current_position = self.position
             currently_calculated_position = 0
-            current_column = self.position%8
-            currently_calculated_column = 0
-            while temp > 0 \
-                    & currently_calculated_position >= 0 \
-                    & currently_calculated_position <= 63 \
-                    & (board.get_board()[current_position] is not None & current_position != self.position ):
+
+            while not interrupted \
+                    and temp > 0:
                 currently_calculated_position = current_position + Constants.DIRECTION_MATH[index]
-                currently_calculated_column = currently_calculated_position % 8
-                if (currently_calculated_column - current_column) == Constants.COLUMN_CHANGE[index]:
-                    # check if king will be in check
-                    # if not:
-                    legal_moves.append(currently_calculated_position)
-                    current_position = currently_calculated_position
-                    temp -= 1
+                if (currently_calculated_position % Constants.SIZE - current_position % Constants.SIZE) == \
+                        Constants.COLUMN_CHANGE[index] \
+                        and 0 <= currently_calculated_position <= len(chess_board) - 1:
+                    if isinstance(chess_board[currently_calculated_position], type(None)) \
+                            or chess_board[currently_calculated_position].color != self.color:
+                        # check if king will be in check
+                        # if not:
+                        legal_moves.append(currently_calculated_position)
+                        current_position = currently_calculated_position
+                    if not isinstance(chess_board[currently_calculated_position], type(None)):
+                        interrupted = True
+                temp -= 1
         return legal_moves
 
