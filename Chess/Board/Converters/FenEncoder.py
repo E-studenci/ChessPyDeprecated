@@ -1,6 +1,5 @@
 from Chess.Pieces import Bishop, King, Knight, Pawn, Queen, Rook, Piece
 from Chess.Board.Converters import ChessNotationConverter as Converter
-from Chess.Board.Converters import FenDecoder as Fn
 
 piece_dictionary = {(Pawn.Pawn, False): 'p', (Pawn.Pawn, True): 'P',
                     (Knight.Knight, False): 'n', (Knight.Knight, True): 'N',
@@ -13,6 +12,7 @@ piece_dictionary = {(Pawn.Pawn, False): 'p', (Pawn.Pawn, True): 'P',
 castle_dictionary = {0: 'K', 1: 'Q', 2: 'k', 3: 'q'}
 
 en_passant_square_index = -1
+
 castling = [False, False, False, False]
 
 
@@ -48,8 +48,6 @@ def to_name_later(chess_board: list, turn: bool, fifty_move_rule: int, move_coun
     # -----------------------PARSE_MOVE_COUNT-----------------------
 
     result_fen += ' ' + str(move_count)
-
-    print(result_fen)
 
     return result_fen
 
@@ -123,9 +121,4 @@ def parse_castling() -> str:
     if return_string == " ":
         return_string += '-'
     return return_string
-
-
-if __name__ == '__main__':
-    arg1, arg2, arg3, arg4 = Fn.initialize_list_from_FEN("rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2")
-    to_name_later(arg1, arg2, arg3, arg4)
 
