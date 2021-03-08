@@ -14,8 +14,4 @@ def convert_index_into_chess_notation(index: int) -> str:
     if index > 63 or index < 0:
         return '-'
 
-    row: int = int(index / 8) + 1
-    column = index % 8
-
-    return letter_dictionary[column] + str(row)
-
+    return letter_dictionary[index % 8] + str(int(index / 8) + 1)
