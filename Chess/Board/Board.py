@@ -3,10 +3,12 @@ from Chess.Pieces import Bishop, King, Knight, Pawn, Piece, Queen, Rook
 
 class Board:
     def __init__(self):
-        self.board: list = [None] * 64
-        self.turn = False
+        self.board: list
+        self.turn: bool
         self.legal_moves = []
-
+        self.fifty_move_rule = 0
+        self.move_count = 0
+    
     def get_board(self):
         return self.board
 
