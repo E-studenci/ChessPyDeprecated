@@ -1,5 +1,5 @@
-from Chess.Pieces import Bishop, King, Knight, Pawn, Piece, Queen, Rook
-from Chess.Board import Converter as Converter
+from Chess.Pieces import Bishop, King, Knight, Pawn, Queen, Rook
+from Chess.Board.Converters import ChessNotationConverter as Converter
 
 
 def initialize_list_from_FEN(fen: str):
@@ -21,7 +21,7 @@ def initialize_list_from_FEN(fen: str):
     side_to_move: bool = True if fen_string_list[1] == 'w' else False
 
     castling_ability = [False] * 4
-    if fen_string_list[3] != '-':
+    if fen_string_list[2] != '-':
         for char in fen_string_list[2]:
             castling_ability[castle_dictionary[char]] = True
 
@@ -39,7 +39,7 @@ def initialize_list_from_FEN(fen: str):
                     add_castle_flags_to_king(result_list[index], char, castling_ability)
                 index += 1
             else:
-                return [], True
+                return [], True, 0, 0
         else:
             index -= 16
 

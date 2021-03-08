@@ -8,3 +8,10 @@ def convert_chess_notation_into_index(string: str) -> int:
     return letter_dictionary[string[0]] + (int(string[1]) - 1) * 8
 
 
+def convert_index_into_chess_notation(index: int) -> str:
+    letter_dictionary = {0: 'a', 1: 'b', 2: 'c', 3: 'd', 4: 'e', 5: 'f', 6: 'g', 7: 'h'}
+
+    if index > 63 or index < 0:
+        return '-'
+
+    return letter_dictionary[index % 8] + str(int(index / 8) + 1)
