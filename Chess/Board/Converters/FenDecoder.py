@@ -39,7 +39,7 @@ def initialize_list_from_FEN(fen: str):
                     add_castle_flags_to_king(result_list[index], char, castling_ability)
                 index += 1
             else:
-                return [], True
+                return [], True, 0, 0
         else:
             index -= 16
 
