@@ -21,7 +21,7 @@ def initialize_list_from_FEN(fen: str):
     side_to_move: bool = True if fen_string_list[1] == 'w' else False
 
     castling_ability = [False] * 4
-    if fen_string_list[3] != '-':
+    if fen_string_list[2] != '-':
         for char in fen_string_list[2]:
             castling_ability[castle_dictionary[char]] = True
 
