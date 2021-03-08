@@ -5,4 +5,5 @@ class Knight(Piece):
 
     def __init__(self, color: bool, position: int):
         super().__init__(color, position)
-        pass
+        self.move_set = [0]*8+[1]*8
+
