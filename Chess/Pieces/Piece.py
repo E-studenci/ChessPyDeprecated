@@ -25,11 +25,10 @@ class Piece(ABC):
             temp = self.move_set[index]
             current_position = self.position
             currently_calculated_position = 0
-
             while not interrupted \
                     and temp > 0:
                 currently_calculated_position = current_position + Constants.DIRECTION_MATH[index]
-                if (currently_calculated_position % Constants.SIZE - current_position % Constants.SIZE) == \
+                if (currently_calculated_position % Constants.BOARD_SIZE - current_position % Constants.BOARD_SIZE) == \
                         Constants.COLUMN_CHANGE[index] \
                         and 0 <= currently_calculated_position <= len(chess_board) - 1:
                     if isinstance(chess_board[currently_calculated_position], type(None)) \
