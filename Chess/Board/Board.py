@@ -9,9 +9,6 @@ class Board:
         self.fifty_move_rule = 0
         self.move_count = 0
 
-    def get_board(self):
-        return self.board
-
     def calculate_all_legal_moves(self):
         all_legal_moves = {}
         for piece in self.board:
@@ -32,17 +29,3 @@ class Board:
                 return index
             index += 1
         return -1
-
-
-if __name__ == "__main__":
-    board = Board()
-    board.get_board()[9] = Bishop.Bishop(False, 9)
-    board.get_board()[43] = Pawn.Pawn(False, 43)
-    board.get_board()[36] = Queen.Queen(True, 36)
-    board.get_board()[5] = King.King(False, 5)
-    board.get_board()[0] = Rook.Rook(False, 0)
-
-    print(board.get_board()[5].castle_queen_side)
-    board.get_board()[0].make_move(board, 0, 1)
-    print(board.get_board()[5].castle_queen_side)
-    board.calculate_all_legal_moves()
