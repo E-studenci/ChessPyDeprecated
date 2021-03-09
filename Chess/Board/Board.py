@@ -31,20 +31,20 @@ class Board:
         return -1
 
 
-# if __name__ == "__main__":
-#     board = Board()
-#     board.board[9] = Bishop.Bishop(False, 9)
-#     board.board[43] = Pawn.Pawn(False, 43)
-#     board.board[36] = Queen.Queen(True, 36)
-#     temp = King.King(False, 4)
-#     board.board[4] = temp
-#     board.board[0] = Rook.Rook(False, 0)
-#     board.board[7] = Rook.Rook(False, 7)
-#
-#     board.board[4].make_move(board, 4, 2)
-#     # board.board[4].make_move(board, 4, 6)
-#     board.calculate_all_legal_moves()
-#
-#     print(board.board)
-#     temp.make_move(board, temp.position, 13)
-#     print(board.board)
+if __name__ == "__main__":
+    board = Board()
+    board.board[9] = Bishop.Bishop(False, 9)
+    board.board[48] = Pawn.Pawn(False, 48)
+    board.board[36] = Queen.Queen(True, 36)
+    temp = King.King(False, 4)
+    board.board[4] = temp
+    board.board[0] = Rook.Rook(False, 0)
+    board.board[7] = Rook.Rook(False, 7)
+
+    # board.board[4].make_move(board, 4, 2)
+    board.calculate_all_legal_moves()
+    print(board.board)
+    board.board[48].make_move(board, 48, 56)
+    print(board.board)
+
+    temp.make_move(board, temp.position, 13)
