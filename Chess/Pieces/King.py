@@ -12,4 +12,7 @@ class King(Piece):
     def calculate_legal_moves(self, board):
         return super().calculate_legal_moves(board)
 
-
+    def make_move(self, board, start_pos, end_pos):
+        super().make_move(board, start_pos, end_pos)
+        self.castle_king_side = False
+        self.castle_queen_side = False

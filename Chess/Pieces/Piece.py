@@ -42,3 +42,12 @@ class Piece(ABC):
                 temp -= 1
         return legal_moves
 
+    def make_move(self, board, start_pos, end_pos):
+        # move piece from a to b
+        # if b is occupied, take
+        if not isinstance(board.board[end_pos], type(None)):
+            board.take(end_pos)
+        self.position = end_pos
+        board.board[end_pos] = self
+        board.board[start_pos] = None
+        # update all legal moves (to make check checking more optimised)
