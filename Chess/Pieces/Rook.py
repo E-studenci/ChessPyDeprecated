@@ -17,3 +17,4 @@ class Rook(Piece):
                 board.get_board()[king_index].castle_queen_side = False
             elif start_pos % len(board.get_board()) == len(board.get_board()) - 1:
                 board.get_board()[king_index].castle_king_side = False
+                
