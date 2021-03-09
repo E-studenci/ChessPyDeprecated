@@ -36,4 +36,3 @@ class Board:
         if len(self.board) == 0:
             return False
         return True
-
