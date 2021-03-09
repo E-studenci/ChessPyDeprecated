@@ -4,7 +4,7 @@ from Chess.Pieces import Bishop, King, Knight, Pawn, Piece, Queen, Rook
 class Board:
     def __init__(self):
         self.board: list = [None] * 64
-        self.turn: bool = False
+        self.turn: bool = True
         self.legal_moves = []
         self.fifty_move_rule = 0
         self.move_count = 0
@@ -30,6 +30,10 @@ class Board:
             index += 1
         return -1
 
-    def initialize_board(self, fen: str):
+    def initialize_board(self, fen: str) -> bool:
         from Chess.Board.Converters import FenDecoder as Fen
         self.board, self.turn, self.fifty_move_rule, self.move_count = Fen.initialize_list_from_FEN(fen)
+        if len(self.board) == 0:
+            return False
+        return True
+
