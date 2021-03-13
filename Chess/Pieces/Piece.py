@@ -51,4 +51,5 @@ class Piece(ABC):
         self.position = end_pos
         board.board[end_pos] = self
         board.board[start_pos] = None
+        return True
         # update all legal moves (to make check checking more optimised)

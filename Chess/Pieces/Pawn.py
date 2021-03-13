@@ -15,11 +15,13 @@ class Pawn(Piece.Piece):
             board.board[end_pos] = None
             board.board[end_pos] = Queen.Queen(self.color, end_pos)
             board.board[start_pos] = None
+            return True
         # first move
         elif abs(start_pos / 8 - end_pos / 8) == 2:
             self.en_passant = True
             self.position = end_pos
-            super().make_move(board, start_pos, end_pos)
+            return super().make_move(board, start_pos, end_pos)
+            return False
         # en passant
         elif not abs(start_pos - end_pos) == 8 \
                 and isinstance(board.board[end_pos], type(None)):
@@ -27,10 +29,10 @@ class Pawn(Piece.Piece):
                 board.take(end_pos - 8)
             else:
                 board.take(end_pos + 8)
-            super().make_move(board, start_pos, end_pos)
+            return super().make_move(board, start_pos, end_pos)
         # normal move and taking
         else:
-            super().make_move(board, start_pos, end_pos)
+            return super().make_move(board, start_pos, end_pos)
 
     def calculate_legal_moves(self, chess_board):
         return_list = []

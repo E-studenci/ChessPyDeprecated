@@ -1,6 +1,7 @@
 from Chess.Pieces import Bishop, King, Knight, Pawn, Piece, Queen, Rook
 import PrintMatrixToConsole as PMC
 
+
 class Board:
     def __init__(self):
         self.board: list = [None] * 64
@@ -30,7 +31,19 @@ class Board:
             index += 1
         return -1
 
-    # TODO add make_move here, so that you will be able to set en passant flags of all pawns to false (all but the one making the move, if need be)
+    def make_move(self, start_pos, end_pos):
+        if not isinstance(self.board[start_pos], type(None)):
+            reset_en_passant_current_player = False
+            temp_pawn = Pawn.Pawn(False, 11111)
+            reset_en_passant_current_player = self.board[start_pos].make_move(self, start_pos, end_pos)
+            print("AAA")
+            for piece in self.board:
+                if isinstance(piece, type(temp_pawn)):
+                    if piece.color == self.board[end_pos].color:
+                        if reset_en_passant_current_player:
+                            piece.en_passant = False
+                    else:
+                        piece.en_passant = False
 
 
 if __name__ == "__main__":
@@ -53,5 +66,5 @@ if __name__ == "__main__":
     # board.board[4].make_move(board, 4, 2)
     board.calculate_all_legal_moves()
     PMC.print_matrix_to_console(board.board)
-    board.board[26].make_move(board, 26, 17)
+    board.make_move(26, 17)
     PMC.print_matrix_to_console(board.board)

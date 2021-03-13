@@ -32,6 +32,6 @@ class King(Piece):
             board.board[start_pos - 1] = board.board[start_pos - 4]
             board.board[start_pos - 4] = None
 
-        super().make_move(board, start_pos, end_pos)
         self.castle_king_side = False
         self.castle_queen_side = False
+        return super().make_move(board, start_pos, end_pos)
