@@ -8,7 +8,7 @@ class Piece(ABC):
     def __init__(self, color: bool, position: int):
         self.color: bool = color
         self.position: int = position
-        self.pinned: bool = False
+        self.pinned: bool = True
         self.move_set: list = []
         self.possible_moves: list = []
 
@@ -42,6 +42,7 @@ class Piece(ABC):
                 temp -= 1
         return legal_moves
 
+    # TODO: usunac start_pos
     def make_move(self, board, start_pos, end_pos):
         # move piece from a to b
         # if b is occupied, take
@@ -50,4 +51,5 @@ class Piece(ABC):
         self.position = end_pos
         board.board[end_pos] = self
         board.board[start_pos] = None
+        return True
         # update all legal moves (to make check checking more optimised)
