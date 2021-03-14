@@ -1,5 +1,4 @@
 from Chess.Pieces import Bishop, King, Knight, Pawn, Piece, Queen, Rook
-import PrintMatrixToConsole as PMC
 
 
 class Board:
@@ -36,7 +35,6 @@ class Board:
             reset_en_passant_current_player = False
             temp_pawn = Pawn.Pawn(False, 11111)
             reset_en_passant_current_player = self.board[start_pos].make_move(self, start_pos, end_pos)
-            print("AAA")
             for piece in self.board:
                 if isinstance(piece, type(temp_pawn)):
                     if piece.color == self.board[end_pos].color:
