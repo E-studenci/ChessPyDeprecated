@@ -9,7 +9,6 @@ class Rook(Piece):
         self.move_set = [8, 8, 0, 8, 0, 0, 8, 0]
 
     def make_move(self, board, start_pos, end_pos):
-        super().make_move(board, start_pos, end_pos)
         # check if king/queen side, for now it is hacked
         king_index = board.find_piece(King(self.color, -1))
         if king_index != -1:
@@ -17,3 +16,4 @@ class Rook(Piece):
                 board.board[king_index].castle_queen_side = False
             elif start_pos % len(board.board) == len(board.board) - 1:
                 board.board[king_index].castle_king_side = False
+        return super().make_move(board, start_pos, end_pos)
