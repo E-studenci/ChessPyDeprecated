@@ -21,7 +21,6 @@ class Pawn(Piece.Piece):
             self.en_passant = True
             self.position = end_pos
             return super().make_move(board, start_pos, end_pos)
-            return False
         # en passant
         elif not abs(start_pos - end_pos) == 8 \
                 and isinstance(board.board[end_pos], type(None)):
