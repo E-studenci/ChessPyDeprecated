@@ -6,8 +6,8 @@ class GameManager:
     starting_position: str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
     def __init__(self):
-        self.player_one: Player is None
-        self.player_two: Player is None
+        self.player_one: Player
+        self.player_two: Player
         self.board: Board = Board()
 
     def regular_new_game(self) -> bool:
