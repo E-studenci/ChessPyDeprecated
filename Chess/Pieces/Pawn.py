@@ -21,7 +21,6 @@ class Pawn(Piece.Piece):
             self.en_passant = True
             self.position = end_pos
             return super().make_move(board, start_pos, end_pos)
-            return False
         # en passant
         elif not abs(start_pos - end_pos) == 8 \
                 and isinstance(board.board[end_pos], type(None)):
@@ -34,55 +33,115 @@ class Pawn(Piece.Piece):
         else:
             return super().make_move(board, start_pos, end_pos)
 
-    def calculate_legal_moves(self, chess_board):
+    def calculate_legal_moves(self, board, calculate_checks=True):
         return_list = []
         # normal move
         if self.color:
-            if isinstance(chess_board[self.position + Constants.DIRECTION_MATH[0]], type(None)):
-                return_list.append(self.position + Constants.DIRECTION_MATH[0])
+            currently_calculated_position = self.position + Constants.DIRECTION_MATH[0]
+            if isinstance(board.board[currently_calculated_position], type(None)):
+                if calculate_checks:
+                    if not board.king_in_check_after_move(self.color, self.position, currently_calculated_position):
+                        return_list.append(currently_calculated_position)
+                else:
+                    return_list.append(currently_calculated_position)
         else:
-            if isinstance(chess_board[self.position - Constants.DIRECTION_MATH[0]], type(None)):
-                return_list.append(self.position - Constants.DIRECTION_MATH[0])
+            currently_calculated_position = self.position - Constants.DIRECTION_MATH[0]
+            if isinstance(board.board[currently_calculated_position], type(None)):
+                if calculate_checks:
+                    if not board.king_in_check_after_move(self.color, self.position, currently_calculated_position):
+                        return_list.append(currently_calculated_position)
+                else:
+                    return_list.append(currently_calculated_position)
         # first move
         if self.color \
                 and 1 <= self.position / 8 < 2 \
-                and isinstance(chess_board[self.position + 8], type(None)) \
-                and isinstance(chess_board[self.position + 16], type(None)):
-            return_list.append(self.position + 16)
+                and isinstance(board.board[self.position + 8], type(None)) \
+                and isinstance(board.board[self.position + 16], type(None)):
+            currently_calculated_position = self.position + 16
+            if calculate_checks:
+                if not board.king_in_check_after_move(self.color, self.position, currently_calculated_position):
+                    return_list.append(currently_calculated_position)
+            else:
+                return_list.append(currently_calculated_position)
         else:
             if 6 <= self.position / 8 < 7 \
-                    and isinstance(chess_board[self.position - 8], type(None)) \
-                    and isinstance(chess_board[self.position - 16], type(None)):
-                return_list.append(self.position - 16)
+                    and isinstance(board.board[self.position - 8], type(None)) \
+                    and isinstance(board.board[self.position - 16], type(None)):
+                currently_calculated_position = self.position - 16
+                if calculate_checks:
+                    if not board.king_in_check_after_move(self.color, self.position, currently_calculated_position):
+                        return_list.append(currently_calculated_position)
+                else:
+                    return_list.append(currently_calculated_position)
         # en passant to the right
-        if isinstance(chess_board[self.position + 1], type(self)):
-            if not chess_board[self.position + 1].color == self.color \
-                    and chess_board[self.position + 1].en_passant:
+        if isinstance(board.board[self.position + 1], type(self)):
+            if not board.board[self.position + 1].color == self.color \
+                    and board.board[self.position + 1].en_passant:
                 if self.color:
-                    return_list.append(self.position + Constants.DIRECTION_MATH[2])
+                    currently_calculated_position = self.position + Constants.DIRECTION_MATH[2]
+                    if calculate_checks:
+                        if not board.king_in_check_after_move(self.color, self.position, currently_calculated_position):
+                            return_list.append(currently_calculated_position)
+                    else:
+                        return_list.append(currently_calculated_position)
                 else:
-                    return_list.append(self.position + Constants.DIRECTION_MATH[4])
+                    currently_calculated_position = self.position + Constants.DIRECTION_MATH[4]
+                    if calculate_checks:
+                        if not board.king_in_check_after_move(self.color, self.position, currently_calculated_position):
+                            return_list.append(currently_calculated_position)
+                    else:
+                        return_list.append(currently_calculated_position)
         # en passant to the left
-        if isinstance(chess_board[self.position - 1], type(self)):
-            if not chess_board[self.position - 1].color == self.color \
-                    and chess_board[self.position - 1].en_passant:
+        if isinstance(board.board[self.position - 1], type(self)):
+            if not board.board[self.position - 1].color == self.color \
+                    and board.board[self.position - 1].en_passant:
                 if self.color:
-                    return_list.append(self.position + Constants.DIRECTION_MATH[5])
+                    currently_calculated_position = self.position + Constants.DIRECTION_MATH[5]
+                    if calculate_checks:
+                        if not board.king_in_check_after_move(self.color, self.position, currently_calculated_position):
+                            return_list.append(currently_calculated_position)
+                    else:
+                        return_list.append(currently_calculated_position)
                 else:
-                    return_list.append(self.position + Constants.DIRECTION_MATH[7])
+                    currently_calculated_position = self.position + Constants.DIRECTION_MATH[7]
+                    if calculate_checks:
+                        if not board.king_in_check_after_move(self.color, self.position, currently_calculated_position):
+                            return_list.append(currently_calculated_position)
+                    else:
+                        return_list.append(currently_calculated_position)
         # taking
         if self.color:
-            if not isinstance(chess_board[self.position + Constants.DIRECTION_MATH[0] + 1], type(None)):
-                if not chess_board[self.position + Constants.DIRECTION_MATH[0] + 1].color == self.color:
-                    return_list.append(self.position + Constants.DIRECTION_MATH[0] + 1)
-            if not isinstance(chess_board[self.position + Constants.DIRECTION_MATH[0] - 1], type(None)):
-                if not chess_board[self.position + Constants.DIRECTION_MATH[0] - 1].color == self.color:
-                    return_list.append(self.position + Constants.DIRECTION_MATH[0] - 1)
+            if not isinstance(board.board[self.position + Constants.DIRECTION_MATH[0] + 1], type(None)):
+                if not board.board[self.position + Constants.DIRECTION_MATH[0] + 1].color == self.color:
+                    currently_calculated_position = self.position + Constants.DIRECTION_MATH[0] + 1
+                    if calculate_checks:
+                        if not board.king_in_check_after_move(self.color, self.position, currently_calculated_position):
+                            return_list.append(currently_calculated_position)
+                    else:
+                        return_list.append(currently_calculated_position)
+            if not isinstance(board.board[self.position + Constants.DIRECTION_MATH[0] - 1], type(None)):
+                if not board.board[self.position + Constants.DIRECTION_MATH[0] - 1].color == self.color:
+                    currently_calculated_position = self.position + Constants.DIRECTION_MATH[0] - 1
+                    if calculate_checks:
+                        if not board.king_in_check_after_move(self.color, self.position, currently_calculated_position):
+                            return_list.append(currently_calculated_position)
+                    else:
+                        return_list.append(currently_calculated_position)
         else:
-            if not isinstance(chess_board[self.position - Constants.DIRECTION_MATH[0] + 1], type(None)):
-                if not chess_board[self.position - Constants.DIRECTION_MATH[0] + 1].color == self.color:
-                    return_list.append(self.position - Constants.DIRECTION_MATH[0] + 1)
-            if not isinstance(chess_board[self.position - Constants.DIRECTION_MATH[0] - 1], type(None)):
-                if not chess_board[self.position - Constants.DIRECTION_MATH[0] - 1].color == self.color:
-                    return_list.append(self.position - Constants.DIRECTION_MATH[0] - 1)
+            if not isinstance(board.board[self.position - Constants.DIRECTION_MATH[0] + 1], type(None)):
+                if not board.board[self.position - Constants.DIRECTION_MATH[0] + 1].color == self.color:
+                    currently_calculated_position = self.position - Constants.DIRECTION_MATH[0] + 1
+                    if calculate_checks:
+                        if not board.king_in_check_after_move(self.color, self.position, currently_calculated_position):
+                            return_list.append(currently_calculated_position)
+                    else:
+                        return_list.append(currently_calculated_position)
+            if not isinstance(board.board[self.position - Constants.DIRECTION_MATH[0] - 1], type(None)):
+                if not board.board[self.position - Constants.DIRECTION_MATH[0] - 1].color == self.color:
+                    currently_calculated_position = self.position - Constants.DIRECTION_MATH[0] - 1
+                    if calculate_checks:
+                        if not board.king_in_check_after_move(self.color, self.position, currently_calculated_position):
+                            return_list.append(currently_calculated_position)
+                    else:
+                        return_list.append(currently_calculated_position)
         return return_list
