@@ -33,26 +33,26 @@ class Piece(ABC):
                         and 0 <= currently_calculated_position <= len(board.board) - 1:
                     if isinstance(board.board[currently_calculated_position], type(None)) \
                             or board.board[currently_calculated_position].color != self.color:
-                        if calculate_checks:
-                            if not board.king_in_check_after_move(self.color, self.position,
-                                                                  currently_calculated_position):
-                                legal_moves.append(currently_calculated_position)
-                        else:
-                            legal_moves.append(currently_calculated_position)
-                        current_position = currently_calculated_position
-                    if not isinstance(board.board[currently_calculated_position], type(None)):
-                        interrupted = True
-                temp -= 1
+                        legal_moves.append(currently_calculated_position)
+                    current_position = currently_calculated_position
+                if not isinstance(board.board[currently_calculated_position], type(None)):
+                    interrupted = True
+            temp -= 1
+
+        for move in legal_moves:
+            if calculate_checks:
+                if not board.king_in_check_after_move(self.color, self.position, move):
+                    legal_moves.append(move)
         return legal_moves
 
-    # TODO: usunac start_pos
-    def make_move(self, board, start_pos, end_pos):
-        # move piece from a to b
-        # if b is occupied, take
-        if not isinstance(board.board[end_pos], type(None)):
-            board.take(end_pos)
-        self.position = end_pos
-        board.board[end_pos] = self
-        board.board[start_pos] = None
-        return True
-        # update all legal moves (to make check checking more optimised)
+
+def make_move(self, board, start_pos, end_pos):
+    # move piece from a to b
+    # if b is occupied, take
+    if not isinstance(board.board[end_pos], type(None)):
+        board.take(end_pos)
+    self.position = end_pos
+    board.board[end_pos] = self
+    board.board[start_pos] = None
+    return True
+    # update all legal moves (to make check checking more optimised)
