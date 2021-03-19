@@ -1,16 +1,12 @@
 from Chess.Pieces import Bishop, King, Knight, Pawn, Queen, Rook
 from Chess.Board.Board import Board
+from GUI.Menu import MAX_FPS
 import pygame
 import os
 
-
-DISPLAY_WIDTH = 1200
-DISPLAY_HEIGHT = 800
-
 CHESSBOARD_WIDTH = 800
 CHESSBOARD_HEIGHT = 800
-SQUARE_SIZE = DISPLAY_HEIGHT / 8
-MAX_FPS = 15
+SQUARE_SIZE = CHESSBOARD_WIDTH / 8
 
 WHITE_PAWN = pygame.image.load(os.path.join("Sprites", "white_pawn.png"))
 WHITE_KNIGHT = pygame.image.load(os.path.join('Sprites', 'white_knight.png'))
@@ -37,19 +33,18 @@ COLOR_F0D9B5 = (240, 217, 181)
 COLOR_946F51 = (148, 111, 81)
 
 
-def initialize_board():
+def initialize_board(screen, clock):
     pygame.display.init()
-    screen = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
-    pygame.display.set_caption('')
-    clock = pygame.time.Clock()
     screen.fill(pygame.Color("white"))
+    running_loop(screen, clock)
+
+
+def running_loop(screen, clock):
     running = True
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            # if event.type == pygame.VIDEORESIZE:
-            #     screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
         draw(screen)
         clock.tick(MAX_FPS)
         pygame.display.flip()
@@ -82,7 +77,3 @@ def draw_board(screen):
         for j in range(8):
             color = board_colors[(i + j) % 2]
             pygame.draw.rect(screen, color, pygame.Rect(j * SQUARE_SIZE, i * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
-
-
-if __name__ == '__main__':
-    initialize_board()
