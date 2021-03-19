@@ -2,6 +2,23 @@ from Chess.Pieces import Bishop, King, Knight, Piece, Queen, Rook, Constants
 
 
 class Pawn(Piece.Piece):
+    """
+        Sub class of Piece, it represents the pawn piece
+
+        Attributes
+            en_passant: bool
+                if true, the opposing, adjacent pawn will be able to make an absolutely outstanding move
+                called "en passant".
+                Read up on it, if you don't know what that is, honey.
+                If you can't find it, in some countries it appears under an alias: "bicie w przelocie",
+                don't mistake it for "bicie a popular chess piece", or at least not in working hours.
+
+        methods
+            calculate_legal_moves(chess_board)
+                calculates all possible moves for a pawn
+            make_move(board, start_pos, end_pos)
+                moves the pawn
+    """
 
     def __init__(self, color: bool, position: int):
         super().__init__(color, position)
@@ -9,6 +26,12 @@ class Pawn(Piece.Piece):
         self.move_set = [1]
 
     def make_move(self, board, start_pos, end_pos):
+        """
+        :param board: an object of type(Chess.Board.Board) the board on which the pawn is standing
+        :param start_pos: the starting pos of the move
+        :param end_pos: the end pos of the move
+        :return: it handles moving the pawn forward, on the diagonal to take, en passant, and promoting
+        """
         # Promotion, for now it is hard coded for queen
         if 56 <= end_pos <= 63 \
                 or 0 <= end_pos <= 7:
@@ -34,6 +57,10 @@ class Pawn(Piece.Piece):
             return super().make_move(board, start_pos, end_pos)
 
     def calculate_legal_moves(self, chess_board):
+        """
+        :param chess_board: list, the board on which the pawn is standing
+        :return: returns a list of all legal moves for the pawn
+        """
         return_list = []
         # normal move
         if self.color:
