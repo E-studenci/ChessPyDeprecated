@@ -5,7 +5,7 @@ import sys
 import os
 
 
-def start_new_game(args):
+def start_options(args):
     screen = args[0]
     clock = args[1]
     screen.fill(pygame.Color("white"))
