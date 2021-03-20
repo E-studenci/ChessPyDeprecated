@@ -22,11 +22,10 @@ class Rook(Piece):
             besides moving the rook, it sets the flag
             for the corresponding side castling in the player's king to False
         """
-        # check if king/queen side, for now it is hacked
         king_index = board.find_piece(King(self.color, -1))
         if king_index != -1:
-            if start_pos % len(board.board) == 0:
-                board.board[king_index].castle_queen_side = False
-            elif start_pos % len(board.board) == len(board.board) - 1:
+            if start_pos == king_index + 3:
                 board.board[king_index].castle_king_side = False
+            elif start_pos == king_index - 4:
+                board.board[king_index].castle_queen_side = False
         return super().make_move(board, start_pos, end_pos)
