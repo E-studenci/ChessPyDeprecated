@@ -16,6 +16,7 @@ try:
     HOVER_OPTIONS_BUTTON = pygame.image.load(os.path.join("Sprites", "Buttons", "options_button_hover.png"))
     EXIT_GAME_BUTTON = pygame.image.load(os.path.join("Sprites", "Buttons", "exit_game_button.png"))
     HOVER_EXIT_GAME_BUTTON = pygame.image.load(os.path.join("Sprites", "Buttons", "exit_game_button_hover.png"))
+    BACKGROUND_FOR_BUTTONS = pygame.image.load(os.path.join("Sprites", "Backgrounds", "button_background.png"))
 except FileNotFoundError:
     PLAY_GAME_BUTTON = None
     HOVER_PLAY_GAME_BUTTON = None
@@ -25,6 +26,7 @@ except FileNotFoundError:
     HOVER_OPTIONS_BUTTON = None
     EXIT_GAME_BUTTON = None
     HOVER_EXIT_GAME_BUTTON = None
+    BACKGROUND_FOR_BUTTONS = None
 
 NUMBER_OF_BUTTONS = 4
 BUTTON_SIZE = PLAY_GAME_BUTTON.get_size()
@@ -34,7 +36,7 @@ BUTTON_STARTING_POSITION = ((DISPLAY_WIDTH - BUTTON_SIZE[0]) / 2, (DISPLAY_HEIGH
 
 def start_menu():
     pygame.display.init()
-    screen = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.FULLSCREEN, pygame.RESIZABLE)
+    screen = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
     pygame.display.set_caption('')
     clock = pygame.time.Clock()
     screen.fill(pygame.Color("grey"))
@@ -51,6 +53,7 @@ def running_loop(screen, clock, buttons):
             for button in buttons:
                 button.click_event(event)
         screen.fill(pygame.Color("grey"))
+        add_background_for_buttons(screen)
         for button in buttons:
             button.render(screen)
         clock.tick(MAX_FPS)
@@ -63,7 +66,6 @@ def add_buttons(screen, clock):
     from GUI.Options import start_options
     buttons = []
     offset = BUTTON_GAP + BUTTON_SIZE[1]
-
     functions = [start_new_game, start_load_game, start_options, sys.exit]
     arguments = [(screen, clock), (screen, clock), (screen, clock), 0]
     button_image = [PLAY_GAME_BUTTON, LOAD_GAME_BUTTON, OPTIONS_BUTTON, EXIT_GAME_BUTTON]
@@ -80,6 +82,12 @@ def add_buttons(screen, clock):
         button.render(screen)
         buttons.append(button)
     return buttons
+
+
+def add_background_for_buttons(screen):
+    button_background_position = ((DISPLAY_WIDTH - BACKGROUND_FOR_BUTTONS.get_width()) / 2,
+                                  (DISPLAY_HEIGHT - BACKGROUND_FOR_BUTTONS.get_height()) / 2)
+    screen.blit(BACKGROUND_FOR_BUTTONS, button_background_position)
 
 
 if __name__ == '__main__':
