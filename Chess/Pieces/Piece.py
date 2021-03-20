@@ -44,7 +44,8 @@ class Piece(ABC):
 
     def calculate_legal_moves(self, board, calculate_checks=True):
         """
-        :param chess_board: list, the board on which the piece is standing
+        :param calculate_checks:
+        :param board: list, the board on which the piece is standing
         :return: returns a list of all legal move for the piece
         """
         legal_moves = []
@@ -63,14 +64,13 @@ class Piece(ABC):
                             or board.board[currently_calculated_position].color != self.color:
                         legal_moves.append(currently_calculated_position)
                     current_position = currently_calculated_position
-                if not isinstance(board.board[currently_calculated_position], type(None)):
-                    interrupted = True
-            temp -= 1
-
-        for move in legal_moves:
-            if calculate_checks:
-                if not board.king_in_check_after_move(self.color, self.position, move):
-                    legal_moves.append(move)
+                    if not isinstance(board.board[currently_calculated_position], type(None)):
+                        interrupted = True
+                temp -= 1
+        if calculate_checks:
+            for move in legal_moves:
+                if board.king_in_check_after_move(self.color, self.position, move):
+                    legal_moves.remove(move)
         return legal_moves
 
     def make_move(self, board, start_pos, end_pos):

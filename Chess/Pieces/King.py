@@ -1,5 +1,4 @@
 from Chess.Pieces.Piece import Piece
-from Chess.Board.Board import Board
 
 
 class King(Piece):

@@ -5,6 +5,7 @@ direction_dictionary = {True: +1,
 row_dictionary = {True: 1,
                   False: 6}
 
+
 class Pawn(Piece.Piece):
     """
         Sub class of Piece, it represents the pawn piece
@@ -71,34 +72,45 @@ class Pawn(Piece.Piece):
         # normal move
         currently_calculated_position = self.position + (Constants.DIRECTION_MATH[0] * direction)
         if isinstance(board.board[currently_calculated_position], type(None)):
+            if currently_calculated_position == self.position:
+                print("kurwa que")
             return_list.append(currently_calculated_position)
         # first move
-        if row <= self.position < row + 1 \
+        if row * 8 <= self.position < (row + 1) * 8 \
                 and isinstance(board.board[self.position + 8 * direction], type(None)) \
                 and isinstance(board.board[self.position + 16 * direction], type(None)):
             currently_calculated_position = self.position + 16 * direction
+            if currently_calculated_position == self.position:
+                print("kurwa que")
             return_list.append(currently_calculated_position)
         # en passant
         for i in range(0, 2):
             currently_calculated_position = self.position \
                                             + 1 * direction * direction_dictionary[bool(i)]
-            if isinstance(board.board[currently_calculated_position], type(self)):
-                if not board.board[currently_calculated_position].color == self.color \
-                        and board.board[currently_calculated_position].en_passant:
-                    currently_calculated_position += 8 * direction
-                    return_list.append(currently_calculated_position)
+            if (currently_calculated_position % 8 - self.position % 8) == 1:
+                if isinstance(board.board[currently_calculated_position], type(self)):
+                    if not board.board[currently_calculated_position].color == self.color \
+                            and board.board[currently_calculated_position].en_passant:
+                        currently_calculated_position += 8 * direction
+                        if currently_calculated_position == self.position:
+                            print("kurwa que")
+                        return_list.append(currently_calculated_position)
         # taking
         for i in range(0, 2):
             currently_calculated_position = self.position \
-                                            + Constants.DIRECTION_MATH[0] \
-                                            + 1 * direction * direction_dictionary[bool(i)]
-            if not isinstance(board.board[currently_calculated_position], type(None)):
-                if not board.board[currently_calculated_position].color == self.color:
-                    return_list.append(currently_calculated_position)
+                                            + Constants.DIRECTION_MATH[0] * direction \
+                                            + 1 * direction_dictionary[bool(i)]
+            if (currently_calculated_position % 8 - self.position % 8) == 1:
+                if not isinstance(board.board[currently_calculated_position], type(None)):
+                    if not board.board[currently_calculated_position].color == self.color:
+                        if currently_calculated_position == self.position:
+                            print("kurwa que")
+                        return_list.append(currently_calculated_position)
 
         if calculate_checks:
             for move in return_list:
-                print(move)
+                if move == self.position:
+                    print("kurwa que")
                 if board.king_in_check_after_move(self.color, self.position, move):
                     return_list.remove(move)
         return return_list

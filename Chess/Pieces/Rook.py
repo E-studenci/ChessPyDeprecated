@@ -1,5 +1,5 @@
 from Chess.Pieces.Piece import Piece
-from Chess.Pieces.King import King
+
 
 
 class Rook(Piece):
@@ -14,6 +14,7 @@ class Rook(Piece):
         self.move_set = [8, 8, 0, 8, 0, 0, 8, 0]
 
     def make_move(self, board, start_pos, end_pos):
+
         """
         :param board: an object of type(Chess.Board.Board) the board on which the king is standing
         :param start_pos: the starting pos of the rook to move
@@ -22,6 +23,7 @@ class Rook(Piece):
             besides moving the rook, it sets the flag
             for the corresponding side castling in the player's king to False
         """
+        from Chess.Pieces.King import King
         king_index = board.find_piece(King(self.color, -1))
         if king_index != -1:
             if start_pos == king_index + 3:
