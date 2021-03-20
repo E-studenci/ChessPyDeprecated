@@ -8,18 +8,18 @@ CHESSBOARD_WIDTH = 800
 CHESSBOARD_HEIGHT = 800
 SQUARE_SIZE = CHESSBOARD_WIDTH / 8
 
-WHITE_PAWN = pygame.image.load(os.path.join("Sprites", "white_pawn.png"))
-WHITE_KNIGHT = pygame.image.load(os.path.join('Sprites', 'white_knight.png'))
-WHITE_BISHOP = pygame.image.load(os.path.join('Sprites', 'white_bishop.png'))
-WHITE_ROOK = pygame.image.load(os.path.join('Sprites', 'white_rook.png'))
-WHITE_QUEEN = pygame.image.load(os.path.join('Sprites', 'white_queen.png'))
-WHITE_KING = pygame.image.load(os.path.join('Sprites', 'white_king.png'))
-BLACK_PAWN = pygame.image.load(os.path.join('Sprites', 'black_pawn.png'))
-BLACK_KNIGHT = pygame.image.load(os.path.join('Sprites', 'black_knight.png'))
-BLACK_BISHOP = pygame.image.load(os.path.join('Sprites', 'black_bishop.png'))
-BLACK_ROOK = pygame.image.load(os.path.join('Sprites', 'black_rook.png'))
-BLACK_QUEEN = pygame.image.load(os.path.join('Sprites', 'black_queen.png'))
-BLACK_KING = pygame.image.load(os.path.join('Sprites', 'black_king.png'))
+WHITE_PAWN = pygame.image.load(os.path.join("Sprites", 'Pieces', 'white_pawn.png'))
+WHITE_KNIGHT = pygame.image.load(os.path.join('Sprites', 'Pieces', 'white_knight.png'))
+WHITE_BISHOP = pygame.image.load(os.path.join('Sprites', 'Pieces', 'white_bishop.png'))
+WHITE_ROOK = pygame.image.load(os.path.join('Sprites', 'Pieces', 'white_rook.png'))
+WHITE_QUEEN = pygame.image.load(os.path.join('Sprites', 'Pieces', 'white_queen.png'))
+WHITE_KING = pygame.image.load(os.path.join('Sprites', 'Pieces', 'white_king.png'))
+BLACK_PAWN = pygame.image.load(os.path.join('Sprites', 'Pieces', 'black_pawn.png'))
+BLACK_KNIGHT = pygame.image.load(os.path.join('Sprites', 'Pieces', 'black_knight.png'))
+BLACK_BISHOP = pygame.image.load(os.path.join('Sprites', 'Pieces', 'black_bishop.png'))
+BLACK_ROOK = pygame.image.load(os.path.join('Sprites', 'Pieces', 'black_rook.png'))
+BLACK_QUEEN = pygame.image.load(os.path.join('Sprites', 'Pieces', 'black_queen.png'))
+BLACK_KING = pygame.image.load(os.path.join('Sprites', 'Pieces', 'black_king.png'))
 
 piece_dictionary = {(Pawn.Pawn, False): BLACK_PAWN, (Pawn.Pawn, True): WHITE_PAWN,
                     (Knight.Knight, False): BLACK_KNIGHT, (Knight.Knight, True): WHITE_KNIGHT,
