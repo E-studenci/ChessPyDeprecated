@@ -23,7 +23,7 @@ class King(Piece):
         self.castle_queen_side: bool = True
         self.move_set = [1, 1, 1, 1, 1, 1, 1, 1]
 
-    def calculate_legal_moves(self, board, calculate_checks=True):
+    def calculate_legal_moves(self, board, calculate_checks = True):
         """
         :param board: list the board on which the pawn is standing
         :return: returns a list of all legal moves for the king with the addition of castling

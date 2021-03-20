@@ -70,7 +70,13 @@ class Board:
         :param pos: the position from which a piece should be removed
         :return: removes a piece at [pos]
         """
-        # add some functionality here
+        # setting castling flags to false after taking a rook
+        if isinstance(self.board[pos], type(Rook)):
+            temp_king = King.King(self.board[pos].color, 111)
+            if pos == self.find_piece(temp_king) + 3:
+                self.board[self.find_piece(temp_king)].castle_king_side = False
+            elif pos == self.find_piece(temp_king) - 4:
+                self.board[self.find_piece(temp_king)].castle_queen_side = False
         self.board[pos] = None
 
     def find_piece(self, piece_to_find):
