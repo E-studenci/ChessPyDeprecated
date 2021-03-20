@@ -3,6 +3,10 @@ from Chess.Board.Converters import ChessNotationConverter as Converter
 
 
 def initialize_list_from_FEN(fen: str):
+    """
+    :param fen: string game to load in FEN
+    :return: returns a tuple: (board in form of list of pieces, current turn, fifty_move_rule counter, move counter)
+    """
 
     piece_dictionary = {'p': lambda: Pawn.Pawn(False, 0),     'P': lambda: Pawn.Pawn(True, 0),
                         'n': lambda: Knight.Knight(False, 0), 'N': lambda: Knight.Knight(True, 0),
@@ -54,6 +58,13 @@ def initialize_list_from_FEN(fen: str):
 
 
 def add_castle_flags_to_king(king, char, castling_ability) -> None:
+    """
+    :param king: the king to set castling flags on
+    :param char: the color of the king represented by lower or uppercase "k"
+    :param castling_ability: flags representing castling in the form of a
+       bool list: [black_king_side, black_queen_side, white_k_s, white_q_s]
+    :return:sets the castling flags for the king according to castling_ability
+    """
     if char == 'k':
         king.castle_king_side = castling_ability[0]
         king.castle_queen_side = castling_ability[1]
@@ -63,6 +74,11 @@ def add_castle_flags_to_king(king, char, castling_ability) -> None:
 
 
 def add_en_passant_flag_to_pawn(result_list, string) -> None:
+    """
+    :param result_list:
+    :param string: position on the board in the form of a string: "column_letter + row_number"
+    :return: sets the en_passant flag for the appropriate pawn to True
+    """
     index: int = 0
     if string[1] == '3':
         index = Converter.convert_chess_notation_into_index(string) + 8

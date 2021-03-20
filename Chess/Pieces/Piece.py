@@ -3,6 +3,30 @@ from Chess.Pieces import Constants
 
 
 class Piece(ABC):
+    """
+        An abstract class representing chess pieces
+
+        Attributes
+            color: bool
+                a flag representing the color of the piece
+                                                - white - True
+                                                - black - False
+            position: int
+                the current position of the piece on chess board
+            pinned: bool
+                a flag used to determine if the piece is pinned
+            move_set: list
+                a list representing the amount of steps the piece can take
+                in the direction at matching index in Constants.DIRECTION_MATH
+            possible_moves: list
+                a list holding all the moves the piece can currently make
+
+        methods
+            calculate_legal_moves(chess_board)
+                calculates all legal moves for the piece
+            make_move(board, start_pos, end_pos)
+                moves a piece [start_pos] to [end_pos]
+    """
 
     @abstractmethod
     def __init__(self, color: bool, position: int):
@@ -19,6 +43,10 @@ class Piece(ABC):
         return self.possible_moves
 
     def calculate_legal_moves(self, chess_board):
+        """
+        :param chess_board: list, the board on which the piece is standing
+        :return: returns a list of all legal move for the piece
+        """
         legal_moves = []
         for index in range(len(self.move_set)):
             interrupted = False
@@ -44,6 +72,14 @@ class Piece(ABC):
 
     # TODO: usunac start_pos
     def make_move(self, board, start_pos, end_pos):
+        """
+        :param board: an object of type(Chess.Board.Board) the board on which the pawn is standing
+        :param start_pos: the starting pos of a piece to move
+        :param end_pos: the destination of the move
+        :return: moves the piece from [start_pos] to [end_pos]
+                uses board.take(end_pos) if the end_pos is occupied by opposing piece
+        :return:
+        """
         # move piece from a to b
         # if b is occupied, take
         if not isinstance(board.board[end_pos], type(None)):
