@@ -103,8 +103,6 @@ class Board:
             if not self.turn:
                 self.move_count += 1
             self.turn = not self.turn
-            if start_pos == end_pos:
-                print("kurwa que")
             reset_en_passant_current_player = False
             temp_pawn = Pawn.Pawn(False, 11111)
             reset_en_passant_current_player = self.board[start_pos].make_move(self, start_pos, end_pos)
