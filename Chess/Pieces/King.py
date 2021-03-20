@@ -23,22 +23,26 @@ class King(Piece):
         self.castle_queen_side: bool = True
         self.move_set = [1, 1, 1, 1, 1, 1, 1, 1]
 
-    def calculate_legal_moves(self, board):
-        """
+    def calculate_legal_moves(self, board, calculate_checks=True):
+       """
         :param board: list the board on which the pawn is standing
         :return: returns a list of all legal moves for the king with the addition of castling
         """
         return_list = super().calculate_legal_moves(board)
         if self.castle_king_side \
-                and isinstance(board[self.position + 1], type(None)) \
-                and isinstance(board[self.position + 2], type(None)):
+                and isinstance(board.board[self.position + 1], type(None)) \
+                and isinstance(board.board[self.position + 2], type(None)) \
+                and not board.king_in_check_after_move(self.color, self.position, self.position + 1) \
+                and not board.king_in_check_after_move(self.color, self.position, self.position + 2):
             return_list.append(self.position + 2)
         if self.castle_queen_side \
-                and isinstance(board[self.position - 1], type(None)) \
-                and isinstance(board[self.position - 2], type(None)) \
-                and isinstance(board[self.position - 3], type(None)):
-            return_list.append(self.position - 2)
-        return return_list
+                and isinstance(board.board[self.position - 1], type(None)) \
+                and isinstance(board.board[self.position - 2], type(None)) \
+                and isinstance(board.board[self.position - 3], type(None)) \
+                and not board.king_in_check_after_move(self.color, self.position, self.position - 1) \
+                and not board.king_in_check_after_move(self.color, self.position, self.position - 2):
+          return_list.append(self.position - 2)
+        return return_list       
 
     def make_move(self, board, start_pos, end_pos):
         """

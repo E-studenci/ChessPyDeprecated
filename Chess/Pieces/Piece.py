@@ -42,7 +42,7 @@ class Piece(ABC):
     def get_possible_moves(self):
         return self.possible_moves
 
-    def calculate_legal_moves(self, chess_board):
+    def calculate_legal_moves(self, board, calculate_checks=True):
         """
         :param chess_board: list, the board on which the piece is standing
         :return: returns a list of all legal move for the piece
@@ -58,19 +58,21 @@ class Piece(ABC):
                 currently_calculated_position = current_position + Constants.DIRECTION_MATH[index]
                 if (currently_calculated_position % Constants.BOARD_SIZE - current_position % Constants.BOARD_SIZE) == \
                         Constants.COLUMN_CHANGE[index] \
-                        and 0 <= currently_calculated_position <= len(chess_board) - 1:
-                    if isinstance(chess_board[currently_calculated_position], type(None)) \
-                            or chess_board[currently_calculated_position].color != self.color:
-                        # check if king will be in check
-                        # if not:
+                        and 0 <= currently_calculated_position <= len(board.board) - 1:
+                    if isinstance(board.board[currently_calculated_position], type(None)) \
+                            or board.board[currently_calculated_position].color != self.color:
                         legal_moves.append(currently_calculated_position)
-                        current_position = currently_calculated_position
-                    if not isinstance(chess_board[currently_calculated_position], type(None)):
-                        interrupted = True
-                temp -= 1
+                    current_position = currently_calculated_position
+                if not isinstance(board.board[currently_calculated_position], type(None)):
+                    interrupted = True
+            temp -= 1
+
+        for move in legal_moves:
+            if calculate_checks:
+                if not board.king_in_check_after_move(self.color, self.position, move):
+                    legal_moves.append(move)
         return legal_moves
 
-    # TODO: usunac start_pos
     def make_move(self, board, start_pos, end_pos):
         """
         :param board: an object of type(Chess.Board.Board) the board on which the pawn is standing
