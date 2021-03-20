@@ -90,10 +90,3 @@ class Board:
                             piece.en_passant = False
                     else:
                         piece.en_passant = False
-
-
-if __name__ == '__main__':
-    board = Board()
-    board.calculate_all_legal_moves()
-    board.take()
-    pawn = Pawn.Pawn()
