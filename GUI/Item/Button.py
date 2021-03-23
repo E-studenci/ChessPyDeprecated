@@ -1,7 +1,7 @@
 import pygame
 import os
 
-pygame.init()
+pygame.display.init()
 
 
 class Button:
