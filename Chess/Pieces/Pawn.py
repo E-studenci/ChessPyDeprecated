@@ -83,7 +83,7 @@ class Pawn(Piece.Piece):
         for i in range(0, 2):
             currently_calculated_position = self.position \
                                             + 1 * direction * direction_dictionary[bool(i)]
-            if (currently_calculated_position % 8 - self.position % 8) == 1:
+            if abs(currently_calculated_position % 8 - self.position % 8) == 1:
                 if isinstance(board.board[currently_calculated_position], type(self)):
                     if not board.board[currently_calculated_position].color == self.color \
                             and board.board[currently_calculated_position].en_passant:
@@ -94,7 +94,7 @@ class Pawn(Piece.Piece):
             currently_calculated_position = self.position \
                                             + Constants.DIRECTION_MATH[0] * direction \
                                             + 1 * direction_dictionary[bool(i)]
-            if (currently_calculated_position % 8 - self.position % 8) == 1:
+            if abs(currently_calculated_position % 8 - self.position % 8) == 1:
                 if not isinstance(board.board[currently_calculated_position], type(None)):
                     if not board.board[currently_calculated_position].color == self.color:
                         return_list.append(currently_calculated_position)
