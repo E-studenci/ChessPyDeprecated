@@ -82,12 +82,13 @@ class Piece(ABC):
                 uses board.take(end_pos) if the end_pos is occupied by opposing piece
         :return:
         """
+        from Chess.Board.PrintMatrixToConsole import print_matrix_to_console
         # move piece from a to b
         # if b is occupied, take
         if not isinstance(board.board[end_pos], type(None)):
             board.take(end_pos)
         self.position = end_pos
-        board.board[end_pos] = self
         board.board[start_pos] = None
+        board.board[end_pos] = self
         return True
         # update all legal moves (to make check checking more optimised)

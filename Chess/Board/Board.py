@@ -1,7 +1,8 @@
 import copy
 
 from Chess.Pieces import Bishop, King, Knight, Pawn, Piece, Queen, Rook
-import PrintMatrixToConsole as PMC
+
+counter = 0
 
 
 class Board:
@@ -47,11 +48,14 @@ class Board:
             and returns them in the form of a dictionary where
             keys represent pieces and values - all the squares, where the piece can move
         """
+        global counter
+        counter += 1
         all_legal_moves = {}
         for piece in self.board:
             if piece is not None:
                 if piece.get_color() == turn:
                     all_legal_moves[piece] = piece.calculate_legal_moves(self, calculate_checks)
+        self.legal_moves = all_legal_moves
         return all_legal_moves
 
     def king_in_check_after_move(self, turn, start_pos, end_pos):
@@ -100,13 +104,16 @@ class Board:
                 uses Board.take(end_pos) if the end_pos is occupied by opposing piece
         """
         if not isinstance(self.board[start_pos], type(None)):
+            if not self.turn:
+                self.move_count += 1
+            self.turn = not self.turn
             reset_en_passant_current_player = False
             temp_pawn = Pawn.Pawn(False, 11111)
             reset_en_passant_current_player = self.board[start_pos].make_move(self, start_pos, end_pos)
-            for piece in self.board:
-                if isinstance(piece, type(temp_pawn)):
-                    if piece.color == self.board[end_pos].color:
-                        if reset_en_passant_current_player:
+            if reset_en_passant_current_player:
+                for piece in self.board:
+                    if isinstance(piece, type(temp_pawn)):
+                        if piece.color == self.board[end_pos].color:
                             piece.en_passant = False
-                    else:
-                        piece.en_passant = False
+                        else:
+                            piece.en_passant = False
