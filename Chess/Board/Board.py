@@ -2,9 +2,6 @@ import copy
 
 from Chess.Pieces import Bishop, King, Knight, Pawn, Piece, Queen, Rook
 
-counter = 0
-
-
 class Board:
     """
         Class representing our beautiful chessboard
@@ -48,8 +45,6 @@ class Board:
             and returns them in the form of a dictionary where
             keys represent pieces and values - all the squares, where the piece can move
         """
-        global counter
-        counter += 1
         all_legal_moves = {}
         for piece in self.board:
             if piece is not None:
