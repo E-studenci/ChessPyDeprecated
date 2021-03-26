@@ -1,6 +1,4 @@
 from Chess.Pieces.Piece import Piece
-from Chess.Board.Board import Board
-
 
 class King(Piece):
     """
@@ -29,7 +27,7 @@ class King(Piece):
         :return: returns a list of all legal moves for the king with the addition of castling
         """
         from Chess.Pieces.Rook import Rook
-        return_list = super().calculate_legal_moves(board)
+        return_list = super().calculate_legal_moves(board, calculate_checks)
         if self.castle_king_side \
                 and isinstance(board.board[self.position + 1], type(None)) \
                 and isinstance(board.board[self.position + 2], type(None)) \
@@ -37,7 +35,7 @@ class King(Piece):
                 and not board.king_in_check_after_move(self.color, self.position, self.position + 2) \
                 and isinstance(board.board[self.position + 3], type(Rook)):
             if board.board[self.position + 3].color == self.color:
-                return_list.append(self.position + 2)
+                return_list.append((self.position + 2, 0))
         if self.castle_queen_side \
                 and isinstance(board.board[self.position - 1], type(None)) \
                 and isinstance(board.board[self.position - 2], type(None)) \
@@ -46,10 +44,10 @@ class King(Piece):
                 and not board.king_in_check_after_move(self.color, self.position, self.position - 2) \
                 and isinstance(board.board[self.position - 4], type(Rook)):
             if board.board[self.position - 4].color == self.color:
-                return_list.append(self.position - 2)
+                return_list.append((self.position - 2, 0))
         return return_list
 
-    def make_move(self, board, start_pos, end_pos):
+    def make_move(self, board, start_pos, move):
         """
         :param board: an object of type(Chess.Board.Board) the board on which the king is standing
         :param start_pos: the starting pos of the king to move
@@ -57,14 +55,14 @@ class King(Piece):
         :return: moves the king from [start_pos] to [end_pos] and moves the rook if castling
         """
         # king side castling
-        if end_pos - start_pos == 2:
+        if move[0] - start_pos == 2:
             board.board[start_pos + 1] = board.board[start_pos + 3]
             board.board[start_pos + 3] = None
         # queen side castling
-        if end_pos - start_pos == -2:
+        if move[0] - start_pos == -2:
             board.board[start_pos - 1] = board.board[start_pos - 4]
             board.board[start_pos - 4] = None
 
         self.castle_king_side = False
         self.castle_queen_side = False
-        return super().make_move(board, start_pos, end_pos)
+        return super().make_move(board, start_pos, move[0])
