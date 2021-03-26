@@ -87,7 +87,7 @@ class Piece(ABC):
         if not isinstance(board.board[end_pos], type(None)):
             board.take(end_pos)
         self.position = end_pos
-        board.board[end_pos] = self
         board.board[start_pos] = None
+        board.board[end_pos] = self
         return True
         # update all legal moves (to make check checking more optimised)
