@@ -24,7 +24,8 @@ def initialize_list_from_FEN(fen: str):
 
     side_to_move: bool = True if fen_string_list[1] == 'w' else False
 
-    king_pos = [-1, -1]
+    king_pos = {True: -1,
+                False: -1}
 
     castling_ability = [False] * 4
     if fen_string_list[2] != '-':
@@ -44,9 +45,9 @@ def initialize_list_from_FEN(fen: str):
                 if char == 'k' or char == 'K':
                     add_castle_flags_to_king(result_list[index], char, castling_ability)
                     if char == 'k':
-                        king_pos[1] = index
+                        king_pos[False] = index
                     else:
-                        king_pos[0] = index
+                        king_pos[True] = index
                 index += 1
             else:
                 return [], True, 0, 0

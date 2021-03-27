@@ -65,7 +65,7 @@ class Piece(ABC):
 
         if calculate_checks:
             for i in range(len(legal_moves) - 1, -1, -1):
-                if board.king_in_check_after_move(self.color, self.position, legal_moves[i]):
+                if board.king_in_check_after_move_ver_2_0(self.color, self.position, legal_moves[i]):
                     legal_moves.remove(legal_moves[i])
         return legal_moves
 

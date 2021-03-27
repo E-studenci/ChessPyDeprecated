@@ -1,6 +1,6 @@
 import copy
 
-from Chess.Pieces import Bishop, King, Knight, Pawn, Piece, Queen, Rook
+from Chess.Pieces import Bishop, King, Knight, Pawn, Piece, Queen, Rook, Constants
 
 
 class Board:
@@ -33,7 +33,8 @@ class Board:
     """
 
     def __init__(self):
-        self.king_pos = [-1, -1]
+        self.king_pos = {True: -1,
+                         False: -1}
         self.board: list = [None] * 64
         self.turn: bool = True
         self.legal_moves = []
@@ -67,11 +68,67 @@ class Board:
         temp_board = copy.deepcopy(self)
         temp_board.make_move(start_pos, move)
         opposing_moves = temp_board.calculate_all_legal_moves(not turn, False)
-        king_position = temp_board.king_pos[0] if turn else temp_board.king_pos[1]
+        king_position = temp_board.king_pos[turn]
         for val in opposing_moves.values():
             if (king_position, 0) in val \
                     or (king_position, 1) in val:
                 return True
+        return False
+
+    def king_in_check_after_move_ver_2_0(self, turn, start_pos, move):
+        temp_board = copy.deepcopy(self)
+        temp_board.make_move(start_pos, move)
+
+        king_pos = temp_board.king_pos[turn]
+        # check pawns
+        direction = Pawn.direction_dictionary[temp_board.board[king_pos].color]
+        if isinstance(temp_board.board[king_pos + 8 * direction + 1], Pawn.Pawn) \
+                and not temp_board.board[king_pos + 8 * direction + 1].color == turn \
+                or isinstance(temp_board.board[king_pos + 8 * direction - 1], Pawn.Pawn) \
+                and not temp_board.board[king_pos + 8 * direction - 1].color == turn:
+            return True
+
+        # check knight
+        def fun(pos):
+            return isinstance(temp_board.board[pos], Knight.Knight)
+
+        if self.helper(temp_board, [0] * 8 + [1] * 8, king_pos, turn, fun):
+            return True
+
+        # check rook and queen
+        def fun2(pos):
+            return isinstance(temp_board.board[pos], Rook.Rook) or isinstance(temp_board.board[pos], Queen.Queen)
+
+        if self.helper(temp_board, [8, 8, 0, 8, 0, 0, 8, 0], king_pos, turn, fun2):
+            return True
+
+        # check bishop and queen
+        def fun3(pos):
+            return isinstance(temp_board.board[pos], Bishop.Bishop) or isinstance(temp_board.board[pos], Queen.Queen)
+
+        if self.helper(temp_board, [0, 0, 8, 0, 8, 8, 0, 8], king_pos, turn, fun3):
+            return True
+        return False
+
+    def helper(self, board, move_set, start_pos, turn, fun):
+        for index in range(len(move_set)):
+            interrupted = False
+            temp = move_set[index]
+            current_position = start_pos
+            currently_calculated_position = 0
+            while not interrupted \
+                    and temp > 0:
+                currently_calculated_position = current_position + Constants.DIRECTION_MATH[index]
+                if (currently_calculated_position % Constants.BOARD_SIZE - current_position % Constants.BOARD_SIZE) == \
+                        Constants.COLUMN_CHANGE[index] \
+                        and 0 <= currently_calculated_position <= len(board.board) - 1:
+                    if fun(currently_calculated_position) \
+                            and board.board[currently_calculated_position].color != turn:
+                        return True
+                    current_position = currently_calculated_position
+                    if not isinstance(board.board[currently_calculated_position], type(None)):
+                        interrupted = True
+                temp -= 1
         return False
 
     def take(self, pos):
@@ -81,7 +138,7 @@ class Board:
         """
         # setting castling flags to false after taking a rook
         if isinstance(self.board[pos], type(Rook)):
-            king_position = self.king_pos[0] if not self.turn else self.king_pos[1]
+            king_position = self.king_pos[self.turn]
             if pos == king_position + 3:
                 self.board[king_position].castle_king_side = False
             elif pos == king_position - 4:

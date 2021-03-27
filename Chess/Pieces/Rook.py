@@ -23,7 +23,7 @@ class Rook(Piece):
             for the corresponding side castling in the player's king to False
         """
         from Chess.Pieces.King import King
-        king_position = board.king_pos[0] if self.color else board.king_pos[1]
+        king_position = board.king_pos[self.color]
         if king_position != -1:
             if start_pos == king_position + 3:
                 board.board[king_position].castle_king_side = False

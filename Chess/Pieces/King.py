@@ -33,8 +33,8 @@ class King(Piece):
         if self.castle_king_side \
                 and isinstance(board.board[self.position + 1], type(None)) \
                 and isinstance(board.board[self.position + 2], type(None)) \
-                and not board.king_in_check_after_move(self.color, self.position, self.position + 1) \
-                and not board.king_in_check_after_move(self.color, self.position, self.position + 2) \
+                and not board.king_in_check_after_move_ver_2_0(self.color, self.position, (self.position + 1, 0)) \
+                and not board.king_in_check_after_move_ver_2_0(self.color, self.position, (self.position + 2, 0)) \
                 and isinstance(board.board[self.position + 3], type(Rook)):
             if board.board[self.position + 3].color == self.color:
                 return_list.append((self.position + 2, 0))
@@ -42,8 +42,8 @@ class King(Piece):
                 and isinstance(board.board[self.position - 1], type(None)) \
                 and isinstance(board.board[self.position - 2], type(None)) \
                 and isinstance(board.board[self.position - 3], type(None)) \
-                and not board.king_in_check_after_move(self.color, self.position, self.position - 1) \
-                and not board.king_in_check_after_move(self.color, self.position, self.position - 2) \
+                and not board.king_in_check_after_move_ver_2_0(self.color, self.position, (self.position - 1, 0)) \
+                and not board.king_in_check_after_move_ver_2_0(self.color, self.position, (self.position - 2, 0)) \
                 and isinstance(board.board[self.position - 4], type(Rook)):
             if board.board[self.position - 4].color == self.color:
                 return_list.append((self.position - 2, 0))
@@ -65,9 +65,7 @@ class King(Piece):
             board.board[start_pos - 1] = board.board[start_pos - 4]
             board.board[start_pos - 4] = None
 
-        if self.color:
-            board.king_pos[0] = move[0]
-        else: board.king_pos[1] = move[0]
+        board.king_pos[self.color] = move[0]
 
         self.castle_king_side = False
         self.castle_queen_side = False
