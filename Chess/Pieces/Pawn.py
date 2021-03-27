@@ -115,10 +115,8 @@ class Pawn(Piece.Piece):
                         else:
                             return_list.append((currently_calculated_position, 0))
 
-        temp_return_list = copy.deepcopy(return_list)
         if calculate_checks:
-            for move in return_list:
-                if board.king_in_check_after_move(self.color, self.position, move):
-                    temp_return_list.remove(move)
-        return_list = temp_return_list
+            for i in range(len(return_list) - 1, -1, -1):
+                if board.king_in_check_after_move(self.color, self.position, return_list[i]):
+                    return_list.remove(return_list[i])
         return return_list
