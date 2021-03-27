@@ -65,6 +65,10 @@ class King(Piece):
             board.board[start_pos - 1] = board.board[start_pos - 4]
             board.board[start_pos - 4] = None
 
+        if self.color:
+            board.king_pos[0] = move[0]
+        else: board.king_pos[1] = move[0]
+
         self.castle_king_side = False
         self.castle_queen_side = False
         return super().make_move(board, start_pos, move)

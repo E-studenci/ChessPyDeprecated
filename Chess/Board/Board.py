@@ -33,6 +33,7 @@ class Board:
     """
 
     def __init__(self):
+        self.king_pos = [-1, -1]
         self.board: list = [None] * 64
         self.turn: bool = True
         self.legal_moves = []
@@ -65,9 +66,8 @@ class Board:
         """
         temp_board = copy.deepcopy(self)
         temp_board.make_move(start_pos, move)
-        temp_king = King.King(turn, 1111)
         opposing_moves = temp_board.calculate_all_legal_moves(not turn, False)
-        king_position = temp_board.find_piece(temp_king)
+        king_position = temp_board.king_pos[0] if turn else temp_board.king_pos[1]
         for val in opposing_moves.values():
             if (king_position, 0) in val \
                     or (king_position, 1) in val:
@@ -81,11 +81,11 @@ class Board:
         """
         # setting castling flags to false after taking a rook
         if isinstance(self.board[pos], type(Rook)):
-            temp_king = King.King(self.board[pos].color, 111)
-            if pos == self.find_piece(temp_king) + 3:
-                self.board[self.find_piece(temp_king)].castle_king_side = False
-            elif pos == self.find_piece(temp_king) - 4:
-                self.board[self.find_piece(temp_king)].castle_queen_side = False
+            king_position = self.king_pos[0] if not self.turn else self.king_pos[1]
+            if pos == king_position + 3:
+                self.board[king_position].castle_king_side = False
+            elif pos == king_position - 4:
+                self.board[king_position].castle_queen_side = False
         self.board[pos] = None
 
     def find_piece(self, piece_to_find):
@@ -111,10 +111,9 @@ class Board:
         if not isinstance(self.board[start_pos], type(None)):
             if not self.turn:
                 self.move_count += 1
-            self.turn = not self.turn
-            temp_pawn = Pawn.Pawn(False, 11111)
             self.board[start_pos].make_move(self, start_pos, move)
+            self.turn = not self.turn
             for piece in self.board:
-                if isinstance(piece, type(temp_pawn)):
+                if isinstance(piece, Pawn.Pawn):
                     if not piece.color == self.board[move[0]].color:
                         piece.en_passant = False
