@@ -12,8 +12,6 @@ promotion_dictionary = {1: Knight.Knight,
                         4: Queen.Queen}
 
 
-# TODO: calculating moves dictionary: {piece->starting_pos: (end_pos, 0-4 based on promotion, 0- can't promote, 1- knight, 2- bishop, 3- rook, 4- queen)}
-
 class Pawn(Piece.Piece):
     """
         Sub class of Piece, it represents the pawn piece
@@ -45,9 +43,10 @@ class Pawn(Piece.Piece):
         :param end_pos: the end pos of the move
         :return: it handles moving the pawn forward, on the diagonal to take, en passant, and promoting
         """
+        direction = direction_dictionary[self.color]
         # Promotion
         if not move[1] == 0:
-            board.board[move[0]] = None
+            board.take(move[0])
             board.board[move[0]] = promotion_dictionary[move[1]](self.color, move[0])
             board.board[start_pos] = None
             return True
@@ -59,10 +58,7 @@ class Pawn(Piece.Piece):
         # en passant
         elif not abs(start_pos - move[0]) == 8 \
                 and isinstance(board.board[move[0]], type(None)):
-            if move[0] > start_pos:
-                board.take(move[0] - 8)
-            else:
-                board.take(move[0] + 8)
+            board.take(move[0] - 8 * direction)
             return super().make_move(board, start_pos, move)
         # normal move and taking
         else:
