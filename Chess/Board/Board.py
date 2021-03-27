@@ -47,13 +47,13 @@ class Board:
         :return:
             calculates all legal moves for the current player
             and returns them in the form of a dictionary where
-            keys represent pieces and values - all the squares, where the piece can move
+            keys represent piece positions and values - all the squares, where the piece can move
         """
         all_legal_moves = {}
         for piece in self.board:
             if piece is not None:
                 if piece.color == turn:
-                    all_legal_moves[piece] = piece.calculate_legal_moves(self, calculate_checks)
+                    all_legal_moves[piece.position] = piece.calculate_legal_moves(self, calculate_checks)
         self.legal_moves = all_legal_moves
         return all_legal_moves
 
@@ -87,19 +87,6 @@ class Board:
             elif pos == king_position - 4:
                 self.board[king_position].castle_queen_side = False
         self.board[pos] = None
-
-    def find_piece(self, piece_to_find):
-        """
-        :param piece_to_find:
-        :return: returns the index of the first piece that matches the class and color of piece_to_find
-        """
-        index = 0
-        for piece in self.board:
-            if isinstance(piece, type(piece_to_find)) \
-                    and piece.color == piece_to_find.color:
-                return index
-            index += 1
-        return -1
 
     def make_move(self, start_pos, move):
         """
