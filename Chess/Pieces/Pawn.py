@@ -40,7 +40,7 @@ class Pawn(Piece.Piece):
         """
         :param board: an object of type(Chess.Board.Board) the board on which the pawn is standing
         :param start_pos: the starting pos of the move
-        :param end_pos: the end pos of the move
+        :param move: (end_pos, promotion_type) the end pos of the move, and promotion flag
         :return: it handles moving the pawn forward, on the diagonal to take, en passant, and promoting
         """
         direction = direction_dictionary[self.color]
@@ -66,6 +66,7 @@ class Pawn(Piece.Piece):
 
     def calculate_legal_moves(self, board, calculate_checks=True):
         """
+        :param calculate_checks: should the moves that will leave the [self.color] player's king in check be removed
         :param board: Chess.Board.Board, the board on which the pawn is standing
         :return: returns a list of all legal moves for the pawn
         """

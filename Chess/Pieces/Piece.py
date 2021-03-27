@@ -36,15 +36,10 @@ class Piece(ABC):
         self.move_set: list = []
         self.possible_moves: list = []
 
-    def get_color(self):
-        return self.color
-
-    def get_possible_moves(self):
-        return self.possible_moves
-
     def calculate_legal_moves(self, board, calculate_checks=True):
         """
-        :param chess_board: list, the board on which the piece is standing
+        :param calculate_checks: should the moves that will leave the [self.color] player's king in check be removed
+        :param board: Chess.Board.Board, the board on which the piece is standing
         :return: returns a list of all legal move for the piece
         """
         legal_moves = []
@@ -77,7 +72,7 @@ class Piece(ABC):
         """
         :param board: an object of type(Chess.Board.Board) the board on which the pawn is standing
         :param start_pos: the starting pos of a piece to move
-        :param end_pos: the destination of the move
+        :param move: (end_pos, promotion_type) the end pos of the move, and promotion flag
         :return: moves the piece from [start_pos] to [end_pos]
                 uses board.take(end_pos) if the end_pos is occupied by opposing piece
         """

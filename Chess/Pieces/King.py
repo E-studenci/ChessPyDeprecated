@@ -1,5 +1,6 @@
 from Chess.Pieces.Piece import Piece
 
+
 class King(Piece):
     """
         Sub class of Piece, it represents the king piece
@@ -21,8 +22,9 @@ class King(Piece):
         self.castle_queen_side: bool = True
         self.move_set = [1, 1, 1, 1, 1, 1, 1, 1]
 
-    def calculate_legal_moves(self, board, calculate_checks = True):
+    def calculate_legal_moves(self, board, calculate_checks=True):
         """
+        :param calculate_checks: should the moves that will leave the [self.color] player's king in check be removed
         :param board: list the board on which the pawn is standing
         :return: returns a list of all legal moves for the king with the addition of castling
         """
@@ -51,7 +53,7 @@ class King(Piece):
         """
         :param board: an object of type(Chess.Board.Board) the board on which the king is standing
         :param start_pos: the starting pos of the king to move
-        :param end_pos: the destination of the move
+        :param move: (end_pos, promotion_type) the end pos of the move, and promotion flag
         :return: moves the king from [start_pos] to [end_pos] and moves the rook if castling
         """
         # king side castling

@@ -17,7 +17,7 @@ class Rook(Piece):
         """
         :param board: an object of type(Chess.Board.Board) the board on which the king is standing
         :param start_pos: the starting pos of the rook to move
-        :param end_pos: the destination of the move
+        :param move: (end_pos, promotion_type) the end pos of the move, and promotion flag
         :return:
             besides moving the rook, it sets the flag
             for the corresponding side castling in the player's king to False

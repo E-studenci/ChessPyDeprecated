@@ -7,6 +7,7 @@ class Queen(Piece):
 
         Nothing special here
     """
+
     def __init__(self, color: bool, position: int):
         super().__init__(color, position)
         self.move_set = [8, 8, 8, 8, 8, 8, 8, 8]
