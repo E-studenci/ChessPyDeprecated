@@ -58,9 +58,9 @@ class Piece(ABC):
                     if isinstance(board.board[currently_calculated_position], type(None)) \
                             or board.board[currently_calculated_position].color != self.color:
                         legal_moves.append((currently_calculated_position, 0))
-                    current_position = currently_calculated_position
                     if not isinstance(board.board[currently_calculated_position], type(None)):
                         interrupted = True
+                    current_position = currently_calculated_position
                 temp -= 1
 
         if calculate_checks:

@@ -122,11 +122,11 @@ class Board:
                 if (currently_calculated_position % Constants.BOARD_SIZE - current_position % Constants.BOARD_SIZE) == \
                         Constants.COLUMN_CHANGE[index] \
                         and 0 <= currently_calculated_position <= len(board.board) - 1:
-                    if fun(currently_calculated_position) \
-                            and board.board[currently_calculated_position].color != turn:
-                        return True
                     current_position = currently_calculated_position
                     if not isinstance(board.board[currently_calculated_position], type(None)):
+                        if fun(currently_calculated_position) \
+                                and board.board[currently_calculated_position].color != turn:
+                            return True
                         interrupted = True
                 temp -= 1
         return False
