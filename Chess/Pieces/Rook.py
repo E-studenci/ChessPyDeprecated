@@ -29,4 +29,4 @@ class Rook(Piece):
                 board.board[king_index].castle_king_side = False
             elif start_pos == king_index - 4:
                 board.board[king_index].castle_queen_side = False
-        return super().make_move(board, start_pos, move[0])
+        return super().make_move(board, start_pos, move)

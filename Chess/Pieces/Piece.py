@@ -1,3 +1,4 @@
+import copy
 from abc import ABC, abstractmethod
 from Chess.Pieces import Constants
 
@@ -62,10 +63,12 @@ class Piece(ABC):
                         interrupted = True
                 temp -= 1
 
+        temp_return_list = copy.deepcopy(legal_moves)
         if calculate_checks:
             for move in legal_moves:
-                if not board.king_in_check_after_move(self.color, self.position, move):
-                    legal_moves.remove(move)
+                if board.king_in_check_after_move(self.color, self.position, move):
+                    temp_return_list.remove(move)
+        legal_moves = temp_return_list
         return legal_moves
 
     def make_move(self, board, start_pos, move):

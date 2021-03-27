@@ -1,3 +1,5 @@
+import copy
+
 from Chess.Pieces import Bishop, King, Knight, Piece, Queen, Rook, Constants
 
 direction_dictionary = {True: +1,
@@ -113,8 +115,10 @@ class Pawn(Piece.Piece):
                         else:
                             return_list.append((currently_calculated_position, 0))
 
+        temp_return_list = copy.deepcopy(return_list)
         if calculate_checks:
             for move in return_list:
                 if board.king_in_check_after_move(self.color, self.position, move):
-                    return_list.remove(move)
+                    temp_return_list.remove(move)
+        return_list = temp_return_list
         return return_list
