@@ -2,6 +2,7 @@ import copy
 
 from Chess.Pieces import Bishop, King, Knight, Pawn, Piece, Queen, Rook
 
+
 class Board:
     """
         Class representing our beautiful chessboard
@@ -40,6 +41,8 @@ class Board:
 
     def calculate_all_legal_moves(self, turn, calculate_checks=True):
         """
+        :param turn: current turn
+        :param calculate_checks: should the moves that will leave the [turn] player's king in check be removed
         :return:
             calculates all legal moves for the current player
             and returns them in the form of a dictionary where
@@ -48,19 +51,26 @@ class Board:
         all_legal_moves = {}
         for piece in self.board:
             if piece is not None:
-                if piece.get_color() == turn:
+                if piece.color == turn:
                     all_legal_moves[piece] = piece.calculate_legal_moves(self, calculate_checks)
         self.legal_moves = all_legal_moves
         return all_legal_moves
 
-    def king_in_check_after_move(self, turn, start_pos, end_pos):
+    def king_in_check_after_move(self, turn, start_pos, move):
+        """
+        :param turn: current turn
+        :param start_pos: start_pos of the move to be checked
+        :param move: (end_pos, promotion_type) the end pos of the move, and promotion flag
+        :return: checks if the current player's king will be in check after the move
+        """
         temp_board = copy.deepcopy(self)
-        temp_board.make_move(start_pos, end_pos)
+        temp_board.make_move(start_pos, move)
         temp_king = King.King(turn, 1111)
         opposing_moves = temp_board.calculate_all_legal_moves(not turn, False)
         king_position = temp_board.find_piece(temp_king)
         for val in opposing_moves.values():
-            if king_position in val:
+            if (king_position, 0) in val \
+                    or (king_position, 1) in val:
                 return True
         return False
 
@@ -86,15 +96,15 @@ class Board:
         index = 0
         for piece in self.board:
             if isinstance(piece, type(piece_to_find)) \
-                    and piece.get_color() == piece_to_find.get_color():
+                    and piece.color == piece_to_find.color:
                 return index
             index += 1
         return -1
 
-    def make_move(self, start_pos, end_pos):
+    def make_move(self, start_pos, move):
         """
         :param start_pos: the starting pos of a piece to move
-        :param end_pos: the destination of the move
+        :param move: (end_pos, promotion_type) the end pos of the move, and promotion flag
         :return: moves the piece from [start_pos] to [end_pos]
                 uses Board.take(end_pos) if the end_pos is occupied by opposing piece
         """
@@ -102,13 +112,9 @@ class Board:
             if not self.turn:
                 self.move_count += 1
             self.turn = not self.turn
-            reset_en_passant_current_player = False
             temp_pawn = Pawn.Pawn(False, 11111)
-            reset_en_passant_current_player = self.board[start_pos].make_move(self, start_pos, end_pos)
-            if reset_en_passant_current_player:
-                for piece in self.board:
-                    if isinstance(piece, type(temp_pawn)):
-                        if piece.color == self.board[end_pos].color:
-                            piece.en_passant = False
-                        else:
-                            piece.en_passant = False
+            self.board[start_pos].make_move(self, start_pos, move)
+            for piece in self.board:
+                if isinstance(piece, type(temp_pawn)):
+                    if not piece.color == self.board[move[0]].color:
+                        piece.en_passant = False

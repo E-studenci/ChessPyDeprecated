@@ -1,3 +1,4 @@
+import copy
 from abc import ABC, abstractmethod
 from Chess.Pieces import Constants
 
@@ -36,15 +37,10 @@ class Piece(ABC):
         self.move_set: list = []
         self.possible_moves: list = []
 
-    def get_color(self):
-        return self.color
-
-    def get_possible_moves(self):
-        return self.possible_moves
-
     def calculate_legal_moves(self, board, calculate_checks=True):
         """
-        :param chess_board: list, the board on which the piece is standing
+        :param calculate_checks: should the moves that will leave the [self.color] player's king in check be removed
+        :param board: Chess.Board.Board, the board on which the piece is standing
         :return: returns a list of all legal move for the piece
         """
         legal_moves = []
@@ -61,33 +57,34 @@ class Piece(ABC):
                         and 0 <= currently_calculated_position <= len(board.board) - 1:
                     if isinstance(board.board[currently_calculated_position], type(None)) \
                             or board.board[currently_calculated_position].color != self.color:
-                        legal_moves.append(currently_calculated_position)
+                        legal_moves.append((currently_calculated_position, 0))
                     current_position = currently_calculated_position
-                if not isinstance(board.board[currently_calculated_position], type(None)):
-                    interrupted = True
-            temp -= 1
+                    if not isinstance(board.board[currently_calculated_position], type(None)):
+                        interrupted = True
+                temp -= 1
 
-        for move in legal_moves:
-            if calculate_checks:
-                if not board.king_in_check_after_move(self.color, self.position, move):
-                    legal_moves.append(move)
+        temp_return_list = copy.deepcopy(legal_moves)
+        if calculate_checks:
+            for move in legal_moves:
+                if board.king_in_check_after_move(self.color, self.position, move):
+                    temp_return_list.remove(move)
+        legal_moves = temp_return_list
         return legal_moves
 
-    def make_move(self, board, start_pos, end_pos):
+    def make_move(self, board, start_pos, move):
         """
         :param board: an object of type(Chess.Board.Board) the board on which the pawn is standing
         :param start_pos: the starting pos of a piece to move
-        :param end_pos: the destination of the move
+        :param move: (end_pos, promotion_type) the end pos of the move, and promotion flag
         :return: moves the piece from [start_pos] to [end_pos]
                 uses board.take(end_pos) if the end_pos is occupied by opposing piece
-        :return:
         """
         # move piece from a to b
         # if b is occupied, take
-        if not isinstance(board.board[end_pos], type(None)):
-            board.take(end_pos)
-        self.position = end_pos
+        if not isinstance(board.board[move[0]], type(None)):
+            board.take(move[0])
+        self.position = move[0]
         board.board[start_pos] = None
-        board.board[end_pos] = self
+        board.board[move[0]] = self
         return True
         # update all legal moves (to make check checking more optimised)
