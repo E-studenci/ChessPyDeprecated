@@ -35,7 +35,7 @@ class Pawn(Piece.Piece):
 
     def __init__(self, color: bool, position: int):
         super().__init__(color, position)
-        self.en_passant: bool = True
+        self.en_passant: bool = False
         self.move_set = [1]
 
     def make_move(self, board, start_pos, move):
@@ -110,15 +110,13 @@ class Pawn(Piece.Piece):
                 if not isinstance(board.board[currently_calculated_position], type(None)):
                     if not board.board[currently_calculated_position].color == self.color:
                         if last_row * 8 <= currently_calculated_position < (last_row + 1) * 8:
-                            for i in range(1, 5):
-                                return_list.append((currently_calculated_position, i))
+                            for j in range(1, 5):
+                                return_list.append((currently_calculated_position, j))
                         else:
                             return_list.append((currently_calculated_position, 0))
 
-        temp_return_list = copy.deepcopy(return_list)
         if calculate_checks:
-            for move in return_list:
-                if board.king_in_check_after_move(self.color, self.position, move):
-                    temp_return_list.remove(move)
-        return_list = temp_return_list
+            for i in range(len(return_list) - 1, -1, -1):
+                if board.king_in_check_after_move_ver_2_0(self.color, self.position, return_list[i]):
+                    return_list.remove(return_list[i])
         return return_list

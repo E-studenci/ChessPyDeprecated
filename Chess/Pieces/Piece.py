@@ -58,17 +58,15 @@ class Piece(ABC):
                     if isinstance(board.board[currently_calculated_position], type(None)) \
                             or board.board[currently_calculated_position].color != self.color:
                         legal_moves.append((currently_calculated_position, 0))
-                    current_position = currently_calculated_position
                     if not isinstance(board.board[currently_calculated_position], type(None)):
                         interrupted = True
+                    current_position = currently_calculated_position
                 temp -= 1
 
-        temp_return_list = copy.deepcopy(legal_moves)
         if calculate_checks:
-            for move in legal_moves:
-                if board.king_in_check_after_move(self.color, self.position, move):
-                    temp_return_list.remove(move)
-        legal_moves = temp_return_list
+            for i in range(len(legal_moves) - 1, -1, -1):
+                if board.king_in_check_after_move_ver_2_0(self.color, self.position, legal_moves[i]):
+                    legal_moves.remove(legal_moves[i])
         return legal_moves
 
     def make_move(self, board, start_pos, move):

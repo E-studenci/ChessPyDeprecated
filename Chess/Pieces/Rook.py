@@ -23,10 +23,10 @@ class Rook(Piece):
             for the corresponding side castling in the player's king to False
         """
         from Chess.Pieces.King import King
-        king_index = board.find_piece(King(self.color, -1))
-        if king_index != -1:
-            if start_pos == king_index + 3:
-                board.board[king_index].castle_king_side = False
-            elif start_pos == king_index - 4:
-                board.board[king_index].castle_queen_side = False
+        king_position = board.king_pos[self.color]
+        if king_position != -1:
+            if start_pos == king_position + 3:
+                board.board[king_position].castle_king_side = False
+            elif start_pos == king_position - 4:
+                board.board[king_position].castle_queen_side = False
         return super().make_move(board, start_pos, move)
