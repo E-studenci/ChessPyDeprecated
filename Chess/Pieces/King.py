@@ -59,10 +59,12 @@ class King(Piece):
         # king side castling
         if move[0] - start_pos == 2:
             board.board[start_pos + 1] = board.board[start_pos + 3]
+            board.board[start_pos + 1].position = start_pos + 1
             board.board[start_pos + 3] = None
         # queen side castling
         if move[0] - start_pos == -2:
             board.board[start_pos - 1] = board.board[start_pos - 4]
+            board.board[start_pos - 1].position = start_pos - 1
             board.board[start_pos - 4] = None
 
         board.king_pos[self.color] = move[0]
