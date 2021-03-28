@@ -110,8 +110,8 @@ class Pawn(Piece.Piece):
                 if not isinstance(board.board[currently_calculated_position], type(None)):
                     if not board.board[currently_calculated_position].color == self.color:
                         if last_row * 8 <= currently_calculated_position < (last_row + 1) * 8:
-                            for i in range(1, 5):
-                                return_list.append((currently_calculated_position, i))
+                            for j in range(1, 5):
+                                return_list.append((currently_calculated_position, j))
                         else:
                             return_list.append((currently_calculated_position, 0))
 

@@ -75,18 +75,24 @@ class Board:
                 return True
         return False
 
-    def king_in_check_after_move_ver_2_0(self, turn, start_pos, move):
+    def king_in_check_after_move_ver_2_0(self, turn, start_pos, move, make_move=True):
         temp_board = copy.deepcopy(self)
-        temp_board.make_move(start_pos, move)
+        if make_move:
+            temp_board.make_move(start_pos, move)
 
         king_pos = temp_board.king_pos[turn]
+        last_row = Pawn.last_row_dictionary[turn]
         # check pawns
         direction = Pawn.direction_dictionary[temp_board.board[king_pos].color]
-        if isinstance(temp_board.board[king_pos + 8 * direction + 1], Pawn.Pawn) \
-                and not temp_board.board[king_pos + 8 * direction + 1].color == turn \
-                or isinstance(temp_board.board[king_pos + 8 * direction - 1], Pawn.Pawn) \
-                and not temp_board.board[king_pos + 8 * direction - 1].color == turn:
-            return True
+        if not (king_pos / 8) - (king_pos / 8) % 1 == last_row:
+            for i in range(0, 2):
+                currently_calculated_position = king_pos \
+                                                + Constants.DIRECTION_MATH[0] * direction \
+                                                + 1 * Pawn.direction_dictionary[bool(i)]
+                if abs(currently_calculated_position % 8 - king_pos % 8) == 1:
+                    if isinstance(temp_board.board[currently_calculated_position], Pawn.Pawn) \
+                            and not temp_board.board[currently_calculated_position].color == turn:
+                        return True
 
         # check knight
         def fun(pos):
@@ -95,18 +101,25 @@ class Board:
         if self.helper(temp_board, [0] * 8 + [1] * 8, king_pos, turn, fun):
             return True
 
+        # check king and queen
+        def fun(pos):
+            return isinstance(temp_board.board[pos], King.King) or isinstance(temp_board.board[pos], Queen.Queen)
+
+        if self.helper(temp_board, [1, 1, 1, 1, 1, 1, 1, 1], king_pos, turn, fun):
+            return True
+
         # check rook and queen
-        def fun2(pos):
+        def fun(pos):
             return isinstance(temp_board.board[pos], Rook.Rook) or isinstance(temp_board.board[pos], Queen.Queen)
 
-        if self.helper(temp_board, [8, 8, 0, 8, 0, 0, 8, 0], king_pos, turn, fun2):
+        if self.helper(temp_board, [8, 8, 0, 8, 0, 0, 8, 0], king_pos, turn, fun):
             return True
 
         # check bishop and queen
-        def fun3(pos):
+        def fun(pos):
             return isinstance(temp_board.board[pos], Bishop.Bishop) or isinstance(temp_board.board[pos], Queen.Queen)
 
-        if self.helper(temp_board, [0, 0, 8, 0, 8, 8, 0, 8], king_pos, turn, fun3):
+        if self.helper(temp_board, [0, 0, 8, 0, 8, 8, 0, 8], king_pos, turn, fun):
             return True
         return False
 

@@ -72,10 +72,10 @@ def add_castle_flags_to_king(king, char, castling_ability) -> None:
        bool list: [black_king_side, black_queen_side, white_k_s, white_q_s]
     :return:sets the castling flags for the king according to castling_ability
     """
-    if char == 'k':
+    if char == 'K':
         king.castle_king_side = castling_ability[0]
         king.castle_queen_side = castling_ability[1]
-    elif char == 'K':
+    elif char == 'k':
         king.castle_king_side = castling_ability[2]
         king.castle_queen_side = castling_ability[3]
 
