@@ -1,3 +1,4 @@
+from Chess.Pieces import Rook
 from Chess.Pieces.Piece import Piece
 
 
@@ -28,14 +29,13 @@ class King(Piece):
         :param board: list the board on which the pawn is standing
         :return: returns a list of all legal moves for the king with the addition of castling
         """
-        from Chess.Pieces.Rook import Rook
         return_list = super().calculate_legal_moves(board, calculate_checks)
         if self.castle_king_side \
                 and isinstance(board.board[self.position + 1], type(None)) \
                 and isinstance(board.board[self.position + 2], type(None)) \
                 and not board.king_in_check_after_move_ver_2_0(self.color, self.position, (self.position + 1, 0)) \
                 and not board.king_in_check_after_move_ver_2_0(self.color, self.position, (self.position + 2, 0)) \
-                and isinstance(board.board[self.position + 3], type(Rook)):
+                and isinstance(board.board[self.position + 3], Rook.Rook):
             if board.board[self.position + 3].color == self.color:
                 return_list.append((self.position + 2, 0))
         if self.castle_queen_side \
@@ -44,7 +44,7 @@ class King(Piece):
                 and isinstance(board.board[self.position - 3], type(None)) \
                 and not board.king_in_check_after_move_ver_2_0(self.color, self.position, (self.position - 1, 0)) \
                 and not board.king_in_check_after_move_ver_2_0(self.color, self.position, (self.position - 2, 0)) \
-                and isinstance(board.board[self.position - 4], type(Rook)):
+                and isinstance(board.board[self.position - 4], Rook.Rook):
             if board.board[self.position - 4].color == self.color:
                 return_list.append((self.position - 2, 0))
         return return_list

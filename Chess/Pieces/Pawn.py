@@ -35,7 +35,7 @@ class Pawn(Piece.Piece):
 
     def __init__(self, color: bool, position: int):
         super().__init__(color, position)
-        self.en_passant: bool = True
+        self.en_passant: bool = False
         self.move_set = [1]
 
     def make_move(self, board, start_pos, move):
