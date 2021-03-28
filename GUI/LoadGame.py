@@ -1,5 +1,5 @@
 from GUI.Item.Button import Button
-from GUI.Menu import MAX_FPS
+from GUI.Constants import *
 import pygame
 import sys
 import os

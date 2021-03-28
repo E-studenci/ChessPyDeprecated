@@ -2,10 +2,11 @@ import pygame
 import os
 import sys
 from GUI.Item.Button import Button
+from GUI.Item.Switch import Switch
+from GUI.Constants import *
 
 DISPLAY_WIDTH = 1920
 DISPLAY_HEIGHT = 1080
-MAX_FPS = 15
 
 try:
     PLAY_GAME_BUTTON = pygame.image.load(os.path.join("Sprites", "Buttons", "new_game_button.png"))
@@ -30,7 +31,7 @@ except FileNotFoundError:
 
 NUMBER_OF_BUTTONS = 4
 BUTTON_SIZE = PLAY_GAME_BUTTON.get_size()
-BUTTON_GAP = 30
+BUTTON_GAP = 13
 BUTTON_STARTING_POSITION = ((DISPLAY_WIDTH - BUTTON_SIZE[0]) / 2, (DISPLAY_HEIGHT - 4 * BUTTON_SIZE[1] - 3 * BUTTON_GAP) / 2)
 
 
@@ -39,7 +40,7 @@ def start_menu():
     screen = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
     pygame.display.set_caption('')
     clock = pygame.time.Clock()
-    screen.fill(pygame.Color("grey"))
+    screen.fill(pygame.Color(BACKGROUND_COLOR))
     buttons = add_buttons(screen, clock)
     running_loop(screen, clock, buttons)
 
@@ -52,7 +53,7 @@ def running_loop(screen, clock, buttons):
                 running = False
             for button in buttons:
                 button.click_event(event)
-        screen.fill(pygame.Color("grey"))
+        # screen.fill(pygame.Color("grey"))
         add_background_for_buttons(screen)
         for button in buttons:
             button.render(screen)
@@ -88,7 +89,3 @@ def add_background_for_buttons(screen):
     button_background_position = ((DISPLAY_WIDTH - BACKGROUND_FOR_BUTTONS.get_width()) / 2,
                                   (DISPLAY_HEIGHT - BACKGROUND_FOR_BUTTONS.get_height()) / 2)
     screen.blit(BACKGROUND_FOR_BUTTONS, button_background_position)
-
-
-if __name__ == '__main__':
-    start_menu()

@@ -1,6 +1,6 @@
 from Chess.Pieces import Bishop, King, Knight, Pawn, Queen, Rook
 from Chess.Board.Board import Board
-from GUI.Menu import MAX_FPS
+from GUI.Constants import *
 import pygame
 import os
 
