@@ -25,6 +25,8 @@ def running_loop(screen, clock, buttons, switches):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            if event.type == pygame.KEYDOWN:
+                print(pygame.mouse.get_pos())
             for button in buttons:
                 button.click_event(event)
             for switch in switches:
@@ -50,7 +52,7 @@ def add_switches(screen, clock):
     arguments = [None]
     for index in range(NUMBER_OF_SWITCHES):
         switch_position = (SWITCH_STARTING_POSITIONS[0], SWITCH_STARTING_POSITIONS[1] + offset * index)
-        switch = Switch(switch_position, functions[index], arguments[index])
+        switch = Switch(switch_position, functions[index], arguments[index], "Sound")
         switch.render(screen)
         switches.append(switch)
     return switches

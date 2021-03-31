@@ -1,7 +1,10 @@
 import sys
 
 import pygame
+from pygame import gfxdraw
+
 from GUI.Constants import *
+from GUI.NewGUI import Shapes
 from GUI.NewGUI.Buttons.MenuButton import MenuButton
 
 NUMBER_OF_BUTTONS = 4
@@ -59,3 +62,7 @@ def add_buttons(screen, clock):
         button.render(screen)
         buttons.append(button)
     return buttons
+
+
+if __name__ == '__main__':
+    start_menu()

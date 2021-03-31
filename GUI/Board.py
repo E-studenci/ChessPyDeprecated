@@ -21,12 +21,12 @@ BLACK_ROOK = pygame.image.load(os.path.join('Sprites', 'Pieces', 'black_rook.png
 BLACK_QUEEN = pygame.image.load(os.path.join('Sprites', 'Pieces', 'black_queen.png'))
 BLACK_KING = pygame.image.load(os.path.join('Sprites', 'Pieces', 'black_king.png'))
 
-piece_dictionary = {(Pawn.Pawn, False): BLACK_PAWN, (Pawn.Pawn, True): WHITE_PAWN,
+piece_dictionary = {(Pawn.Pawn, False):     BLACK_PAWN, (Pawn.Pawn, True): WHITE_PAWN,
                     (Knight.Knight, False): BLACK_KNIGHT, (Knight.Knight, True): WHITE_KNIGHT,
                     (Bishop.Bishop, False): BLACK_BISHOP, (Bishop.Bishop, True): WHITE_BISHOP,
-                    (Rook.Rook, False): BLACK_ROOK, (Rook.Rook, True): WHITE_ROOK,
-                    (Queen.Queen, False): BLACK_QUEEN, (Queen.Queen, True): WHITE_QUEEN,
-                    (King.King, False): BLACK_KING, (King.King, True): WHITE_KING,
+                    (Rook.Rook, False):     BLACK_ROOK, (Rook.Rook, True): WHITE_ROOK,
+                    (Queen.Queen, False):   BLACK_QUEEN, (Queen.Queen, True): WHITE_QUEEN,
+                    (King.King, False):     BLACK_KING, (King.King, True): WHITE_KING,
                     }
 
 COLOR_F0D9B5 = (240, 217, 181)

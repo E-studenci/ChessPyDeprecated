@@ -44,8 +44,6 @@ class Switch:
                          (100, 100, 100))
         if self.text is not None:
             self.draw_text_box(screen, (self.center[0], self.center[1] - self.size[1]))
-        print(self.color, (self.center[0] - self.size[0] / 2 + self.offset,
-                           self.center[1]))
 
     def update(self):
         if self.is_on:
