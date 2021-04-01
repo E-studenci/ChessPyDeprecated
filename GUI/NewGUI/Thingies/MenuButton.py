@@ -29,8 +29,9 @@ class MenuButton:
 
     def render(self, screen, hover=False):
         self.resize(hover)
-        Shapes.draw_rect(screen, self.size, self.center, BACKGROUND_COLOR, )
-        self.draw_text(screen)
+        Shapes.draw_rect(screen, self.size, self.center, BACKGROUND_COLOR)
+        Shapes.draw_text(screen, self.center, self.text, (FONT[0], int(self.font_size), FONT[2], FONT[3]), FONT_COLOR)
+        # self.draw_text(screen)
 
     def resize(self, hover):
         size_comp = tuple(i * RESIZE_VALUE for i in self.size_initial)
@@ -42,13 +43,6 @@ class MenuButton:
             self.font_size /= RESIZE_VALUE_2
         self.position = tuple(
             x - abs(y - z) / 2 for x, y, z in zip(self.position_initial, self.size_initial, self.size))
-
-    def draw_text(self, screen):
-        font = pygame.font.SysFont(FONT[0], int(self.font_size), FONT[2], FONT[3])
-        text = font.render(self.text, True, FONT_COLOR)
-        text_rect = text.get_rect()
-        text_rect.center = self.center
-        screen.blit(text, text_rect)
 
     def click_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:

@@ -15,8 +15,8 @@ SWITCH_SIZE = (90, 40)
 SWITCH_HEIGHT_TOTAL = SWITCH_SIZE[1] * 1.5 + FONT_HEIGHT / 2
 
 # General Info
-NUMBER_OF_SWITCHES = 2
 CENTER = (DISPLAY_WIDTH // 2, DISPLAY_HEIGHT // 2)
+NUMBER_OF_SWITCHES = 3
 SWITCH_STARTING_CENTER = (CENTER[0], CENTER[1] + SWITCH_SIZE[1] / 2)
 OFFSET_COUNT = NUMBER_OF_SWITCHES // 2 if NUMBER_OF_SWITCHES % 2 == 1 else \
     NUMBER_OF_SWITCHES // 3
@@ -25,8 +25,8 @@ SWITCH_STARTING_POSITION = \
      (SWITCH_STARTING_CENTER[1] - (SWITCH_HEIGHT_TOTAL * 1.5) * OFFSET_COUNT)
      if NUMBER_OF_SWITCHES % 2 == 1 else
      (SWITCH_STARTING_CENTER[1] - 0.75 * SWITCH_HEIGHT_TOTAL - 1.5 * SWITCH_HEIGHT_TOTAL * OFFSET_COUNT))
-
 SWITCH_GAP = 13
+
 
 # Background
 BACKGROUND_COLOR = (80, 80, 80)
@@ -44,8 +44,7 @@ def start_options(args):
                      BACKGROUND_SIZE,
                      BACKGROUND_STARTING_POS,
                      BUTTONS_BACKGROUND_COLOR)
-    switches = add_switches(screen, clock)
-    buttons = add_buttons(screen, clock)
+    switches = add_switches(screen)
     running_loop(screen, clock, switches)
 
 
@@ -55,11 +54,8 @@ def running_loop(screen, clock, switches):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if event.type == pygame.KEYDOWN:
-                print(pygame.mouse.get_pos())
             for switch in switches:
                 switch.click_event(event)
-        # buttons(screen)
         screen.fill(pygame.color.Color(*BACKGROUND_COLOR))
         Shapes.draw_rect(screen,
                          BACKGROUND_SIZE,
@@ -70,18 +66,13 @@ def running_loop(screen, clock, switches):
         clock.tick(MAX_FPS)
         pygame.display.flip()
 
-
-def add_buttons(screen, clock):
-    return []
-
-
-def add_switches(screen, clock):
-    from GUI.NewGUI.Buttons.Switch import Switch
+def add_switches(screen):
+    from GUI.NewGUI.Thingies.Switch import Switch
     switches = []
     offset = SWITCH_HEIGHT_TOTAL * 1.5
-    functions = [mute_sound, mute_music]
-    arguments = [Constants.SOUND, Constants.MUSIC]
-    text = ["SOUND", "MUSIC"]
+    functions = [mute_sound, mute_music] + [None] * 3
+    arguments = [Constants.SOUND, Constants.MUSIC] + [None] * 3
+    text = ["SOUND", "MUSIC"] + ["AA"] * 3
     for index in range(NUMBER_OF_SWITCHES):
         switch_position = (SWITCH_STARTING_POSITION[0], SWITCH_STARTING_POSITION[1] + offset * index)
         switch = Switch(switch_position, 50, 40, functions[index], arguments[index], text[index])

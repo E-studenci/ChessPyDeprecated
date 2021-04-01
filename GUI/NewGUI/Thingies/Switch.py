@@ -3,7 +3,7 @@ from pygame import gfxdraw
 
 from GUI import Constants
 from GUI.NewGUI import Shapes
-from GUI.NewGUI.Buttons import MenuButton
+from GUI.NewGUI.Thingies import MenuButton
 
 pygame.display.init()
 SWITCH_SIZE = (90, 40)

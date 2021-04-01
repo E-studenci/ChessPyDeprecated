@@ -7,14 +7,14 @@ from GUI.Constants import *
 
 
 try:
-    PLAY_GAME_BUTTON = pygame.image.load(os.path.join("Sprites", "Buttons", "new_game_button.png"))
-    HOVER_PLAY_GAME_BUTTON = pygame.image.load(os.path.join("Sprites", "Buttons", "new_game_button_hover.png"))
-    LOAD_GAME_BUTTON = pygame.image.load(os.path.join("Sprites", "Buttons", "load_game_button.png"))
-    HOVER_LOAD_GAME_BUTTON = pygame.image.load(os.path.join("Sprites", "Buttons", "load_game_button_hover.png"))
-    OPTIONS_BUTTON = pygame.image.load(os.path.join("Sprites", "Buttons", "options_button.png"))
-    HOVER_OPTIONS_BUTTON = pygame.image.load(os.path.join("Sprites", "Buttons", "options_button_hover.png"))
-    EXIT_GAME_BUTTON = pygame.image.load(os.path.join("Sprites", "Buttons", "exit_game_button.png"))
-    HOVER_EXIT_GAME_BUTTON = pygame.image.load(os.path.join("Sprites", "Buttons", "exit_game_button_hover.png"))
+    PLAY_GAME_BUTTON = pygame.image.load(os.path.join("Sprites", "Thingies", "new_game_button.png"))
+    HOVER_PLAY_GAME_BUTTON = pygame.image.load(os.path.join("Sprites", "Thingies", "new_game_button_hover.png"))
+    LOAD_GAME_BUTTON = pygame.image.load(os.path.join("Sprites", "Thingies", "load_game_button.png"))
+    HOVER_LOAD_GAME_BUTTON = pygame.image.load(os.path.join("Sprites", "Thingies", "load_game_button_hover.png"))
+    OPTIONS_BUTTON = pygame.image.load(os.path.join("Sprites", "Thingies", "options_button.png"))
+    HOVER_OPTIONS_BUTTON = pygame.image.load(os.path.join("Sprites", "Thingies", "options_button_hover.png"))
+    EXIT_GAME_BUTTON = pygame.image.load(os.path.join("Sprites", "Thingies", "exit_game_button.png"))
+    HOVER_EXIT_GAME_BUTTON = pygame.image.load(os.path.join("Sprites", "Thingies", "exit_game_button_hover.png"))
     BACKGROUND_FOR_BUTTONS = pygame.image.load(os.path.join("Sprites", "Backgrounds", "button_background.png"))
 except FileNotFoundError:
     PLAY_GAME_BUTTON = None

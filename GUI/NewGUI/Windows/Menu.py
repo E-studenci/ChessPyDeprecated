@@ -5,7 +5,7 @@ from pygame import gfxdraw
 
 from GUI.Constants import *
 from GUI.NewGUI import Shapes
-from GUI.NewGUI.Buttons.MenuButton import MenuButton
+from GUI.NewGUI.Thingies.MenuButton import MenuButton
 
 NUMBER_OF_BUTTONS = 4
 BUTTON_SIZE = (200, 100)
@@ -43,7 +43,7 @@ def running_loop(screen, clock, buttons):
 
 def add_buttons(screen, clock):
     from GUI.NewGame import start_new_game
-    from GUI.LoadGame import start_load_game
+    from GUI.NewGUI.Windows.LoadGame import start_load_game
     from GUI.NewGUI.Windows.Options import start_options
     buttons = []
     offset = BUTTON_GAP + BUTTON_SIZE[1]
