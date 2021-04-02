@@ -6,8 +6,6 @@ def start_new_game(args, FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQ
     clock = args[1]
     screen.fill(pygame.Color("white"))
     running_loop(screen, clock)
-    print(FEN)
-
 
 def running_loop(screen, clock):
     running = True

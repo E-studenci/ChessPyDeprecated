@@ -28,9 +28,9 @@ def running_loop(screen, clock, buttons, switches):
             if event.type == pygame.KEYDOWN:
                 print(pygame.mouse.get_pos())
             for button in buttons:
-                button.click_event(event)
+                button.handle_event(event)
             for switch in switches:
-                switch.click_event(event)
+                switch.handle_event(event)
         screen.fill(pygame.Color(BACKGROUND_COLOR))
         # buttons(screen)
         for switch in switches:

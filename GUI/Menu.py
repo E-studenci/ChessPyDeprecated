@@ -51,7 +51,7 @@ def running_loop(screen, clock, buttons):
             if event.type == pygame.QUIT:
                 running = False
             for button in buttons:
-                button.click_event(event)
+                button.handle_event(event)
         screen.fill(pygame.Color(BACKGROUND_COLOR))
         add_background_for_buttons(screen)
         for button in buttons:

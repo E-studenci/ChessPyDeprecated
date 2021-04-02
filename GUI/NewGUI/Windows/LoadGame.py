@@ -10,7 +10,7 @@ FONT_COLOR = (255, 255, 255, 10)
 
 # Starting Message
 STARTING_MESSAGE_STRING = "INPUT FEN HERE"
-FONT = pygame.font.SysFont(FONT_TUPLE[0], FONT_TUPLE[1], FONT_TUPLE[2], FONT_TUPLE[3])
+FONT = pygame.font.SysFont(*FONT_TUPLE)
 STARTING_MESSAGE = FONT.render(STARTING_MESSAGE_STRING, True, FONT_COLOR)
 STARTING_MESSAGE_SIZE = STARTING_MESSAGE.get_size()
 
@@ -25,10 +25,14 @@ BACKGROUND_SIZE_INITIAL = STARTING_MESSAGE_SIZE
 
 
 def start_load_game(args):
+    """
+    :param args: (screen, clock)
+    :return: initialize the load game screen
+    """
     screen = args[0]
     clock = args[1]
-    text = STARTING_MESSAGE_STRING
-    text_input_boxes = add_text_input_box(screen, clock)
+    text_input_boxes_functionality = [(start_game, (screen, clock))]
+    text_input_boxes = add_text_input_box(screen, text_input_boxes_functionality)
     screen.fill(pygame.color.Color(*BACKGROUND_COLOR))
     Shapes.draw_rect(screen, BACKGROUND_STARTING_POS, BACKGROUND_SIZE_INITIAL, BUTTONS_BACKGROUND_COLOR)
     running_loop(screen, clock, text_input_boxes)
@@ -49,15 +53,17 @@ def running_loop(screen, clock, text_input_boxes):
         pygame.display.flip()
 
 
-def add_text_input_box(screen, clock):
+def add_text_input_box(screen, text_input_box_funtionality):
+    """
+    :param screen: the screen the switches should be rendered on
+    :param text_input_box_funtionality: a list of tuples (function, args)
+    :return:creates a list of text input boxes with chosen functionality and renders them
+    """
     from GUI.NewGUI.Thingies.TextInputBox import TextInputBox
     text_input_boxes = []
-    functions = [start_game]
-    arguments = [(screen, clock)]
     for index in range(1):
         text_input_box = TextInputBox(CENTER,
-                                      functions[index],
-                                      arguments[index],
+                                      *text_input_box_funtionality[index],
                                       STARTING_MESSAGE_STRING)
         text_input_box.render(screen)
         text_input_boxes.append(text_input_box)
@@ -65,6 +71,11 @@ def add_text_input_box(screen, clock):
 
 
 def start_game(args, fen):
+    """
+    :param args: the args to be passed to start_new_game()
+    :param fen: the fen to be passed to start_new_game()
+    :return: starts a new game from the fen if it is correct, if the fen is incorrect, return False
+    """
     from GUI.NewGUI.Windows.NewGame import start_new_game
     if fen == "True":
         start_new_game(args, fen)

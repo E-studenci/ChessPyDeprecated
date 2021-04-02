@@ -37,11 +37,17 @@ BACKGROUND_SIZE = (SWITCH_SIZE[0] * 2.5,
 
 
 def start_options(args):
+    """
+    :param args: (screen, clock)
+    :return: initialize the options screen
+    """
+    switch_functionality = [(mute_sound, Constants.SOUND, "SOUND"),
+                            (mute_music, Constants.MUSIC, "MUSIC")]
     screen = args[0]
     clock = args[1]
     screen.fill(pygame.color.Color(*BACKGROUND_COLOR))
     Shapes.draw_rect(screen, BACKGROUND_STARTING_POS, BACKGROUND_SIZE, BUTTONS_BACKGROUND_COLOR)
-    switches = add_switches(screen)
+    switches = add_switches(screen, switch_functionality)
     running_loop(screen, clock, switches)
 
 
@@ -52,7 +58,7 @@ def running_loop(screen, clock, switches):
             if event.type == pygame.QUIT:
                 running = False
             for switch in switches:
-                switch.click_event(event)
+                switch.handle_event(event)
         screen.fill(pygame.color.Color(*BACKGROUND_COLOR))
         Shapes.draw_rect(screen, BACKGROUND_STARTING_POS, BACKGROUND_SIZE, BUTTONS_BACKGROUND_COLOR)
         for switch in switches:
@@ -61,29 +67,33 @@ def running_loop(screen, clock, switches):
         pygame.display.flip()
 
 
-def add_switches(screen):
+def add_switches(screen, switch_functionality):
+    """
+    :param screen: the screen the switches should be rendered on
+    :param switch_functionality: a list of tuples (function, args, text)
+    :return:creates a list of NUMBER_OF_SWITCHES switches with chosen functionality and renders them
+    """
     from GUI.NewGUI.Thingies.Switch import Switch
     switches = []
-    functions = [mute_sound, mute_music]
-    arguments = [Constants.SOUND, Constants.MUSIC]
-    text = ["SOUND", "MUSIC"]
     for index in range(NUMBER_OF_SWITCHES):
         switch_position = (SWITCH_STARTING_POSITION[0], SWITCH_STARTING_POSITION[1] + OFFSET * index)
-        switch = Switch(switch_position, *SWITCH_SIZE, functions[index], arguments[index], text[index])
+        switch = Switch(switch_position, *SWITCH_SIZE, *switch_functionality[index])
         switch.render(screen)
         switches.append(switch)
     return switches
 
 
 def mute_sound(mute):
-    if mute:
-        Constants.SOUND = False
-    else:
-        Constants.SOUND = True
+    """
+    :param mute: True, if should mute, false if should turn on
+    :return: sets Constants.SOUND to True, or False depending on mute
+    """
+    Constants.SOUND = not mute
 
 
 def mute_music(mute):
-    if mute:
-        Constants.MUSIC = False
-    else:
-        Constants.MUSIC = True
+    """
+    :param mute: True, if should mute, false if should turn on
+    :return: sets Constants.MUSIC to True, or False depending on mute
+    """
+    Constants.MUSIC = not mute
