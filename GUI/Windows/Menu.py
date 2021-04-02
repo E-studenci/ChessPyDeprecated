@@ -1,7 +1,7 @@
 import sys
 import pygame
 from GUI.Constants import *
-from GUI.NewGUI.Thingies.MenuButton import MenuButton
+from GUI.Items.MenuButton import MenuButton
 
 NUMBER_OF_BUTTONS = 4
 BUTTON_SIZE = (200, 50)
@@ -17,9 +17,9 @@ def start_menu():
     pygame.display.init()
     pygame.font.init()
     pygame.freetype.init()
-    from GUI.NewGame import start_new_game
-    from GUI.NewGUI.Windows.LoadGame import start_load_game
-    from GUI.NewGUI.Windows.Options import start_options
+    from OLDGUI.NewGame import start_new_game
+    from GUI.Windows.LoadGame import start_load_game
+    from GUI.Windows.Options import start_options
     screen = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
     pygame.display.set_caption('')
     clock = pygame.time.Clock()
@@ -66,6 +66,3 @@ def add_buttons(screen, button_functionality):
         button.render(screen)
         buttons.append(button)
     return buttons
-
-if __name__ == '__main__':
-    start_menu()

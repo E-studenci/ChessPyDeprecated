@@ -1,5 +1,5 @@
 import pygame
-from GUI.NewGUI import Shapes
+from GUI import Shapes
 
 # Font
 FONT_SIZE = 30
@@ -30,6 +30,7 @@ class TextInputBox:
         handle_event(event)
             handles the passed event
     """
+
     def __init__(self, center, command, args, initial_text):
         self.center = center
         self.command = command

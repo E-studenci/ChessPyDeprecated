@@ -1,6 +1,6 @@
 import pygame
 from GUI.Constants import *
-from GUI.NewGUI import Shapes
+from GUI import Shapes
 
 # Font
 FONT_SIZE = 20
@@ -53,17 +53,17 @@ def running_loop(screen, clock, text_input_boxes):
         pygame.display.flip()
 
 
-def add_text_input_box(screen, text_input_box_funtionality):
+def add_text_input_box(screen, text_input_box_functionality):
     """
     :param screen: the screen the switches should be rendered on
-    :param text_input_box_funtionality: a list of tuples (function, args)
+    :param text_input_box_functionality: a list of tuples (function, args)
     :return:creates a list of text input boxes with chosen functionality and renders them
     """
-    from GUI.NewGUI.Thingies.TextInputBox import TextInputBox
+    from GUI.Items.TextInputBox import TextInputBox
     text_input_boxes = []
     for index in range(1):
         text_input_box = TextInputBox(CENTER,
-                                      *text_input_box_funtionality[index],
+                                      *text_input_box_functionality[index],
                                       STARTING_MESSAGE_STRING)
         text_input_box.render(screen)
         text_input_boxes.append(text_input_box)
@@ -76,9 +76,8 @@ def start_game(args, fen):
     :param fen: the fen to be passed to start_new_game()
     :return: starts a new game from the fen if it is correct, if the fen is incorrect, return False
     """
-    from GUI.NewGUI.Windows.NewGame import start_new_game
+    from GUI.Windows.NewGame import start_new_game
     if fen == "True":
         start_new_game(args, fen)
         return True
-    else:
-        return False
+    return False

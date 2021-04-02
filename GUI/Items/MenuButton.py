@@ -1,6 +1,6 @@
 import pygame
 import pygame.freetype
-from GUI.NewGUI import Shapes
+from GUI import Shapes
 
 BACKGROUND_COLOR = (0, 0, 0, 150)
 RESIZE_VALUE = 1.2
@@ -35,6 +35,7 @@ class MenuButton:
         handle_event(event)
             use this method to handle an event
     """
+
     def __init__(self, center, command, args, size, text=None):
         self.top_left = (center[0] - size[0] / 2,
                          center[1] - size[1] / 2)

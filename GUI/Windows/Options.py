@@ -1,8 +1,7 @@
 import pygame
 
-from GUI import Constants
 from GUI.Constants import *
-from GUI.NewGUI import Shapes
+from GUI import Shapes, Constants
 
 # Font
 FONT_SIZE = 20
@@ -73,7 +72,7 @@ def add_switches(screen, switch_functionality):
     :param switch_functionality: a list of tuples (function, args, text)
     :return:creates a list of NUMBER_OF_SWITCHES switches with chosen functionality and renders them
     """
-    from GUI.NewGUI.Thingies.Switch import Switch
+    from GUI.Items.Switch import Switch
     switches = []
     for index in range(NUMBER_OF_SWITCHES):
         switch_position = (SWITCH_STARTING_POSITION[0], SWITCH_STARTING_POSITION[1] + OFFSET * index)

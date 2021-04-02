@@ -1,7 +1,6 @@
 import pygame
 
-from GUI.NewGUI import Shapes
-from GUI.NewGUI.Thingies import MenuButton
+from GUI import Shapes
 
 pygame.display.init()
 SWITCH_SIZE = (90, 40)
@@ -38,6 +37,7 @@ class Switch:
         handle_event(event)
             use this method to handle an event
     """
+
     def __init__(self, center, width, height, command, arg, text=None):
         self.center = center
         self.size = (width, height)
