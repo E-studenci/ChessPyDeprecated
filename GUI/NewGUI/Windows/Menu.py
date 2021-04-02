@@ -1,17 +1,13 @@
 import sys
-
 import pygame
-from pygame import gfxdraw
-
 from GUI.Constants import *
-from GUI.NewGUI import Shapes
 from GUI.NewGUI.Thingies.MenuButton import MenuButton
 
 NUMBER_OF_BUTTONS = 4
 BUTTON_SIZE = (200, 100)
 BUTTON_GAP = 13
-BUTTON_STARTING_POSITION = (
-    (DISPLAY_WIDTH - BUTTON_SIZE[0]) / 2, (DISPLAY_HEIGHT - 4 * BUTTON_SIZE[1] - 3 * BUTTON_GAP) / 2)
+CENTER = (DISPLAY_WIDTH // 2, DISPLAY_HEIGHT // 2)
+BUTTON_STARTING_POSITION = (CENTER[0], CENTER[1] - (4 * BUTTON_SIZE[1] - 3 * BUTTON_GAP) // 2)
 
 
 def start_menu():
@@ -32,6 +28,8 @@ def running_loop(screen, clock, buttons):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            if event.type == pygame.KEYDOWN:
+                print(pygame.mouse.get_pos())
             for button in buttons:
                 button.click_event(event)
         screen.fill(pygame.color.Color(*BACKGROUND_COLOR))
@@ -62,7 +60,3 @@ def add_buttons(screen, clock):
         button.render(screen)
         buttons.append(button)
     return buttons
-
-
-if __name__ == '__main__':
-    start_menu()

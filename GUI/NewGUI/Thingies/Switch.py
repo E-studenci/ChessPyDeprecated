@@ -1,7 +1,5 @@
 import pygame
-from pygame import gfxdraw
 
-from GUI import Constants
 from GUI.NewGUI import Shapes
 from GUI.NewGUI.Thingies import MenuButton
 
@@ -11,6 +9,11 @@ STEPS = 16
 COLOR_WHEN_OFF = (0, 0, 0, 255)
 COLOR_WHEN_ON = (0, 255, 0, 255)
 COLOR_CHANGE = tuple((x - y) / STEPS for x, y in zip(COLOR_WHEN_ON, COLOR_WHEN_OFF))
+
+# Font
+FONT_SIZE = 20
+FONT = ('arial', FONT_SIZE, True, False)
+FONT_COLOR = (255, 255, 255, 10)
 
 
 class Switch:
@@ -34,7 +37,7 @@ class Switch:
         pygame.draw.circle(screen, pygame.Color(*self.color),
                            (self.center[0] - self.size[0] / 2, self.center[1]),
                            self.radius)
-        Shapes.draw_rect(screen, self.size, self.center, self.color)
+        Shapes.draw_rect(screen, self.center, self.size, self.color)
         self.draw_circle(screen, (self.center[0] - self.size[0] / 2, self.center[1]), self.radius)
         self.draw_circle(screen, (self.center[0] + self.size[0] / 2, self.center[1]), self.radius)
         self.draw_button(screen,
@@ -43,7 +46,7 @@ class Switch:
                          int(SWITCH_SIZE[1] / 2),
                          (100, 100, 100))
         if self.text is not None:
-            self.draw_text_box(screen, (self.center[0], self.center[1] - self.size[1]))
+            Shapes.draw_text(screen, (self.center[0], self.center[1] - self.size[1]), self.text, FONT, FONT_COLOR)
 
     def update(self):
         if self.is_on:
@@ -66,13 +69,6 @@ class Switch:
 
     def draw_button(self, screen, center, radius, color):
         pygame.draw.circle(screen, color, center, radius)
-
-    def draw_text_box(self, screen, center):
-        font = pygame.font.SysFont(MenuButton.FONT[0], MenuButton.FONT[1], MenuButton.FONT[2], MenuButton.FONT[3])
-        text = font.render(self.text, True, MenuButton.FONT_COLOR)
-        text_rect = text.get_rect()
-        text_rect.center = center
-        screen.blit(text, text_rect)
 
     def click_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:

@@ -11,9 +11,8 @@ BACKGROUND_COLOR = (0, 0, 0, 150)
 
 
 class TextInputBox:
-    def __init__(self, center, spell_checker, command, args, initial_text):
+    def __init__(self, center, command, args, initial_text):
         self.center = center
-        self.spell_checker = spell_checker
         self.command = command
         self.args = args
         self.initial_text = initial_text
@@ -30,7 +29,7 @@ class TextInputBox:
             self.text_rect = self.font.render(self.initial_text, True, FONT_COLOR)
         else:
             self.text_rect = self.font.render(self.text, True, FONT_COLOR)
-        Shapes.draw_rect(screen, self.text_rect.get_size(), self.center,
+        Shapes.draw_rect(screen, self.center, self.text_rect.get_size(),
                          BACKGROUND_COLOR if self.correct else (255, 0, 0, 150))
         Shapes.draw_text(screen, self.center, self.initial_text if self.text == '' else self.text, FONT, FONT_COLOR)
 
@@ -43,12 +42,12 @@ class TextInputBox:
         if self.active:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
-                    if self.spell_checker(self.text):
-                        self.command(self.args, self.text)
-                    else:
-                        self.correct = False
+                    self.correct = self.command(self.args, self.text)
                 elif event.key == pygame.K_BACKSPACE:
                     self.text = self.text[:-1]
+                    self.correct = True
+                elif event.key == pygame.K_DELETE:
+                    self.text = ''
                     self.correct = True
                 else:
                     self.text += event.unicode

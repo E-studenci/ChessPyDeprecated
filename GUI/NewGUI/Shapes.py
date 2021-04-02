@@ -1,7 +1,7 @@
 import pygame
 
 
-def draw_rect(screen, size, center, color):
+def draw_rect(screen, center, size, color):
     s = pygame.Surface(size)
     s.set_alpha(color[3])
     s.fill(color)

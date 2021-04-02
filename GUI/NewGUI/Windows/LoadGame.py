@@ -30,10 +30,7 @@ def start_load_game(args):
     text = STARTING_MESSAGE_STRING
     text_input_boxes = add_text_input_box(screen, clock)
     screen.fill(pygame.color.Color(*BACKGROUND_COLOR))
-    Shapes.draw_rect(screen,
-                     BACKGROUND_SIZE_INITIAL,
-                     BACKGROUND_STARTING_POS,
-                     BUTTONS_BACKGROUND_COLOR)
+    Shapes.draw_rect(screen, BACKGROUND_STARTING_POS, BACKGROUND_SIZE_INITIAL, BUTTONS_BACKGROUND_COLOR)
     running_loop(screen, clock, text_input_boxes)
 
 
@@ -54,14 +51,11 @@ def running_loop(screen, clock, text_input_boxes):
 
 def add_text_input_box(screen, clock):
     from GUI.NewGUI.Thingies.TextInputBox import TextInputBox
-    from GUI.NewGUI.Windows.NewGame import start_new_game
     text_input_boxes = []
-    spell_checkers = [spell_checker]
-    functions = [start_new_game]
+    functions = [start_game]
     arguments = [(screen, clock)]
     for index in range(1):
         text_input_box = TextInputBox(CENTER,
-                                      spell_checkers[index],
                                       functions[index],
                                       arguments[index],
                                       STARTING_MESSAGE_STRING)
@@ -70,7 +64,10 @@ def add_text_input_box(screen, clock):
     return text_input_boxes
 
 
-def spell_checker(string):
-    if string == "True":
+def start_game(args, fen):
+    from GUI.NewGUI.Windows.NewGame import start_new_game
+    if fen == "True":
+        start_new_game(args, fen)
         return True
-    return False
+    else:
+        return False
