@@ -25,10 +25,10 @@ def initialize(size):
              (King.King, False):     'black_king.png', (King.King, True): 'white_king.png',
              }
     for key in paths:
-        SPRITE_DICTIONARY[key] = helper(paths[key], size)
+        SPRITE_DICTIONARY[key] = load_sprite(paths[key], size)
 
 
-def helper(path, size):
+def load_sprite(path, size):
     """
     :param path: path to its sprite
     :param size: final size after resizing
