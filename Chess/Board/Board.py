@@ -1,5 +1,5 @@
 import copy
-
+from numba import njit
 from Chess.Pieces import Bishop, King, Knight, Pawn, Piece, Queen, Rook, Constants
 
 
@@ -33,15 +33,18 @@ class Board:
     """
 
     def __init__(self):
-        self.king_pos = {True: -1,
-                         False: -1}
         self.board: list = [None] * 64
+        self.legal_moves = {}
+        self.attacked_fields = [False] * 64
+        self.attacked_lines = []
+
         self.turn: bool = True
-        self.legal_moves = []
         self.fifty_move_rule = 0
         self.move_count = 0
+        self.king_pos = {True: -1,
+                         False: -1}
 
-    def calculate_all_legal_moves(self, turn, calculate_checks=True):
+    def calculate_all_legal_moves(self, turn):
         """
         :param turn: current turn
         :param calculate_checks: should the moves that will leave the [turn] player's king in check be removed
@@ -50,99 +53,34 @@ class Board:
             and returns them in the form of a dictionary where
             keys represent piece positions and values - all the squares, where the piece can move
         """
+        self.calculate_all_attacked_fields()
         all_legal_moves = {}
         for piece in self.board:
             if piece is not None:
-                if piece.color == turn:
-                    all_legal_moves[piece.position] = piece.calculate_legal_moves(self, calculate_checks)
+                if piece.color == self.turn:
+                    all_legal_moves[piece.position] = piece.calculate_legal_moves(self)
         self.legal_moves = all_legal_moves
         return all_legal_moves
 
-    def king_in_check_after_move(self, turn, start_pos, move):
-        """
-        :param turn: current turn
-        :param start_pos: start_pos of the move to be checked
-        :param move: (end_pos, promotion_type) the end pos of the move, and promotion flag
-        :return: checks if the current player's king will be in check after the move
-        """
-        temp_board = copy.deepcopy(self)
-        temp_board.make_move(start_pos, move)
-        opposing_moves = temp_board.calculate_all_legal_moves(not turn, False)
-        king_position = temp_board.king_pos[turn]
-        for val in opposing_moves.values():
-            if (king_position, 0) in val \
-                    or (king_position, 1) in val:
-                return True
-        return False
+    def calculate_all_legal_moves_multiprocess(self, turn):
+        from multiprocessing import Process
+        import multiprocessing
+        all_legal_moves = {}
+        processes = []
+        queue = multiprocessing.SimpleQueue()
+        for piece in self.board:
+            if piece is not None:
+                if piece.color == turn:
+                    process = Process(target=piece.calculate_legal_moves, args=(self, queue, False))
+                    process.start()
+                    processes.append(process)
+                    # all_legal_moves[piece.position] = piece.calculate_legal_moves(self, calculate_checks)
+        self.legal_moves = all_legal_moves
 
-    def king_in_check_after_move_ver_2_0(self, turn, start_pos, move, make_move=True):
-        temp_board = copy.deepcopy(self)
-        if make_move:
-            temp_board.make_move(start_pos, move)
+        for p in processes:
+            p.join()
 
-        king_pos = temp_board.king_pos[turn]
-        last_row = Pawn.last_row_dictionary[turn]
-        # check pawns
-        direction = Pawn.direction_dictionary[temp_board.board[king_pos].color]
-        if not (king_pos / 8) - (king_pos / 8) % 1 == last_row:
-            for i in range(0, 2):
-                currently_calculated_position = king_pos \
-                                                + Constants.DIRECTION_MATH[0] * direction \
-                                                + 1 * Pawn.direction_dictionary[bool(i)]
-                if abs(currently_calculated_position % 8 - king_pos % 8) == 1:
-                    if isinstance(temp_board.board[currently_calculated_position], Pawn.Pawn) \
-                            and not temp_board.board[currently_calculated_position].color == turn:
-                        return True
-
-        # check knight
-        def fun(pos):
-            return isinstance(temp_board.board[pos], Knight.Knight)
-
-        if self.helper(temp_board, [0] * 8 + [1] * 8, king_pos, turn, fun):
-            return True
-
-        # check king and queen
-        def fun(pos):
-            return isinstance(temp_board.board[pos], King.King) or isinstance(temp_board.board[pos], Queen.Queen)
-
-        if self.helper(temp_board, [1, 1, 1, 1, 1, 1, 1, 1], king_pos, turn, fun):
-            return True
-
-        # check rook and queen
-        def fun(pos):
-            return isinstance(temp_board.board[pos], Rook.Rook) or isinstance(temp_board.board[pos], Queen.Queen)
-
-        if self.helper(temp_board, [8, 8, 0, 8, 0, 0, 8, 0], king_pos, turn, fun):
-            return True
-
-        # check bishop and queen
-        def fun(pos):
-            return isinstance(temp_board.board[pos], Bishop.Bishop) or isinstance(temp_board.board[pos], Queen.Queen)
-
-        if self.helper(temp_board, [0, 0, 8, 0, 8, 8, 0, 8], king_pos, turn, fun):
-            return True
-        return False
-
-    def helper(self, board, move_set, start_pos, turn, fun):
-        for index in range(len(move_set)):
-            interrupted = False
-            temp = move_set[index]
-            current_position = start_pos
-            currently_calculated_position = 0
-            while not interrupted \
-                    and temp > 0:
-                currently_calculated_position = current_position + Constants.DIRECTION_MATH[index]
-                if (currently_calculated_position % Constants.BOARD_SIZE - current_position % Constants.BOARD_SIZE) == \
-                        Constants.COLUMN_CHANGE[index] \
-                        and 0 <= currently_calculated_position <= len(board.board) - 1:
-                    current_position = currently_calculated_position
-                    if not isinstance(board.board[currently_calculated_position], type(None)):
-                        if fun(currently_calculated_position) \
-                                and board.board[currently_calculated_position].color != turn:
-                            return True
-                        interrupted = True
-                temp -= 1
-        return False
+        return all_legal_moves
 
     def take(self, pos):
         """
@@ -172,5 +110,13 @@ class Board:
             self.turn = not self.turn
             for piece in self.board:
                 if isinstance(piece, Pawn.Pawn):
-                    if not piece.color == self.board[move[0]].color:
+                    if piece.color == self.turn:
                         piece.en_passant = False
+
+    def calculate_all_attacked_fields(self):
+        self.attacked_lines = []
+        self.attacked_fields = [False] * 64
+        for piece in self.board:
+            if piece is not None:
+                if piece.color != self.turn:
+                    piece.calculate_attacked_fields(self)
