@@ -74,14 +74,14 @@ class Pawn(Piece.Piece):
         """
         if len(board.attacked_lines) > 1:
             self.pinned_squares = None
-            return
+            return []
 
         return_list = []
         direction = direction_dictionary[self.color]
         second_row = second_row_dictionary[self.color]
         last_row = last_row_dictionary[self.color]
         # normal move
-        currently_calculated_position = self.position + (Constants.DIRECTION_MATH[0] * direction)
+        currently_calculated_position = self.position + (Constants.NORMAL_DIRECTION_MATH[0] * direction)
         if currently_calculated_position in board.attacked_lines[0] if len(board.attacked_lines) == 1 else True:
             if currently_calculated_position in self.pinned_squares if self.pinned_squares is not None else True:
                 if isinstance(board.board[currently_calculated_position], type(None)):
@@ -92,7 +92,7 @@ class Pawn(Piece.Piece):
                         return_list.append((currently_calculated_position, 0))
 
                 # first move
-        currently_calculated_position = self.position + (Constants.DIRECTION_MATH[0] * 2 * direction)
+        currently_calculated_position = self.position + (Constants.NORMAL_DIRECTION_MATH[0] * 2 * direction)
         if currently_calculated_position in board.attacked_lines[0] if len(board.attacked_lines) == 1 else True:
             if currently_calculated_position in self.pinned_squares if self.pinned_squares is not None else True:
                 if second_row * 8 <= self.position < (second_row + 1) * 8 \
@@ -115,7 +115,7 @@ class Pawn(Piece.Piece):
         # taking
         for i in range(0, 2):
             currently_calculated_position = self.position \
-                                            + Constants.DIRECTION_MATH[0] * direction \
+                                            + Constants.NORMAL_DIRECTION_MATH[0] * direction \
                                             + 1 * direction_dictionary[bool(i)]
             if abs(currently_calculated_position % 8 - self.position % 8) == 1:
                 if currently_calculated_position in board.attacked_lines[0] if len(board.attacked_lines) == 1 else True:
@@ -134,7 +134,7 @@ class Pawn(Piece.Piece):
         direction = direction_dictionary[self.color]
         for i in range(0, 2):
             currently_calculated_position = self.position \
-                                            + Constants.DIRECTION_MATH[0] * direction \
+                                            + Constants.NORMAL_DIRECTION_MATH[0] * direction \
                                             + 1 * direction_dictionary[bool(i)]
             if abs(currently_calculated_position % 8 - self.position % 8) == 1:
                 board.attacked_fields[currently_calculated_position] = True

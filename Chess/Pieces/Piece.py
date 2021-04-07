@@ -1,7 +1,6 @@
 import copy
 from abc import ABC, abstractmethod
 from Chess.Pieces import Constants
-import numba
 
 
 class Piece(ABC):
@@ -41,7 +40,7 @@ class Piece(ABC):
     def calculate_legal_moves(self, board):
         if len(board.attacked_lines) > 1:
             self.pinned_squares = None
-            return
+            return []
 
         legal_moves = []
 
@@ -99,6 +98,7 @@ class Piece(ABC):
         for index in range(len(self.move_set)):
             interrupted = False
             piece_in_way = False
+            king_in_way = False
             add_pin_line = False
             maximum_move_length = self.move_set[index]
             current_position = self.position
@@ -106,23 +106,25 @@ class Piece(ABC):
             pin_line.add(current_position)
             pinned_piece = None
             while not interrupted and maximum_move_length > 0:
-                currently_calculated_position = current_position + Constants.DIRECTION_MATH[index]
+                currently_calculated_position = current_position + Constants.NORMAL_DIRECTION_MATH[index]
                 if currently_calculated_position % Constants.BOARD_SIZE - current_position % Constants.BOARD_SIZE == \
-                   Constants.COLUMN_CHANGE[index] \
+                   Constants.NORMAL_COLUMN_CHANGE[index] \
                    and 0 <= currently_calculated_position <= len(board.board) - 1:
-                    if not piece_in_way:
+                    if not piece_in_way or king_in_way:
                         board.attacked_fields[currently_calculated_position] = True
-                    pin_line.add(currently_calculated_position)
+                    if not king_in_way:
+                        pin_line.add(currently_calculated_position)
                     attacked_square = board.board[currently_calculated_position]
                     if not isinstance(attacked_square, type(None)):
                         if attacked_square.color is self.color:
                             interrupted = True
                         else:
                             if isinstance(attacked_square, King):
-                                interrupted = True
                                 if piece_in_way:
+                                    interrupted = True
                                     add_pin_line = True
                                 else:
+                                    king_in_way = True
                                     board.attacked_lines.append(pin_line)
                         if piece_in_way:
                             interrupted = True
@@ -133,8 +135,6 @@ class Piece(ABC):
                     maximum_move_length -= 1
                 else:
                     interrupted = True
-                if pinned_piece is not None:
-                    if add_pin_line:
-                        pinned_piece.pinned_squares = pin_line
-                    else:
-                        pinned_piece.pinned_squares = None
+            if pinned_piece is not None:
+                if add_pin_line:
+                    pinned_piece.pinned_squares = pin_line
