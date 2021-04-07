@@ -1,6 +1,7 @@
 import copy
 from numba import njit
-from Chess.Pieces import Bishop, King, Knight, Pawn, Piece, Queen, Rook, Constants
+from Chess.Pieces import Bishop, King, Knight, Pawn, Queen, Rook, Constants
+from Chess.Board.Move import Move
 
 
 class Board:
@@ -38,6 +39,7 @@ class Board:
         self.attacked_fields = [False] * 64
         self.attacked_lines = []
 
+        self.move_log = []
         self.turn: bool = True
         self.fifty_move_rule = 0
         self.move_count = 0
@@ -104,6 +106,7 @@ class Board:
                 uses Board.take(end_pos) if the end_pos is occupied by opposing piece
         """
         if not isinstance(self.board[start_pos], type(None)):
+            self.move_log.append(Move(move[0], self.board[start_pos], self.board[move[0]]))
             if not self.turn:
                 self.move_count += 1
             self.board[start_pos].make_move(self, start_pos, move)
@@ -112,6 +115,17 @@ class Board:
                 if isinstance(piece, Pawn.Pawn):
                     if piece.color == self.turn:
                         piece.en_passant = False
+
+    def unmake_move(self):
+        if len(self.move_log) > 0:
+            move = self.move_log.pop()
+            self.board[move.target_square] = None
+            self.board[move.piece_moved.position] = move.piece_moved
+            if move.piece_captured is not None:
+                self.board[move.piece_captured.position] = move.piece_captured
+            self.turn = not self.turn
+            if isinstance(move.piece_moved, King.King):
+                self.king_pos[move.piece_moved.color] = move.piece_moved.position
 
     def calculate_all_attacked_fields(self):
         self.attacked_lines = []
