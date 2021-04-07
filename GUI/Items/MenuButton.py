@@ -74,10 +74,11 @@ class MenuButton:
     def handle_event(self, event):
         """
         :param event: the pygame.event to be handled
-        :return: if the button is clicked, execute self.command and reset size
+        :return: if the button is clicked, execute self.command and reset size, and return True
         """
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if self.rect.collidepoint(pygame.mouse.get_pos()):
                 self.command(self.args)
                 self.size = self.size_initial
                 self.font_size = FONT_SIZE
+                return True

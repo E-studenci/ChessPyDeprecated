@@ -31,22 +31,25 @@ def start_load_game(args):
     """
     screen = args[0]
     clock = args[1]
-    text_input_boxes_functionality = [(start_game, (screen, clock))]
+    background = args[2]
+    text_input_boxes_functionality = [(start_game, (screen, clock, background))]
     text_input_boxes = add_text_input_box(screen, text_input_boxes_functionality)
-    screen.fill(pygame.color.Color(*BACKGROUND_COLOR))
+    background.render(screen)
     Shapes.draw_rect(screen, BACKGROUND_STARTING_POS, BACKGROUND_SIZE_INITIAL, BUTTONS_BACKGROUND_COLOR)
-    running_loop(screen, clock, text_input_boxes)
+    running_loop(screen, clock, text_input_boxes, background)
 
 
-def running_loop(screen, clock, text_input_boxes):
+def running_loop(screen, clock, text_input_boxes, background):
     running = True
     while running:
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT \
+                    or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 running = False
+                break
             for text_input_box in text_input_boxes:
                 text_input_box.handle_event(event)
-        screen.fill(pygame.color.Color(*BACKGROUND_COLOR))
+        background.render(screen)
         for text_input_box in text_input_boxes:
             text_input_box.render(screen)
         clock.tick(MAX_FPS)

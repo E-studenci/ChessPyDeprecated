@@ -44,21 +44,24 @@ def start_options(args):
                             (mute_music, Constants.MUSIC, "MUSIC")]
     screen = args[0]
     clock = args[1]
-    screen.fill(pygame.color.Color(*BACKGROUND_COLOR))
+    background = args[2]
+    background.render(screen)
     Shapes.draw_rect(screen, BACKGROUND_STARTING_POS, BACKGROUND_SIZE, BUTTONS_BACKGROUND_COLOR)
     switches = add_switches(screen, switch_functionality)
-    running_loop(screen, clock, switches)
+    running_loop(screen, clock, switches, background)
 
 
-def running_loop(screen, clock, switches):
+def running_loop(screen, clock, switches, background):
     running = True
     while running:
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT \
+                    or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 running = False
+                break
             for switch in switches:
                 switch.handle_event(event)
-        screen.fill(pygame.color.Color(*BACKGROUND_COLOR))
+        background.render(screen)
         Shapes.draw_rect(screen, BACKGROUND_STARTING_POS, BACKGROUND_SIZE, BUTTONS_BACKGROUND_COLOR)
         for switch in switches:
             switch.render(screen)
