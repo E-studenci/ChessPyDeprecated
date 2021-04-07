@@ -1,13 +1,17 @@
 import sys
 import pygame
+
+from GUI import Constants
+from GUI.Backgrounds.ChessBackground import ChessBackground
 from GUI.Constants import *
 from GUI.Items.MenuButton import MenuButton
+from GUI.Sprites import Sprites_Loaded
 
 NUMBER_OF_BUTTONS = 4
 BUTTON_SIZE = (200, 50)
 BUTTON_GAP = 13
 CENTER = (DISPLAY_WIDTH // 2, DISPLAY_HEIGHT // 2)
-BUTTON_STARTING_POSITION = (CENTER[0], CENTER[1] - (4 * BUTTON_SIZE[1] - 3 * BUTTON_GAP) // 2)
+BUTTON_STARTING_POSITION = (CENTER[0], CENTER[1] - (4 * BUTTON_SIZE[1] + 5 * BUTTON_GAP) // 2)
 
 
 def start_menu():
@@ -17,30 +21,34 @@ def start_menu():
     pygame.display.init()
     pygame.font.init()
     pygame.freetype.init()
+    Sprites_Loaded.initialize((100, 100))
     from GUI.Windows.NewGame import start_new_game
     from GUI.Windows.LoadGame import start_load_game
     from GUI.Windows.Options import start_options
     screen = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
     pygame.display.set_caption('')
     clock = pygame.time.Clock()
-    screen.fill(pygame.color.Color(*BACKGROUND_COLOR))
-    button_functionality = [(start_new_game, (screen, clock), "START NEW GAME"),
-                            (start_load_game, (screen, clock), "LOAD GAME"),
-                            (start_options, (screen, clock), "OPTIONS"),
-                            (sys.exit, (0), "EXIT")]
+    background = ChessBackground((Constants.DISPLAY_WIDTH, Constants.DISPLAY_HEIGHT))
+    background.render(screen)
+    button_functionality = [(start_new_game, (screen, clock, background), "START NEW GAME"),
+                            (start_load_game, (screen, clock, background), "LOAD GAME"),
+                            (start_options, (screen, clock, background), "OPTIONS"),
+                            (sys.exit, 0, "EXIT")]
     buttons = add_buttons(screen, button_functionality)
-    running_loop(screen, clock, buttons)
+    running_loop(screen, clock, buttons, background)
 
 
-def running_loop(screen, clock, buttons):
+def running_loop(screen, clock, buttons, background):
     running = True
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+                break
             for button in buttons:
-                button.handle_event(event)
-        screen.fill(pygame.color.Color(*BACKGROUND_COLOR))
+                if button.handle_event(event):
+                    break
+        background.render(screen)
         for button in buttons:
             button.render(screen, True if button.rect.collidepoint(pygame.mouse.get_pos()) else False)
         clock.tick(MAX_FPS)
@@ -66,6 +74,3 @@ def add_buttons(screen, button_functionality):
         button.render(screen)
         buttons.append(button)
     return buttons
-
-if __name__ == '__main__':
-    start_menu()
