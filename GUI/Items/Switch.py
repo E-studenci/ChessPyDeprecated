@@ -2,7 +2,6 @@ import pygame
 
 from GUI import Shapes
 
-pygame.display.init()
 SWITCH_SIZE = (90, 40)
 STEPS = 16
 COLOR_WHEN_OFF = (0, 0, 0, 255)

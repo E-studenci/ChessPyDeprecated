@@ -174,3 +174,8 @@ class Board:
                 if isinstance(piece, Pawn.Pawn):
                     if not piece.color == self.board[move[0]].color:
                         piece.en_passant = False
+
+    def initialize_board(self, fen):
+        from Chess.Board.Converters.FenDecoder import initialize_list_from_FEN
+        self.board, self.turn, self.fifty_move_rule, self.move_count, self.king_pos = initialize_list_from_FEN(fen)
+        pass

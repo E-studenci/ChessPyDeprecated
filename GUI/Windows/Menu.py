@@ -17,7 +17,7 @@ def start_menu():
     pygame.display.init()
     pygame.font.init()
     pygame.freetype.init()
-    from OLDGUI.NewGame import start_new_game
+    from GUI.Windows.NewGame import start_new_game
     from GUI.Windows.LoadGame import start_load_game
     from GUI.Windows.Options import start_options
     screen = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
@@ -66,3 +66,6 @@ def add_buttons(screen, button_functionality):
         button.render(screen)
         buttons.append(button)
     return buttons
+
+if __name__ == '__main__':
+    start_menu()
