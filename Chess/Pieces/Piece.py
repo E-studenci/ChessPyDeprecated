@@ -1,6 +1,7 @@
 import copy
 from abc import ABC, abstractmethod
 from Chess.Pieces import Constants
+import numba
 
 
 class Piece(ABC):
@@ -33,40 +34,46 @@ class Piece(ABC):
     def __init__(self, color: bool, position: int):
         self.color: bool = color
         self.position: int = position
-        self.pinned: bool = True
+        self.pinned_squares = None
         self.move_set: list = []
         self.possible_moves: list = []
 
-    def calculate_legal_moves(self, board, calculate_checks=True):
-        """
-        :param calculate_checks: should the moves that will leave the [self.color] player's king in check be removed
-        :param board: Chess.Board.Board, the board on which the piece is standing
-        :return: returns a list of all legal move for the piece
-        """
+    def calculate_legal_moves(self, board):
+        if len(board.attacked_lines) > 1:
+            self.pinned_squares = None
+            return
+
         legal_moves = []
-        for index in range(len(self.move_set)):
+
+        from Chess.Pieces.Knight import Knight
+        if isinstance(self, Knight):
+            direction_math = Constants.KNIGHT_DIRECTION_MATH
+            column_change = Constants.KNIGHT_COLUMN_CHANGE
+        else:
+            direction_math = Constants.NORMAL_DIRECTION_MATH
+            column_change = Constants.NORMAL_COLUMN_CHANGE
+
+        for direction_index in range(len(self.move_set)):
             interrupted = False
-            temp = self.move_set[index]
+            maximum_move_length = self.move_set[direction_index]
             current_position = self.position
-            currently_calculated_position = 0
-            while not interrupted \
-                    and temp > 0:
-                currently_calculated_position = current_position + Constants.DIRECTION_MATH[index]
-                if (currently_calculated_position % Constants.BOARD_SIZE - current_position % Constants.BOARD_SIZE) == \
-                        Constants.COLUMN_CHANGE[index] \
-                        and 0 <= currently_calculated_position <= len(board.board) - 1:
-                    if isinstance(board.board[currently_calculated_position], type(None)) \
-                            or board.board[currently_calculated_position].color != self.color:
-                        legal_moves.append((currently_calculated_position, 0))
+            while not interrupted and maximum_move_length > 0:
+                currently_calculated_position = current_position + direction_math[direction_index]
+                if currently_calculated_position % Constants.BOARD_SIZE - current_position % Constants.BOARD_SIZE == \
+                   column_change[direction_index] \
+                   and 0 <= currently_calculated_position <= len(board.board) - 1:
+                    if currently_calculated_position in board.attacked_lines[0] if len(board.attacked_lines) == 1 else True:
+                        if currently_calculated_position in self.pinned_squares if self.pinned_squares is not None else True:
+                            if isinstance(board.board[currently_calculated_position], type(None)) \
+                                    or board.board[currently_calculated_position].color != self.color:
+                                legal_moves.append((currently_calculated_position, 0))
                     if not isinstance(board.board[currently_calculated_position], type(None)):
                         interrupted = True
                     current_position = currently_calculated_position
-                temp -= 1
-
-        if calculate_checks:
-            for i in range(len(legal_moves) - 1, -1, -1):
-                if board.king_in_check_after_move_ver_2_0(self.color, self.position, legal_moves[i]):
-                    legal_moves.remove(legal_moves[i])
+                    maximum_move_length -= 1
+                else:
+                    interrupted = True
+        self.pinned_squares = None
         return legal_moves
 
     def make_move(self, board, start_pos, move):
@@ -86,3 +93,48 @@ class Piece(ABC):
         board.board[move[0]] = self
         return True
         # update all legal moves (to make check checking more optimised)
+
+    def calculate_attacked_fields(self, board):
+        from Chess.Pieces.King import King
+        for index in range(len(self.move_set)):
+            interrupted = False
+            piece_in_way = False
+            add_pin_line = False
+            maximum_move_length = self.move_set[index]
+            current_position = self.position
+            pin_line = set()
+            pin_line.add(current_position)
+            pinned_piece = None
+            while not interrupted and maximum_move_length > 0:
+                currently_calculated_position = current_position + Constants.DIRECTION_MATH[index]
+                if currently_calculated_position % Constants.BOARD_SIZE - current_position % Constants.BOARD_SIZE == \
+                   Constants.COLUMN_CHANGE[index] \
+                   and 0 <= currently_calculated_position <= len(board.board) - 1:
+                    if not piece_in_way:
+                        board.attacked_fields[currently_calculated_position] = True
+                    pin_line.add(currently_calculated_position)
+                    attacked_square = board.board[currently_calculated_position]
+                    if not isinstance(attacked_square, type(None)):
+                        if attacked_square.color is self.color:
+                            interrupted = True
+                        else:
+                            if isinstance(attacked_square, King):
+                                interrupted = True
+                                if piece_in_way:
+                                    add_pin_line = True
+                                else:
+                                    board.attacked_lines.append(pin_line)
+                        if piece_in_way:
+                            interrupted = True
+                        else:
+                            pinned_piece = attacked_square
+                        piece_in_way = True
+                    current_position = currently_calculated_position
+                    maximum_move_length -= 1
+                else:
+                    interrupted = True
+                if pinned_piece is not None:
+                    if add_pin_line:
+                        pinned_piece.pinned_squares = pin_line
+                    else:
+                        pinned_piece.pinned_squares = None

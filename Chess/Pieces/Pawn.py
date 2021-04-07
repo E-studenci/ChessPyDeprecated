@@ -72,51 +72,73 @@ class Pawn(Piece.Piece):
         :param board: Chess.Board.Board, the board on which the pawn is standing
         :return: returns a list of all legal moves for the pawn
         """
+        if len(board.attacked_lines) > 1:
+            self.pinned_squares = None
+            return
+
         return_list = []
         direction = direction_dictionary[self.color]
         second_row = second_row_dictionary[self.color]
         last_row = last_row_dictionary[self.color]
         # normal move
         currently_calculated_position = self.position + (Constants.DIRECTION_MATH[0] * direction)
-        if isinstance(board.board[currently_calculated_position], type(None)):
-            if last_row * 8 <= currently_calculated_position < (last_row + 1) * 8:
-                for i in range(1, 5):
-                    return_list.append((currently_calculated_position, i))
-            else:
-                return_list.append((currently_calculated_position, 0))
-        # first move
-        if second_row * 8 <= self.position < (second_row + 1) * 8 \
-                and isinstance(board.board[self.position + 8 * direction], type(None)) \
-                and isinstance(board.board[self.position + 16 * direction], type(None)):
-            currently_calculated_position = self.position + 16 * direction
-            return_list.append((currently_calculated_position, 0))
+        if currently_calculated_position in board.attacked_lines[0] if len(board.attacked_lines) == 1 else True:
+            if currently_calculated_position in self.pinned_squares if self.pinned_squares is not None else True:
+                if isinstance(board.board[currently_calculated_position], type(None)):
+                    if last_row * 8 <= currently_calculated_position < (last_row + 1) * 8:
+                        for i in range(1, 5):
+                            return_list.append((currently_calculated_position, i))
+                    else:
+                        return_list.append((currently_calculated_position, 0))
+
+                # first move
+        currently_calculated_position = self.position + (Constants.DIRECTION_MATH[0] * 2 * direction)
+        if currently_calculated_position in board.attacked_lines[0] if len(board.attacked_lines) == 1 else True:
+            if currently_calculated_position in self.pinned_squares if self.pinned_squares is not None else True:
+                if second_row * 8 <= self.position < (second_row + 1) * 8 \
+                        and isinstance(board.board[self.position + 8 * direction], type(None)) \
+                        and isinstance(board.board[self.position + 16 * direction], type(None)):
+                    return_list.append((currently_calculated_position, 0))
         # en passant
         for i in range(0, 2):
             currently_calculated_position = self.position \
                                             + 1 * direction * direction_dictionary[bool(i)]
             if abs(currently_calculated_position % 8 - self.position % 8) == 1:
-                if isinstance(board.board[currently_calculated_position], type(self)):
-                    if not board.board[currently_calculated_position].color == self.color \
-                            and board.board[currently_calculated_position].en_passant:
-                        currently_calculated_position += 8 * direction
-                        if isinstance(board.board[currently_calculated_position], type(None)):
-                            return_list.append((currently_calculated_position, 0))
+                if currently_calculated_position in board.attacked_lines[0] if len(board.attacked_lines) == 1 else True:
+                    if currently_calculated_position in self.pinned_squares if self.pinned_squares is not None else True:
+                        if isinstance(board.board[currently_calculated_position], type(self)):
+                            if not board.board[currently_calculated_position].color == self.color \
+                                    and board.board[currently_calculated_position].en_passant:
+                                currently_calculated_position += 8 * direction
+                                if isinstance(board.board[currently_calculated_position], type(None)):
+                                    return_list.append((currently_calculated_position, 0))
         # taking
         for i in range(0, 2):
             currently_calculated_position = self.position \
                                             + Constants.DIRECTION_MATH[0] * direction \
                                             + 1 * direction_dictionary[bool(i)]
             if abs(currently_calculated_position % 8 - self.position % 8) == 1:
-                if not isinstance(board.board[currently_calculated_position], type(None)):
-                    if not board.board[currently_calculated_position].color == self.color:
-                        if last_row * 8 <= currently_calculated_position < (last_row + 1) * 8:
-                            for j in range(1, 5):
-                                return_list.append((currently_calculated_position, j))
-                        else:
-                            return_list.append((currently_calculated_position, 0))
-
-        if calculate_checks:
-            for i in range(len(return_list) - 1, -1, -1):
-                if board.king_in_check_after_move_ver_2_0(self.color, self.position, return_list[i]):
-                    return_list.remove(return_list[i])
+                if currently_calculated_position in board.attacked_lines[0] if len(board.attacked_lines) == 1 else True:
+                    if currently_calculated_position in self.pinned_squares if self.pinned_squares is not None else True:
+                        if not isinstance(board.board[currently_calculated_position], type(None)):
+                            if not board.board[currently_calculated_position].color == self.color:
+                                if last_row * 8 <= currently_calculated_position < (last_row + 1) * 8:
+                                    for j in range(1, 5):
+                                        return_list.append((currently_calculated_position, j))
+                                else:
+                                    return_list.append((currently_calculated_position, 0))
+        self.pinned_squares = None
         return return_list
+
+    def calculate_attacked_fields(self, board):
+        direction = direction_dictionary[self.color]
+        for i in range(0, 2):
+            currently_calculated_position = self.position \
+                                            + Constants.DIRECTION_MATH[0] * direction \
+                                            + 1 * direction_dictionary[bool(i)]
+            if abs(currently_calculated_position % 8 - self.position % 8) == 1:
+                board.attacked_fields[currently_calculated_position] = True
+                attacked_square = board.board[currently_calculated_position]
+                if attacked_square is not None:
+                    if isinstance(attacked_square, King.King) and attacked_square.color != self.color:
+                        board.attacked_lines.append({self.position})
