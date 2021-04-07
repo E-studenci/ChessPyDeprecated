@@ -8,10 +8,10 @@ from GUI.Items.MenuButton import MenuButton
 from GUI.Sprites import Sprites_Loaded
 
 NUMBER_OF_BUTTONS = 4
-BUTTON_SIZE = (200, 50)
-BUTTON_GAP = 13
+BUTTON_SIZE = (250, 65)
+BUTTON_GAP = 10
 CENTER = (DISPLAY_WIDTH // 2, DISPLAY_HEIGHT // 2)
-BUTTON_STARTING_POSITION = (CENTER[0], CENTER[1] - (4 * BUTTON_SIZE[1] + 5 * BUTTON_GAP) // 2)
+BUTTON_STARTING_POSITION = (CENTER[0], CENTER[1] - (3 * BUTTON_SIZE[1] + 3 * BUTTON_GAP) // 2)
 
 
 def start_menu():
@@ -62,7 +62,7 @@ def add_buttons(screen, button_functionality):
     :return: creates a list of NUMBER_OF_BUTTONS buttons with chosen functionality and renders them
     """
     buttons = []
-    offset = BUTTON_GAP + BUTTON_SIZE[1] * 1.5
+    offset = BUTTON_GAP + BUTTON_SIZE[1]
 
     for index in range(NUMBER_OF_BUTTONS):
         button_position = (BUTTON_STARTING_POSITION[0], BUTTON_STARTING_POSITION[1] + offset * index)
@@ -74,3 +74,7 @@ def add_buttons(screen, button_functionality):
         button.render(screen)
         buttons.append(button)
     return buttons
+
+
+if __name__ == '__main__':
+    start_menu()
