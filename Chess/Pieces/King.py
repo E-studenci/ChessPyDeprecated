@@ -29,26 +29,44 @@ class King(Piece):
         :param board: list the board on which the pawn is standing
         :return: returns a list of all legal moves for the king with the addition of castling
         """
-        return_list = super().calculate_legal_moves(board, calculate_checks)
-        if not board.king_in_check_after_move_ver_2_0(self.color, self.position, (self.position, 0), False):
+        legal_moves = []
+        from Chess.Pieces import Constants
+        direction_math = Constants.NORMAL_DIRECTION_MATH
+        column_change = Constants.NORMAL_COLUMN_CHANGE
+
+        for direction_index in range(len(self.move_set)):
+            maximum_move_length = self.move_set[direction_index]
+            current_position = self.position
+            while maximum_move_length > 0:
+                currently_calculated_position = current_position + direction_math[direction_index]
+                if currently_calculated_position % Constants.BOARD_SIZE - current_position % Constants.BOARD_SIZE == \
+                   column_change[direction_index] \
+                   and 0 <= currently_calculated_position <= len(board.board) - 1:
+                    if not board.attacked_fields[currently_calculated_position]:
+                        if isinstance(board.board[currently_calculated_position], type(None)) \
+                                or board.board[currently_calculated_position].color != self.color:
+                            legal_moves.append((currently_calculated_position, 0))
+                maximum_move_length -= 1
+
+        if not board.attacked_fields[self.position]:
             if self.castle_king_side \
                     and isinstance(board.board[self.position + 1], type(None)) \
                     and isinstance(board.board[self.position + 2], type(None)) \
                     and isinstance(board.board[self.position + 3], Rook.Rook) \
-                    and not board.king_in_check_after_move_ver_2_0(self.color, self.position, (self.position + 1, 0)) \
-                    and not board.king_in_check_after_move_ver_2_0(self.color, self.position, (self.position + 2, 0)):
+                    and not board.attacked_fields[self.position + 1] \
+                    and not board.attacked_fields[self.position + 2]:
                 if board.board[self.position + 3].color == self.color:
-                    return_list.append((self.position + 2, 0))
+                    legal_moves.append((self.position + 2, 0))
             if self.castle_queen_side \
                     and isinstance(board.board[self.position - 1], type(None)) \
                     and isinstance(board.board[self.position - 2], type(None)) \
                     and isinstance(board.board[self.position - 3], type(None)) \
                     and isinstance(board.board[self.position - 4], Rook.Rook) \
-                    and not board.king_in_check_after_move_ver_2_0(self.color, self.position, (self.position - 1, 0)) \
-                    and not board.king_in_check_after_move_ver_2_0(self.color, self.position, (self.position - 2, 0)):
+                    and not board.attacked_fields[self.position - 1] \
+                    and not board.attacked_fields[self.position - 2]:
                 if board.board[self.position - 4].color == self.color:
-                    return_list.append((self.position - 2, 0))
-        return return_list
+                    legal_moves.append((self.position - 2, 0))
+        return legal_moves
 
     def make_move(self, board, start_pos, move):
         """
