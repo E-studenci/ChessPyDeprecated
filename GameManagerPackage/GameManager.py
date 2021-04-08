@@ -10,6 +10,23 @@ class GameManager:
 
     Attributes:
             player_one: GameManagerPackage.Players.Player
+                the first player
+            player_two: GameManagerPackage.Players.Player
+                the second player
+            fen: str
+                optional, if you want to start a game from a certain position
+
+    Methods:
+            start_game:
+                start the game_loop
+            game_loop:
+                handles turns and ending the game
+            check game conditions:
+                checks if the game should be ended
+            get_all_possible_moves_for_current_player:
+                gets legal moves for the player from self.board
+            insufficient_material:
+                helper method to check_game_ending_conditions
     """
 
     def __init__(self, player_one, player_two, fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"):
@@ -21,11 +38,19 @@ class GameManager:
         self.game_status = GameStatus.ONGOING
 
     def start_game(self):
+        """
+        :return: starts the game
+        """
         current_player = self.player_one if self.player_one.color == self.board.turn else self.player_two
         opposing_player = self.player_two if current_player == self.player_one else self.player_one
         self.game_loop(current_player, opposing_player)
 
     def game_loop(self, current, opposing):
+        """
+        :param current: the first player to move
+        :param opposing: the opposing player
+        :return:  handles turns and ends the game if necessary
+        """
         board = self.board
         current_player = current
         opposing_player = opposing
@@ -39,6 +64,15 @@ class GameManager:
         print(self.game_status)
 
     def check_game_ending_conditions(self, player):
+        """
+        :param player: current player
+        :return: returns:
+                GameStatus.FIFTY_MOVES            : if the fifty move rule has been broken;
+                GameStatus.CHECKMATE              : if the current player is in mate;
+                GameStatus.THREEFOLD_REPETITION   : if the threefold repetition rule has been broken;
+                GameStatus.INSUFFICIENT_MATERIAL  : if neither player can possibly mate the opposing player;
+                GameStatus.ONGOING                : otherwise
+        """
         player.moves = self.get_all_possible_moves_for_current_player()
         if self.board.fifty_move_rule == 50:
             self.game_status = GameStatus.FIFTY_MOVES
@@ -55,9 +89,16 @@ class GameManager:
             self.game_status = GameStatus.ONGOING
 
     def get_all_possible_moves_for_current_player(self):
+        """
+        :return: returns legal moves for the player from self.board
+        """
         return self.board.calculate_all_legal_moves()
 
     def insufficient_material(self):
+        """
+        :return: True if: KN vs K, or KB vs K, or K vs K;
+                 False: otherwise
+        """
         from Chess.Pieces import Knight, Bishop
         piece_count_white = 0
         piece_count_black = 0
