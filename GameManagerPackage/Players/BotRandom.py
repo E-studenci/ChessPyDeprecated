@@ -1,6 +1,6 @@
 import random
 
-from Chess.GameManager.Players.Player import Player
+from GameManagerPackage.Players.Player import Player
 
 
 class BotRandom(Player):

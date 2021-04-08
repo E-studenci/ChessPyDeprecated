@@ -1,10 +1,17 @@
-from Chess.GameManager.GameStatus import GameStatus
 from Chess.Board.Board import Board
+from GameManagerPackage.GameStatus import GameStatus
 from Chess.Board.Converters.FenEncoder import to_name_later
 from Chess.Board.PrintMatrixToConsole import print_matrix_to_console
 
 
 class GameManager:
+    """
+    Wanna play a game? Say no more, just use this class to create one of chess
+
+    Attributes:
+            player_one: GameManagerPackage.Players.Player
+    """
+
     def __init__(self, player_one, player_two, fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"):
         self.board: Board = Board()
         self.board.initialize_board(fen)
@@ -24,11 +31,11 @@ class GameManager:
         opposing_player = opposing
         current_player.moves = self.get_all_possible_moves_for_current_player()
         while self.game_status == GameStatus.ONGOING:
+            print_matrix_to_console(board.board)
             current_player.make_move(board)
             current_player, opposing_player = opposing_player, current_player
             self.history.append(to_name_later(board.board, board.turn, board.fifty_move_rule, board.move_count))
             self.check_game_ending_conditions(current_player)
-            print_matrix_to_console(board.board)
         print(self.game_status)
 
     def check_game_ending_conditions(self, player):
@@ -69,10 +76,3 @@ class GameManager:
             if any(isinstance(x, Knight.Knight) or isinstance(x, Bishop.Bishop) for x in self.board.board):
                 return True
         return False
-
-
-if __name__ == '__main__':
-    from Chess.GameManager.Players.BotRandom import BotRandom
-
-    game = GameManager(BotRandom("alexei", True), BotRandom("Oleg", False))
-    game.start_game()
