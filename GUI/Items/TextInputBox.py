@@ -2,7 +2,7 @@ import pygame
 from GUI import Shapes
 
 # Font
-FONT_SIZE = 30
+FONT_SIZE = 20
 FONT_HEIGHT = 23
 FONT = ('arial', FONT_SIZE, True, False)
 FONT_COLOR = (255, 255, 255, 10)
@@ -49,6 +49,7 @@ class TextInputBox:
         :param screen: the screen the input box should be drawn on
         :return: draws the input box on the screen, it glows red if the text is incorrect
         """
+        from GUI.Constants.Constant import DISPLAY_WIDTH
         if self.text == '':
             self.text_rect = self.font.render(self.initial_text, True, FONT_COLOR)
         else:

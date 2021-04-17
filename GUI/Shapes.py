@@ -16,6 +16,11 @@ def draw_rect(screen, center, size, color):
     s_rect.center = center
     screen.blit(s, s_rect)
 
+def draw_circle(screen, center, radius, color, filled=True):
+    from pygame import gfxdraw
+    gfxdraw.aacircle(screen, int(center[0]), int(center[1]), int(radius), color)
+    if filled:
+        gfxdraw.filled_circle(screen, int(center[0]), int(center[1]), int(radius), color)
 
 def draw_text(screen, center, text, font, color):
     """
@@ -31,3 +36,4 @@ def draw_text(screen, center, text, font, color):
     text_rect = text.get_rect()
     text_rect.center = center
     screen.blit(text, text_rect)
+

@@ -1,7 +1,8 @@
 import pygame
 
-from GUI.Constants import *
-from GUI import Shapes, Constants
+from GUI.Constants.Constant import *
+from GUI import Shapes
+from GUI.Constants import Constant
 
 # Font
 FONT_SIZE = 20
@@ -40,8 +41,8 @@ def start_options(args):
     :param args: (screen, clock)
     :return: initialize the options screen
     """
-    switch_functionality = [(mute_sound, Constants.SOUND, "SOUND"),
-                            (mute_music, Constants.MUSIC, "MUSIC")]
+    switch_functionality = [(mute_sound, Constant.SOUND, "SOUND"),
+                            (mute_music, Constant.MUSIC, "MUSIC")]
     screen = args[0]
     clock = args[1]
     background = args[2]
@@ -90,7 +91,7 @@ def mute_sound(mute):
     :param mute: True, if should mute, false if should turn on
     :return: sets Constants.SOUND to True, or False depending on mute
     """
-    Constants.SOUND = not mute
+    Constant.SOUND = not mute
 
 
 def mute_music(mute):
@@ -98,4 +99,4 @@ def mute_music(mute):
     :param mute: True, if should mute, false if should turn on
     :return: sets Constants.MUSIC to True, or False depending on mute
     """
-    Constants.MUSIC = not mute
+    Constant.MUSIC = not mute

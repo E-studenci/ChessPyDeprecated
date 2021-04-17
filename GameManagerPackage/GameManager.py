@@ -1,3 +1,5 @@
+import threading
+
 from Chess.Board.Board import Board
 from GameManagerPackage.GameStatus import GameStatus
 from Chess.Board.Converters.FenEncoder import to_name_later
@@ -34,31 +36,36 @@ class GameManager:
         self.board.initialize_board(fen)
         self.player_one = player_one
         self.player_two = player_two
+        self.current_player_is_bot = None
         self.history = []
         self.game_status = GameStatus.ONGOING
 
-    def start_game(self):
+    def start_game(self, q1, q2, q3):
         """
         :return: starts the game
         """
         current_player = self.player_one if self.player_one.color == self.board.turn else self.player_two
         opposing_player = self.player_two if current_player == self.player_one else self.player_one
-        self.game_loop(current_player, opposing_player)
+        t = threading.Thread(target=self.is_bot_notifier, args=(q3,))
+        t.daemon = True
+        t.start()
+        self.game_loop(current_player, opposing_player, q1, q2)
 
-    def game_loop(self, current, opposing):
+    def game_loop(self, current, opposing, q1, q2):
         """
         :param current: the first player to move
         :param opposing: the opposing player
         :return:  handles turns and ends the game if necessary
         """
-        board = self.board
         current_player = current
         opposing_player = opposing
+        self.current_player_is_bot = current_player.is_bot
+        board = self.board
         current_player.moves = self.get_all_possible_moves_for_current_player()
         while self.game_status == GameStatus.ONGOING:
-            print_matrix_to_console(board.board)
-            current_player.make_move(board)
+            current_player.make_move(board, (q1, q2))
             current_player, opposing_player = opposing_player, current_player
+            self.current_player_is_bot = current_player.is_bot
             self.history.append(to_name_later(board.board, board.turn, board.fifty_move_rule, board.move_count))
             self.check_game_ending_conditions(current_player)
         print(self.game_status)
@@ -92,7 +99,7 @@ class GameManager:
         """
         :return: returns legal moves for the player from self.board
         """
-        return self.board.calculate_all_legal_moves()
+        return self.board.calculate_all_legal_moves(self.board.turn)
 
     def insufficient_material(self):
         """
@@ -117,3 +124,11 @@ class GameManager:
             if any(isinstance(x, Knight.Knight) or isinstance(x, Bishop.Bishop) for x in self.board.board):
                 return True
         return False
+
+    def is_bot_notifier(self, q3):
+        from GUI.Constants.Constant import MAX_FPS
+        import time
+        while self.game_status == GameStatus.ONGOING:
+            q3.put((self.current_player_is_bot, None))
+            q3.join()
+        q3.put((-1, self.game_status))

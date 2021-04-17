@@ -24,7 +24,7 @@ class Player(ABC):
         self.color: bool = color
         self.moves = {}
 
-    def make_move(self, board, move):
+    def make_move(self, board, args, move):
         """
         :param board: the board on which the game is played
         :param move: the move to be made
@@ -32,5 +32,5 @@ class Player(ABC):
         """
         board.make_move(*move)
 
-    def select_move(self):
+    def select_move(self, args):
         pass

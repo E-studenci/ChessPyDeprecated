@@ -1,5 +1,5 @@
 import pygame
-from GUI.Constants import *
+from GUI.Constants.Constant import *
 from GUI import Shapes
 
 # Font
@@ -80,7 +80,7 @@ def start_game(args, fen):
     :return: starts a new game from the fen if it is correct, if the fen is incorrect, return False
     """
     from GUI.Windows.NewGame import start_new_game
-    if fen == "True":
-        start_new_game(args, fen)
-        return True
-    return False
+    # if fen == "True":
+    start_new_game(args, fen)
+    return True
+    # return False

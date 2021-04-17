@@ -91,9 +91,11 @@ class Switch:
 
     def draw_circle(self, screen, center, radius):
         color = tuple(int(i) for i in self.color)
+        # Shapes.draw_circle(screen, center, radius, color)
         pygame.draw.circle(screen, pygame.Color(*color), center, radius)
 
     def draw_button(self, screen, center, radius, color):
+        # Shapes.draw_circle(screen, center, radius, color)
         pygame.draw.circle(screen, color, center, radius)
 
     def handle_event(self, event):

@@ -1,12 +1,11 @@
 import random
 
-from GUI import Constants
-from GUI.Backgrounds.ChessBackground import ChessBackground
-from GUI.Constants import *
+from GUI.Constants.Constant import *
 import pygame
 
 from GUI.Items.DropDownMenu import DropDownMenu
 from GUI.Items.MenuButton import MenuButton
+from GUI.Windows import GameScreen
 from GameManagerPackage.GameManager import GameManager
 from GameManagerPackage.Players.BotRandom import BotRandom
 from GameManagerPackage.Players.Human import Human
@@ -34,7 +33,8 @@ def start_new_game(args, fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq
     background.render(screen)
 
     drop_down_menus = add_drop_down_menus(screen, DROP_DOWN_MENUS_TEXT)
-    start_game_button = MenuButton(CENTER, start_game, (drop_down_menus, fen), (200, 50), "Start Game")
+    start_game_button = MenuButton(CENTER, start_game, (drop_down_menus, fen, screen, (screen, clock, background)),
+                                   (200, 50), "Start Game")
     running_loop(screen, clock, background, drop_down_menus, start_game_button)
 
 
@@ -85,6 +85,7 @@ def can_start_game(drop_down_menus):
 
 
 def start_game(args):
+    from GUI.Windows.GameScreen import select_move_2
     player_one_color = bool(random.randint(0, 1))
     players = []
     for i in range(len(args[0])):
@@ -92,14 +93,11 @@ def start_game(args):
         if args[0][i].main == CHOICES[0]:
             players.append(PLAYERS_DICTIONARY[args[0][i].main]("aaa",
                                                                color,
-                                                               select_move))
+                                                               select_move_2
+                                                               ))
         else:
             players.append(PLAYERS_DICTIONARY[args[0][i].main]("aaa",
                                                                color))
     game = GameManager(players[0], players[1], args[1])
-    print(players)
-    pass
-
-
-def select_move():
-    pass
+    args = args[3]
+    GameScreen.start_game(args, game)

@@ -23,19 +23,21 @@ class BotRandom(Player):
     def __init__(self, name: str, color: bool):
         super().__init__(name, True, color)
 
-    def make_move(self, board, move):
+    def make_move(self, board, args, move="essa"):
         """
         :param board: the board on which the game is played
         :param move: the move to be made
         :return: uses super().make_move() to make the move selected by self.select_move()
         """
-        super().make_move(board, self.select_move())
+        super().make_move(board, None, self.select_move(args))
 
-    def select_move(self):
+    def select_move(self, args):
         """
         :return: selects a random legal move
         """
         start_pos = random.choice(list(self.moves.keys()))
         while not self.moves[start_pos]:
             start_pos = random.choice(list(self.moves.keys()))
+        import time
+        time.sleep(1)
         return start_pos, random.choice(self.moves[start_pos])
