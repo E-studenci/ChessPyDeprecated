@@ -59,7 +59,7 @@ def running_loop(screen, clock, background, q1, q2, q3, game):
         do_select_move = False
     while running:
         temp = q3.get()
-        if not temp[0] == -1 and temp[0] is not None:
+        if temp[0] is not None and not temp[0] == -1:
             do_select_move = not temp[0]
         elif temp[0] == -1:
             game_ended = True
@@ -142,6 +142,7 @@ def running_loop(screen, clock, background, q1, q2, q3, game):
         clock.tick(MAX_FPS)
         q3.task_done()
         pygame.display.flip()
+        print("aa")
 
 
 def draw_planning(screen, planning):
@@ -185,9 +186,9 @@ def draw_promotions(screen, target_square_index):
         Shapes.draw_rect(screen,
                          (top_left[0] + SQUARE_SIZE // 2, top_left[1] + SQUARE_SIZE // 2),
                          (SQUARE_SIZE, SQUARE_SIZE),
-                         ((0, 0, 0, 150) if target_square_index // 8 == 0 else (255, 255, 255, 150))
+                         ((0, 0, 0, 150) if not (target_square_index // 8 == 0) else (255, 255, 255, 150))
                          if mouse_pos_index != square else (0, 100, 0, 150))
-        screen.blit(pieces[i if target_square_index + i * 8 else i + 4], top_left)
+        screen.blit(pieces[i if target_square_index // 8 == 0 else i + 4], top_left)
 
 
 def get_top_left_from_index(index):

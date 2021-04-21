@@ -2,8 +2,8 @@ import pygame
 
 from GUI.Backgrounds.Sprites_Loaded import SPRITE_DICTIONARY
 
-COLOR_F0D9B5 = (240, 217, 181)
-COLOR_946F51 = (148, 111, 81)
+COLOR_LIGHT = (240, 217, 181)
+COLOR_DARK = (181, 136, 99)
 
 CHESS_BOARD = None
 PIECES = None
@@ -13,7 +13,7 @@ SQUARE_SIZE = None
 def initialize(screen, size):
     global SQUARE_SIZE
     SQUARE_SIZE = size[0] // 8
-    board_colors = [pygame.Color(COLOR_F0D9B5), pygame.Color(COLOR_946F51)]
+    board_colors = [pygame.Color(COLOR_LIGHT), pygame.Color(COLOR_DARK)]
     for i in range(8):
         for j in range(8):
             color = board_colors[(i + j) % 2]

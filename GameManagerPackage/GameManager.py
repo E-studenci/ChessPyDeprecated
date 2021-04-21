@@ -126,8 +126,6 @@ class GameManager:
         return False
 
     def is_bot_notifier(self, q3):
-        from GUI.Constants.Constant import MAX_FPS
-        import time
         while self.game_status == GameStatus.ONGOING:
             q3.put((self.current_player_is_bot, None))
             q3.join()
