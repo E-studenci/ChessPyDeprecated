@@ -18,11 +18,11 @@ DROP_DOWN_MENUS_STARTING_POSITION = (CENTER[0], CENTER[1] - 150)
 DROP_DOWN_MENU_SIZE = (200, 50)
 OFFSET = DROP_DOWN_MENU_SIZE[1] + 5
 
-CHOICES = ["Human", "Bot Random"]
-DROP_DOWN_MENUS_TEXT = [("Player One", CHOICES),
-                        ("Player Two", CHOICES)]
-PLAYERS_DICTIONARY = {"Human":      Human,
-                      "Bot Random": BotRandom}
+CHOICES = ["HUMAN", "BOT RANDOM"]
+DROP_DOWN_MENUS_TEXT = [("PLAYER ONE", CHOICES),
+                        ("PLAYER TWO", CHOICES)]
+PLAYERS_DICTIONARY = {"HUMAN":      Human,
+                      "BOT RANDOM": BotRandom}
 
 
 def start_new_game(args, fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"):
@@ -31,14 +31,17 @@ def start_new_game(args, fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq
     background = args[2]
     screen.fill(pygame.Color("white"))
     background.render(screen)
-
+    text_input_boxes_initial = ["PLAYER ONE NAME", "PLAYER TWO NAME"]
+    text_input_boxes_functionality = [(None, (screen, clock, background))] * 2
+    text_input_boxes = add_text_input_boxes(screen, text_input_boxes_functionality, text_input_boxes_initial, 30)
     drop_down_menus = add_drop_down_menus(screen, DROP_DOWN_MENUS_TEXT)
-    start_game_button = MenuButton(CENTER, start_game, (drop_down_menus, fen, screen, (screen, clock, background)),
+    start_game_button = MenuButton((CENTER[0], CENTER[1] + 100), start_game,
+                                   (drop_down_menus, fen, screen, (screen, clock, background), text_input_boxes),
                                    (200, 50), "Start Game")
-    running_loop(screen, clock, background, drop_down_menus, start_game_button)
+    running_loop(screen, clock, background, drop_down_menus, start_game_button, text_input_boxes)
 
 
-def running_loop(screen, clock, background, drop_down_menus, start_game_button):
+def running_loop(screen, clock, background, drop_down_menus, start_game_button, text_input_boxes):
     running = True
     while running:
         event_list = pygame.event.get()
@@ -49,12 +52,16 @@ def running_loop(screen, clock, background, drop_down_menus, start_game_button):
                 break
             if can_start_game(drop_down_menus):
                 start_game_button.handle_event(event)
+            for text_input_box in text_input_boxes:
+                text_input_box.handle_event(event)
         background.render(screen)
         for drop_down_menu in drop_down_menus:
             selected_option = drop_down_menu.update(event_list)
             if selected_option >= 0:
                 drop_down_menu.main = drop_down_menu.options[selected_option]
             drop_down_menu.render(screen)
+        for text_input_box in text_input_boxes:
+            text_input_box.render(screen)
         if can_start_game(drop_down_menus):
             start_game_button.render(screen,
                                      True if start_game_button.rect.collidepoint(pygame.mouse.get_pos()) else False)
@@ -62,10 +69,25 @@ def running_loop(screen, clock, background, drop_down_menus, start_game_button):
         pygame.display.flip()
 
 
+def add_text_input_boxes(screen, text_input_box_functionality, initial_messages, max_size):
+    from GUI.Items.TextInputBox import TextInputBox
+    text_input_boxes = []
+    for index in range(len(text_input_box_functionality)):
+        center = (DROP_DOWN_MENUS_STARTING_POSITION[0], DROP_DOWN_MENUS_STARTING_POSITION[1] + OFFSET * index * 2)
+        center = (center[0], center[1] - 37)
+        text_input_box = TextInputBox(center,
+                                      *text_input_box_functionality[index],
+                                      initial_messages[index],
+                                      max_size)
+        text_input_box.render(screen)
+        text_input_boxes.append(text_input_box)
+    return text_input_boxes
+
+
 def add_drop_down_menus(screen, text):
     drop_down_menus = []
     for index in range(NUMBER_OF_DROP_DOWN_MENUS):
-        center = (DROP_DOWN_MENUS_STARTING_POSITION[0], DROP_DOWN_MENUS_STARTING_POSITION[1] + OFFSET * index)
+        center = (DROP_DOWN_MENUS_STARTING_POSITION[0], DROP_DOWN_MENUS_STARTING_POSITION[1] + OFFSET * index * 2)
         menu = DropDownMenu(
             [(0, 0, 0, 150), (0, 0, 0, 255)],
             [(0, 0, 0, 150), (0, 0, 0, 255)],
@@ -89,14 +111,15 @@ def start_game(args):
     player_one_color = bool(random.randint(0, 1))
     players = []
     for i in range(len(args[0])):
+        player_name = None if args[4][i].text == args[4][i].initial_text else args[4][i].text
         color = player_one_color if i == 0 else not player_one_color
         if args[0][i].main == CHOICES[0]:
-            players.append(PLAYERS_DICTIONARY[args[0][i].main]("aaa",
+            players.append(PLAYERS_DICTIONARY[args[0][i].main](player_name,
                                                                color,
                                                                select_move_2
                                                                ))
         else:
-            players.append(PLAYERS_DICTIONARY[args[0][i].main]("aaa",
+            players.append(PLAYERS_DICTIONARY[args[0][i].main](player_name,
                                                                color))
     game = GameManager(players[0], players[1], args[1])
     args = args[3]

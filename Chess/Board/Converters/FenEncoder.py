@@ -24,18 +24,8 @@ def to_name_later(chess_board: list, turn: bool, fifty_move_rule: int, move_coun
     :param move_count: moves since the beginning of the game
     :return: returns the state of the game in FEN
     """
-    result_fen: str = ""
-
     # --------------------------PARSE_BOARD--------------------------
-    temp_list: list = []
-    for index in range(len(chess_board)):
-        obj = chess_board[index]
-        temp_list.append(obj)
-
-        if index % 8 == 7:
-            result_fen = parse_sublist(temp_list) + result_fen
-            temp_list = []
-    result_fen = result_fen[:-1]
+    result_fen = parse_board(chess_board)
     # --------------------------PARSE_TURN--------------------------
 
     result_fen += parse_turn(turn)
@@ -56,6 +46,20 @@ def to_name_later(chess_board: list, turn: bool, fifty_move_rule: int, move_coun
 
     result_fen += ' ' + str(move_count)
 
+    return result_fen
+
+
+def parse_board(chess_board):
+    temp_list: list = []
+    result_fen = ""
+    for index in range(len(chess_board)):
+        obj = chess_board[index]
+        temp_list.append(obj)
+
+        if index % 8 == 7:
+            result_fen = parse_sublist(temp_list) + result_fen
+            temp_list = []
+    result_fen = result_fen[:-1]
     return result_fen
 
 

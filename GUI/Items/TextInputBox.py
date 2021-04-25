@@ -31,7 +31,7 @@ class TextInputBox:
             handles the passed event
     """
 
-    def __init__(self, center, command, args, initial_text):
+    def __init__(self, center, command, args, initial_text, max_size=99999999):
         self.center = center
         self.command = command
         self.args = args
@@ -43,13 +43,13 @@ class TextInputBox:
         self.rect = pygame.rect.Rect(*self.top_left, *self.text_rect.get_size())
         self.active = False
         self.correct = True
+        self.max_size = max_size
 
     def render(self, screen):
         """
         :param screen: the screen the input box should be drawn on
         :return: draws the input box on the screen, it glows red if the text is incorrect
         """
-        from GUI.Constants.Constant import DISPLAY_WIDTH
         if self.text == '':
             self.text_rect = self.font.render(self.initial_text, True, FONT_COLOR)
         else:
@@ -77,7 +77,8 @@ class TextInputBox:
         if self.active:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
-                    self.correct = self.command(self.args, self.text)
+                    if self.command is not None:
+                        self.correct = self.command(self.args, self.text)
                 elif event.key == pygame.K_BACKSPACE:
                     self.text = self.text[:-1]
                     self.correct = True
@@ -85,5 +86,6 @@ class TextInputBox:
                     self.text = ''
                     self.correct = True
                 else:
-                    self.text += event.unicode
-                    self.correct = True
+                    if len(self.text) < self.max_size:
+                        self.text += event.unicode
+                        self.correct = True

@@ -8,7 +8,7 @@ from GUI.Constants.Constant import *
 from GUI.Items.MenuButton import MenuButton
 from GUI.Backgrounds import Sprites_Loaded, ChessBoard
 
-NUMBER_OF_BUTTONS = 4
+NUMBER_OF_BUTTONS = 5
 BUTTON_SIZE = (240, 70)
 BUTTON_GAP = 13
 CENTER = (DISPLAY_WIDTH // 2, DISPLAY_HEIGHT // 2)
@@ -26,6 +26,7 @@ def start_menu():
     from GUI.Windows.NewGame import start_new_game
     from GUI.Windows.LoadGame import start_load_game
     from GUI.Windows.Options import start_options
+    from GUI.Windows.Leaderboards import start_leaderboards
     screen = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
     ChessBoard.initialize(screen,
                           (Constant.DISPLAY_WIDTH, Constant.DISPLAY_HEIGHT))
@@ -35,6 +36,7 @@ def start_menu():
     background.render(screen)
     button_functionality = [(start_new_game, (screen, clock, background), "START NEW GAME"),
                             (start_load_game, (screen, clock, background), "LOAD GAME"),
+                            (start_leaderboards, (screen, clock, background), "LEADERBOARDS"),
                             (start_options, (screen, clock, background), "OPTIONS"),
                             (sys.exit, 0, "EXIT")]
     buttons = add_buttons(screen, button_functionality)
@@ -48,6 +50,8 @@ def running_loop(screen, clock, buttons, background):
             if event.type == pygame.QUIT:
                 running = False
                 break
+            if event.type == pygame.KEYDOWN:
+                print(pygame.mouse.get_pos())
             for button in buttons:
                 if button.handle_event(event):
                     break

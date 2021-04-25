@@ -27,6 +27,7 @@ class Human(Player):
     def make_move(self, board, args, move="essa"):
         """
         :param board: the board on which the game is played
+        :param args: args to be passed to self.select_move_method
         :param move: the move to be made
         :return: uses super().make_move() to make the move selected by self.select_move()
         """
