@@ -14,8 +14,8 @@ class Piece(ABC):
                                                 - black - False
             position: int
                 the current position of the piece on chess board
-            pinned: bool
-                a flag used to determine if the piece is pinned
+            pinned_squares: set
+                a set containing a list of squares that the piece can move to
             move_set: list
                 a list representing the amount of steps the piece can take
                 in the direction at matching index in Constants.DIRECTION_MATH
@@ -27,6 +27,8 @@ class Piece(ABC):
                 calculates all legal moves for the piece
             make_move(board, start_pos, end_pos)
                 moves a piece [start_pos] to [end_pos]
+            calculate_attacked_fields(board)
+                calculates all the squares that the piece attacks
     """
 
     @abstractmethod
@@ -38,6 +40,10 @@ class Piece(ABC):
         self.possible_moves: list = []
 
     def calculate_legal_moves(self, board):
+        """
+        :param board: Chess.Board.Board, the board on which the piece is standing
+        :return: returns a list of all legal moves for the piece
+        """
         if len(board.attacked_lines) > 1:
             self.pinned_squares = None
             return []
@@ -94,6 +100,10 @@ class Piece(ABC):
         # update all legal moves (to make check checking more optimised)
 
     def calculate_attacked_fields(self, board):
+        """
+        :param board: Chess.Board.Board, the board on which the piece is standing
+        :return: returns the list of all the fields attacked by the piece
+        """
         from Chess.Pieces.King import King
         for index in range(len(self.move_set)):
             interrupted = False

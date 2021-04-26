@@ -26,7 +26,7 @@ class King(Piece):
     def calculate_legal_moves(self, board, calculate_checks=True):
         """
         :param calculate_checks: should the moves that will leave the [self.color] player's king in check be removed
-        :param board: list the board on which the pawn is standing
+        :param board: Chess.Board.Board, the board on which the king is standing
         :return: returns a list of all legal moves for the king with the addition of castling
         """
         legal_moves = []

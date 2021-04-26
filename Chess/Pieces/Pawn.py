@@ -21,16 +21,20 @@ class Pawn(Piece.Piece):
         Attributes
             en_passant: bool
                 if true, the opposing, adjacent pawn will be able to make an absolutely outstanding move
-                called "en passant".
-                Read up on it, if you don't know what that is, honey.
+                called "en passant". Read up on it, if you don't know what that is, honey.
                 If you can't find it, in some countries it appears under an alias: "bicie w przelocie",
                 don't mistake it for "bicie a popular chess piece", or at least not in working hours.
 
         methods
-            calculate_legal_moves(chess_board)
+            calculate_legal_moves(board)
                 calculates all possible moves for a pawn
             make_move(board, start_pos, end_pos)
                 moves the pawn
+            en_passant_pin_check(board, currently_calculated_position)
+                checks if a en_passant move is legal
+            calculate_attacked_fields(board)
+                calculates all the fields that the pawn attacks
+
     """
 
     def __init__(self, color: bool, position: int):
@@ -66,9 +70,8 @@ class Pawn(Piece.Piece):
         else:
             return super().make_move(board, start_pos, move)
 
-    def calculate_legal_moves(self, board, calculate_checks=True):
+    def calculate_legal_moves(self, board):
         """
-        :param calculate_checks: should the moves that will leave the [self.color] player's king in check be removed
         :param board: Chess.Board.Board, the board on which the pawn is standing
         :return: returns a list of all legal moves for the pawn
         """
@@ -91,7 +94,7 @@ class Pawn(Piece.Piece):
                     else:
                         return_list.append((currently_calculated_position, 0))
 
-                # first move
+        # first move
         currently_calculated_position = self.position + (Constants.NORMAL_DIRECTION_MATH[0] * 2 * direction)
         if currently_calculated_position in board.attacked_lines[0] if len(board.attacked_lines) == 1 else True:
             if currently_calculated_position in self.pinned_squares if self.pinned_squares is not None else True:
@@ -109,7 +112,8 @@ class Pawn(Piece.Piece):
                         if isinstance(board.board[currently_calculated_position], type(self)):
                             if not board.board[currently_calculated_position].color == self.color \
                                     and board.board[currently_calculated_position].en_passant:
-                                currently_calculated_position += 8 * direction
+                                if self.en_passant_pin_check(board, currently_calculated_position):
+                                    currently_calculated_position += 8 * direction
                                 if isinstance(board.board[currently_calculated_position], type(None)):
                                     return_list.append((currently_calculated_position, 0))
         # taking
@@ -130,7 +134,50 @@ class Pawn(Piece.Piece):
         self.pinned_squares = None
         return return_list
 
+    def en_passant_pin_check(self, board, currently_calculated_position):
+        """
+        :param board: Chess.Board.Board, the board on which the pawn is standing
+        :param currently_calculated_position: it is the position that is currently calculated
+        :return: returns True if the en_passant move is possible to make, otherwise returns False
+        """
+        current_position = (self.position // 8) * 8
+        first_found_piece = None
+        second_found_piece = None
+        after_pawn_point_flag = False
+        for i in range(8):
+            looked_at_piece = board.board[current_position]
+
+            if current_position == currently_calculated_position \
+               or current_position == self.position:
+                after_pawn_point_flag = True
+            else:
+                if not after_pawn_point_flag:
+                    if not isinstance(looked_at_piece, type(None)):
+                        first_found_piece = looked_at_piece
+                else:
+                    if not isinstance(looked_at_piece, type(None)):
+                        second_found_piece = looked_at_piece
+                        break
+            current_position += 1
+        if isinstance(first_found_piece, type(None)) or isinstance(second_found_piece, type(None)):
+            return True
+
+        if isinstance(first_found_piece, King.King) and first_found_piece.color == self.color:
+            if second_found_piece.color != self.color:
+                if isinstance(second_found_piece, Rook.Rook) or isinstance(second_found_piece, Queen.Queen):
+                    return False
+
+        if isinstance(second_found_piece, King.King) and second_found_piece.color == self.color:
+            if first_found_piece.color != self.color:
+                if isinstance(first_found_piece, Rook.Rook) or isinstance(first_found_piece, Queen.Queen):
+                    return False
+        return True
+
     def calculate_attacked_fields(self, board):
+        """
+        :param board: Chess.Board.Board, the board on which the pawn is standing
+        :return: returns the list of all the fields attacked by the pawn
+        """
         direction = direction_dictionary[self.color]
         for i in range(0, 2):
             currently_calculated_position = self.position \

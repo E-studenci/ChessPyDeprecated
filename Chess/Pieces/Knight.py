@@ -15,6 +15,10 @@ class Knight(Piece):
         self.move_set = [1, 1, 1, 1, 1, 1, 1, 1]
 
     def calculate_attacked_fields(self, board):
+        """
+        :param board: Chess.Board.Board, the board on which the knight is standing
+        :return: returns the list of all the fields attacked by a knight
+        """
         for index in range(len(self.move_set)):
             maximum_move_length = self.move_set[index]
             current_position = self.position
