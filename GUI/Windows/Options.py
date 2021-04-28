@@ -1,23 +1,16 @@
 import pygame
 
-from GUI.Constants.Constant import *
 from GUI import Shapes
-from GUI.Constants import Constant
-
-# Font
-FONT_SIZE = 20
-FONT_HEIGHT = 23
-FONT = ('arial', FONT_SIZE, True, False)
-FONT_COLOR = (255, 255, 255, 10)
+from GUI.Constants import Font, Options, Colors, Display
 
 # Switch
 SWITCH_SIZE = (50, 40)
-SWITCH_HEIGHT_TOTAL = SWITCH_SIZE[1] * 1.5 + FONT_HEIGHT / 2
+SWITCH_HEIGHT_TOTAL = SWITCH_SIZE[1] * 1.5 + Font.FONT_HEIGHT / 2
+STEPS = 16
 
 # General Info
-CENTER = (DISPLAY_WIDTH // 2, DISPLAY_HEIGHT // 2)
 NUMBER_OF_SWITCHES = 2
-SWITCH_STARTING_CENTER = (CENTER[0], CENTER[1] + SWITCH_SIZE[1] / 2)
+SWITCH_STARTING_CENTER = (Display.CENTER[0], Display.CENTER[1] + SWITCH_SIZE[1] / 2)
 OFFSET_COUNT = NUMBER_OF_SWITCHES // 2 if NUMBER_OF_SWITCHES % 2 == 1 else \
     NUMBER_OF_SWITCHES // 3
 OFFSET = 1.5 * SWITCH_HEIGHT_TOTAL
@@ -28,9 +21,7 @@ SWITCH_STARTING_POSITION = (SWITCH_STARTING_CENTER[0],
 SWITCH_GAP = 13
 
 # Background
-BACKGROUND_COLOR = (80, 80, 80)
-BUTTONS_BACKGROUND_COLOR = (0, 0, 0, 150)
-BACKGROUND_STARTING_POS = (CENTER[0], CENTER[1] + FONT_HEIGHT / 3)
+BACKGROUND_STARTING_POS = (Display.CENTER[0], Display.CENTER[1] + Font.FONT_HEIGHT / 3)
 BACKGROUND_SIZE = (SWITCH_SIZE[0] * 2.5,
                    (SWITCH_HEIGHT_TOTAL * (1.5 * NUMBER_OF_SWITCHES)) if NUMBER_OF_SWITCHES % 2 == 1 else
                    (SWITCH_SIZE[1] + SWITCH_HEIGHT_TOTAL * 1.4 * NUMBER_OF_SWITCHES))
@@ -41,13 +32,13 @@ def start_options(args):
     :param args: (screen, clock)
     :return: initialize the options screen
     """
-    switch_functionality = [(mute_sound, Constant.SOUND, "SOUND"),
-                            (mute_music, Constant.MUSIC, "MUSIC")]
+    switch_functionality = [(mute_sound, Options.SOUND, "SOUND"),
+                            (mute_music, Options.MUSIC, "MUSIC")]
     screen = args[0]
     clock = args[1]
     background = args[2]
     background.render(screen)
-    Shapes.draw_rect(screen, BACKGROUND_STARTING_POS, BACKGROUND_SIZE, BUTTONS_BACKGROUND_COLOR)
+    Shapes.draw_rect(screen, BACKGROUND_STARTING_POS, BACKGROUND_SIZE, Colors.BUTTON_BACKGROUND_COLOR)
     switches = add_switches(screen, switch_functionality)
     running_loop(screen, clock, switches, background)
 
@@ -63,10 +54,10 @@ def running_loop(screen, clock, switches, background):
             for switch in switches:
                 switch.handle_event(event)
         background.render(screen)
-        Shapes.draw_rect(screen, BACKGROUND_STARTING_POS, BACKGROUND_SIZE, BUTTONS_BACKGROUND_COLOR)
+        Shapes.draw_rect(screen, BACKGROUND_STARTING_POS, BACKGROUND_SIZE, Colors.BUTTON_BACKGROUND_COLOR)
         for switch in switches:
             switch.render(screen)
-        clock.tick(MAX_FPS)
+        clock.tick(Display.MAX_FPS)
         pygame.display.flip()
 
 
@@ -74,13 +65,18 @@ def add_switches(screen, switch_functionality):
     """
     :param screen: the screen the switches should be rendered on
     :param switch_functionality: a list of tuples (function, args, text)
-    :return:creates a list of NUMBER_OF_SWITCHES switches with chosen functionality and renders them
+    :return: a list of NUMBER_OF_SWITCHES switches with chosen functionality and renders them
     """
     from GUI.Items.Switch import Switch
     switches = []
     for index in range(NUMBER_OF_SWITCHES):
         switch_position = (SWITCH_STARTING_POSITION[0], SWITCH_STARTING_POSITION[1] + OFFSET * index)
-        switch = Switch(switch_position, *SWITCH_SIZE, *switch_functionality[index])
+        switch = Switch(switch_position, SWITCH_SIZE,
+                        Colors.SWITCH_COLOR_OFF, Colors.SWITCH_COLOR_ON, Colors.SWITCH_BUTTON_COLOR,
+                        STEPS,
+                        Font.FONT,
+                        Font.FONT_COLOR,
+                        *switch_functionality[index])
         switch.render(screen)
         switches.append(switch)
     return switches
@@ -88,15 +84,17 @@ def add_switches(screen, switch_functionality):
 
 def mute_sound(mute):
     """
+    Sets Options.SOUND to True, or False depending on mute
+
     :param mute: True, if should mute, false if should turn on
-    :return: sets Constants.SOUND to True, or False depending on mute
     """
-    Constant.SOUND = not mute
+    Options.SOUND = not mute
 
 
 def mute_music(mute):
     """
+    Sets Options.MUSIC to True, or False depending on mute
+
     :param mute: True, if should mute, false if should turn on
-    :return: sets Constants.MUSIC to True, or False depending on mute
     """
-    Constant.MUSIC = not mute
+    Options.MUSIC = not mute

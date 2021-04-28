@@ -26,15 +26,16 @@ class Human(Player):
 
     def make_move(self, board, args, move="essa"):
         """
+        Uses super().make_move() to make the move selected by self.select_move()
+
         :param board: the board on which the game is played
         :param args: args to be passed to self.select_move_method
         :param move: the move to be made
-        :return: uses super().make_move() to make the move selected by self.select_move()
         """
         super().make_move(board, None, self.select_move(args))
 
     def select_move(self, args):
         """
-        :return: uses self.select_move_method to select a move
+        Uses self.select_move_method to select a move
         """
         return self.select_move_method(self.moves, args)

@@ -1,11 +1,13 @@
+from queue import Queue
+
 from Chess.Pieces.Bishop import Bishop
 from Chess.Pieces.Knight import Knight
 from Chess.Pieces.Queen import Queen
 from Chess.Pieces.Rook import Rook
 from GUI import Shapes
 from GUI.Backgrounds import ChessBoard
+from GUI.Constants import Display, Font, Options
 from GUI.Constants.Board import *
-from GUI.Constants.Constant import *
 import pygame
 from GUI.Backgrounds.Sprites_Loaded import SPRITE_DICTIONARY
 
@@ -13,10 +15,8 @@ from GameManagerPackage.GameStatus import GameStatus
 from GameManagerPackage.Players.BotRandom import BotRandom
 from GameManagerPackage.Players.Human import Human
 
-CENTER = (DISPLAY_WIDTH // 2, DISPLAY_HEIGHT // 2)
-
 NUMBER_OF_DROP_DOWN_MENUS = 2
-DROP_DOWN_MENUS_STARTING_POSITION = (CENTER[0], CENTER[1] - 150)
+DROP_DOWN_MENUS_STARTING_POSITION = (Display.CENTER[0], Display.CENTER[1] - 150)
 
 DROP_DOWN_MENU_SIZE = (200, 50)
 OFFSET = DROP_DOWN_MENU_SIZE[1] + 5
@@ -35,7 +35,6 @@ def start_game(args, game):
     ChessBoard.draw_board(screen, (0, 0))
     screen.fill(pygame.Color("white"))
     import threading
-    from queue import Queue
 
     q1 = Queue(maxsize=0)
     q2 = Queue(maxsize=0)
@@ -44,10 +43,12 @@ def start_game(args, game):
     t.daemon = True
     t.start()
     # game.start_game()
-    running_loop(screen, clock, args[2], q1, q2, q3, game)
+    sounds = (pygame.mixer.Sound("untitled-song-22.mp3"),
+              pygame.mixer.Sound("nom-nom-nom_gPJiWn4.mp3"))
+    running_loop(screen, clock, args[2], q1, q2, q3, game, sounds)
 
 
-def running_loop(screen, clock, background, q1, q2, q3, game):
+def running_loop(screen, clock, background, q1, q2, q3, game, sounds):
     running = True
     selecting_move = False
     game_ended = False
@@ -120,10 +121,20 @@ def running_loop(screen, clock, background, q1, q2, q3, game):
                 # if chosen move leads to promotion, draw pieces depicting available promotions
                 draw_promotions(screen, move[0])
         if game_ended:
-            Shapes.draw_text(screen, CENTER, str(game_status.name), FONT, FONT_COLOR)
-        clock.tick(MAX_FPS)
+            Shapes.draw_text(screen, Display.CENTER, str(game_status.name), Font.FONT, Font.FONT_COLOR)
+        # if temp[2][0]:
+        #     play_sound(sounds, temp[2][1])
+        clock.tick(Display.MAX_FPS)
         q3.task_done()
         pygame.display.flip()
+
+
+def play_sound(sounds, take):
+    if Options.SOUND:
+        if take:
+            sounds[1].play()
+        else:
+            sounds[0].play()
 
 
 def choose_move(moves, sq_index, start_pos):

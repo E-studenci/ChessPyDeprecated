@@ -1,12 +1,10 @@
-from Chess.Board.Board import Board
+import threading
+from queue import Queue
+
 from GUI.Backgrounds import ChessBoard
 import pygame
 from PIL import Image, ImageFilter
-import random
-from GUI.Backgrounds.Sprites_Loaded import SPRITE_DICTIONARY
-
-COLOR_F0D9B5 = (240, 217, 181)
-COLOR_946F51 = (148, 111, 81)
+from GameManagerPackage.GameManager import GameManager
 
 FRAMES_BETWEEN_MOVES = 100
 
@@ -32,29 +30,30 @@ class ChessBackground:
                     draws board on the screen
         """
 
-    def __init__(self, size, fen_init="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"):
+    def __init__(self, size, bot_1, bot_2, bot_delay,
+                 fen_init="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"):
         self.size = size
         self.square_size = size[0] // 8
-        self.board = Board()
-        self.board.initialize_board(fen_init)
         self.image = None
         self.board_image = None
-        self.counter: int = 0
-        self.pause = False
+        self.__pause = False
+        p_1 = bot_1("", True, bot_delay)
+        p_2 = bot_2("", False, bot_delay)
+        self.__q3 = Queue()
+        self.game = GameManager(p_1, p_2)
 
-    def update(self, screen):
+        t = threading.Thread(target=self.game.start_game, args=(Queue(), Queue(), self.__q3))
+        t.daemon = True
+        t.start()
+
+    def __update(self, screen):
         """
+        Makes a move and updates self.image
+
         :param screen: the screen on which the board is to be rendered
-        :return: makes a move and updates self.image
         """
-        moves = self.board.calculate_all_legal_moves(self.board.turn)
-        start_pos = random.choice(list(moves.keys()))
-        while not moves[start_pos]:
-            start_pos = random.choice(list(moves.keys()))
-        move = random.choice(moves[start_pos])
-        self.board.make_move(start_pos, move)
-        screen.blit(ChessBoard.CHESS_BOARD, (0, 0))
-        ChessBoard.draw_pieces(screen, self.board, True)
+        ChessBoard.draw_board(screen, (0, 0))
+        ChessBoard.draw_pieces(screen, self.game.board, True)
         image_string = pygame.image.tostring(screen, 'RGBA', False)
         image_blurred = Image.frombytes("RGBA", self.size, bytes(image_string)). \
             filter(ImageFilter.GaussianBlur(radius=3))
@@ -62,12 +61,24 @@ class ChessBackground:
 
     def render(self, screen):
         """
+        Renders self.image, and updates it every FRAMES_BETWEEN_MOVES frames
+
         :param screen: the screen on which the board is to be rendered
-        :return: renders self.image, and updates it every FRAMES_BETWEEN_MOVES frames
         """
+        if self.image is None:
+            self.__update(screen)
         if not self.pause:
-            if self.counter % FRAMES_BETWEEN_MOVES == 0:
-                self.update(screen)
-                self.counter = 0
+            temp = self.__q3.get()
+            if temp[2][0]:
+                self.__update(screen)
             screen.blit(self.image, (0, 0))
-            self.counter += 1
+            self.__q3.task_done()
+
+    @property
+    def pause(self):
+        return self.__pause
+
+    @pause.setter
+    def pause(self, pause):
+        self.__pause = pause
+        self.game.pause = pause

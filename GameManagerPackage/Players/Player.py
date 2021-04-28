@@ -26,9 +26,10 @@ class Player(ABC):
 
     def make_move(self, board, args, move):
         """
+        Makes the move on the board
+
         :param board: the board on which the game is played
         :param move: the move to be made
-        :return: makes the move on the board
         """
         board.make_move(*move)
 

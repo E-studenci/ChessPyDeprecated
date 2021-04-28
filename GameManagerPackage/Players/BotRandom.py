@@ -1,3 +1,4 @@
+import time
 import random
 
 from GameManagerPackage.Players.Player import Player
@@ -12,6 +13,8 @@ class BotRandom(Player):
         color: bool
             - True if White
             - False if Black
+        delay: int
+            seconds between moves
 
     Methods:
         make_move:
@@ -20,24 +23,26 @@ class BotRandom(Player):
             uses sheer luck to select a move
     """
 
-    def __init__(self, name: str, color: bool):
+    def __init__(self, name: str, color: bool, delay):
         super().__init__(name, True, color)
+        self.delay = delay
 
     def make_move(self, board, args, move="essa"):
         """
+        Uses super().make_move() to make the move selected by self.select_move()
+
         :param board: the board on which the game is played
+        :param args: unused
         :param move: the move to be made
-        :return: uses super().make_move() to make the move selected by self.select_move()
         """
         super().make_move(board, None, self.select_move(args))
 
     def select_move(self, args):
         """
-        :return: selects a random legal move
+        Selects a random legal move
         """
         start_pos = random.choice(list(self.moves.keys()))
         while not self.moves[start_pos]:
             start_pos = random.choice(list(self.moves.keys()))
-        import time
-        time.sleep(1)
+        time.sleep(self.delay)
         return start_pos, random.choice(self.moves[start_pos])
