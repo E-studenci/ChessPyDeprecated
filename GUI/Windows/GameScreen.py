@@ -29,6 +29,9 @@ PLAYERS_DICTIONARY = {"Human":      Human,
 
 
 def start_game(args, game):
+    """
+    Starts a game and the running_loop
+    """
     screen = args[0]
     clock = args[1]
     args[2].pause = True
@@ -42,7 +45,6 @@ def start_game(args, game):
     t = threading.Thread(target=game.start_game, args=(q1, q2, q3))
     t.daemon = True
     t.start()
-    # game.start_game()
     running_loop(screen, clock, args[2], q1, q2, q3, game, sounds)
 
 
