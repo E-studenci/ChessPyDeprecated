@@ -43,8 +43,6 @@ def start_game(args, game):
     t.daemon = True
     t.start()
     # game.start_game()
-    sounds = (pygame.mixer.Sound("untitled-song-22.mp3"),
-              pygame.mixer.Sound("nom-nom-nom_gPJiWn4.mp3"))
     running_loop(screen, clock, args[2], q1, q2, q3, game, sounds)
 
 
