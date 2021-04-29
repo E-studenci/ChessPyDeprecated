@@ -14,8 +14,9 @@ SPRITE_DICTIONARY = {(Pawn.Pawn, False):     None, (Pawn.Pawn, True): None,
 
 def initialize(size):
     """
+    Initializes SPRITE_DICTIONARY
+
     :param size: the final size of each piece sprite
-    :return: initializes SPRITE_DICTIONARY
     """
     paths = {(Pawn.Pawn, False):     'black_pawn.png', (Pawn.Pawn, True): 'white_pawn.png',
              (Knight.Knight, False): 'black_knight.png', (Knight.Knight, True): 'white_knight.png',
@@ -30,9 +31,11 @@ def initialize(size):
 
 def load_sprite(path, size):
     """
+    Loads a sprite, resizes it, and puts some sick antialiasing on it
+
     :param path: path to its sprite
     :param size: final size after resizing
-    :return: loads a sprite, resizes it, and puts some sick antialiasing on it
+    :return: returns the antialiased image
     """
     image = pygame.image.load(os.path.join('..', "Sprites", 'Pieces', path))
     image_string = pygame.image.tostring(image, 'RGBA')
