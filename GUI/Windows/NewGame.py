@@ -25,6 +25,11 @@ PLAYERS_DICTIONARY = {"HUMAN":      Human,
 
 
 def start_new_game(args, fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"):
+    """
+    Starts the game
+    
+    :param args: (screen, clock, background)
+    """
     screen = args[0]
     clock = args[1]
     background = args[2]
@@ -70,6 +75,9 @@ def running_loop(screen, clock, background, drop_down_menus, start_game_button, 
 
 
 def add_text_input_boxes(screen, text_input_box_functionality, initial_messages, max_size):
+    """
+    :returns a list of text_input_boxes with selected functionality
+    """
     from GUI.Items.TextInputBox import TextInputBox
     text_input_boxes = []
     for index in range(len(text_input_box_functionality)):
@@ -104,6 +112,10 @@ def add_drop_down_menus(screen, text):
 
 
 def can_start_game(drop_down_menus):
+    """  
+    :param drop_down_menus: menus used to select players
+    :returns True if both players have been selected in [drop_down_menus] else False
+    """
     for index in range(len(drop_down_menus)):
         if drop_down_menus[index].main == DROP_DOWN_MENUS_TEXT[index][0]:
             return False
@@ -111,6 +123,9 @@ def can_start_game(drop_down_menus):
 
 
 def start_game(args):
+    """
+    Invokes GameScreen.start_game(args) with a game created with iboth players
+    """
     from GUI.Windows.GameScreen import select_move_2
     player_one_color = bool(random.randint(0, 1))
     players = []
