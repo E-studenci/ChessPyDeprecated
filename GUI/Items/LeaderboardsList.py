@@ -20,13 +20,16 @@ class LeaderboardsList:
             the amount of records from the file to render
         source_file
             the path to the source file
+        text_empty
+            the message to display if there are no records
 
     Methods
         render(screen)
             renders the leaderboard on the screen
     """
 
-    def __init__(self, center, font, font_color, background_color, max_amount_of_records, source_file):
+    def __init__(self, center, font, font_color, background_color, max_amount_of_records, source_file,
+                 text_empty="PLAY MORE GAMES"):
         self.center = center
         self.font = font
         self.font_color = font_color
@@ -37,6 +40,7 @@ class LeaderboardsList:
         self.single_row_size = self.__calculate_size()
         self.size = (self.single_row_size[0] + 20, self.single_row_size[1] * len(self.rows) + 20)
         self.top_left = (self.center[0] - self.size[0] // 2, self.center[1] - self.size[1] // 2)
+        self.text_empty = text_empty
 
     def __read_file(self):
         ret_list = []
@@ -65,9 +69,15 @@ class LeaderboardsList:
 
         :param screen: the screen the leaderboard should be drawn on
         """
-        Shapes.draw_rect(screen, self.center, self.size, self.background_color)
-        top_left = self.top_left
-        for i in range(len(self.rows)):
-            row_center = (self.center[0], top_left[1] + self.single_row_size[1] // 2)
-            Shapes.draw_text(screen, row_center, self.rows[i], self.font, self.font_color)
-            top_left = (top_left[0], top_left[1] + (self.single_row_size[1] + 4))
+        if len(self.rows) > 0:
+            Shapes.draw_rect(screen, self.center, self.size, self.background_color)
+            top_left = self.top_left
+            for i in range(len(self.rows)):
+                row_center = (self.center[0], top_left[1] + self.single_row_size[1] // 2)
+                Shapes.draw_text(screen, row_center, self.rows[i], self.font, self.font_color)
+                top_left = (top_left[0], top_left[1] + (self.single_row_size[1] + 4))
+        else:
+            font = pygame.font.SysFont(*self.font)
+            text_rect = font.render(self.text_empty, True, self.font_color)
+            Shapes.draw_rect(screen, self.center, text_rect.get_size(), self.background_color)
+            Shapes.draw_text(screen, self.center, self.text_empty, self.font, self.font_color)
