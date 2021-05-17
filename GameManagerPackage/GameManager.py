@@ -113,7 +113,7 @@ class GameManager:
         """
         :return: returns legal moves for the player from self.board
         """
-        return self.board.calculate_all_legal_moves(self.board.turn)
+        return self.board.calculate_all_legal_moves()
 
     def insufficient_material(self):
         """

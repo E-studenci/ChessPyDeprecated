@@ -23,7 +23,7 @@ class BotRandom(Player):
             uses sheer luck to select a move
     """
 
-    def __init__(self, name: str, color: bool, delay):
+    def __init__(self, name: str, color: bool, delay=1):
         super().__init__(name, True, color)
         self.delay = delay
 

@@ -89,7 +89,7 @@ def add_text_input_boxes(screen, text_input_box_functionality, initial_messages,
                                       Colors.TEXT_INPUT_BOX_COLOR_ACTIVE,
                                       Colors.TEXT_INPUT_BOX_COLOR_INACTIVE,
                                       Colors.TEXT_INPUT_BOX_COLOR_INCORRECT,
-                                      Font.FONT, Font.FONT_COLOR)
+                                      Font.FONT, Font.FONT_COLOR, max_size=15)
         text_input_box.render(screen)
         text_input_boxes.append(text_input_box)
     return text_input_boxes
@@ -142,4 +142,4 @@ def start_game(args):
                                                                color))
     game = GameManager(players[0], players[1], args[1])
     args = args[3]
-    GameScreen.start_game(args, game)
+    GameScreen.start_game(args, game, player_one_color)

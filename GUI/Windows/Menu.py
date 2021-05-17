@@ -84,3 +84,6 @@ def add_buttons(screen, button_functionality):
         button.render(screen)
         buttons.append(button)
     return buttons
+
+if __name__ == '__main__':
+    start_menu()
