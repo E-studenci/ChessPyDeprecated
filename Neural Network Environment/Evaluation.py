@@ -61,11 +61,12 @@ def evaluate(board, current_turn, all_legal_moves, PESTO=True):
 
     string_board = convert_board_to_string_board(board.board)
     endgame = is_endgame(string_board)
-    score, doubled_pawns, isolated_pawns, blocked_pawns = eval(string_board, current_turn, endgame, PESTO)
+    # score, doubled_pawns, isolated_pawns, blocked_pawns = eval(string_board, current_turn, endgame, PESTO)
+    score, doubled_pawns, isolated_pawns, blocked_pawns = eval_white_black(string_board, endgame, PESTO)
     score = PIECE_POINT_VALUE * score
-    score -= DOUBLED_BLOCKED_ISOLATED_PAWNS_VALUE * (doubled_pawns + isolated_pawns + blocked_pawns)
+    # score -= DOUBLED_BLOCKED_ISOLATED_PAWNS_VALUE * (doubled_pawns + isolated_pawns + blocked_pawns)
 
-    return score
+    return score * [-1, 1][current_turn]
 
 
 def moves_count(legal_moves):
@@ -100,10 +101,13 @@ def is_endgame_2(board):
     return minor_pieces <= ENDGAME_PIECES
 
 
-def piece_value(point_dictionary, piece, endgame, PESTO, multiplier, position):
-    piece_points = point_dictionary[piece[1]][[0, 1][PESTO]][0][[0, 1][endgame]]
-    piece_position = point_dictionary[piece[1]][[0, 1][PESTO]][1][[0, 1][endgame]][-multiplier * position]
-    return piece_points + piece_position
+def piece_value(point_dictionary, piece, endgame, PESTO, color, position):
+    piece_lists = point_dictionary[piece[1]][[0, 1][PESTO]]
+    endgame_index = [0, 1][endgame]
+    relative_piece_position_index = [1, -1][color] * position + [0, -1][color]
+    piece_value = piece_lists[0][endgame_index]
+    position_value = piece_lists[1][endgame_index][relative_piece_position_index]
+    return piece_value + position_value
 
 
 def eval(board, current_turn, endgame=False, PESTO=True):
@@ -137,6 +141,38 @@ def eval(board, current_turn, endgame=False, PESTO=True):
         doubled_pawns += count_current if count_current > 1 else 0
         doubled_pawns -= count_opposite if count_opposite > 1 else 0
     return score, doubled_pawns, isolated_pawns, blocked_pawns
+
+
+def eval_white_black(board, endgame=False, PESTO=True):
+    score = [0] * 2
+    doubled_pawns = [0] * 2
+    isolated_pawns = [0] * 2
+    blocked_pawns = [0] * 2
+    columns = [[0] * 8, [0] * 8]
+    for position in board.keys():
+        piece = board[position]
+        piece_color = piece[0] == "w"
+        score[piece_color] += piece_value(POINT_DICTIONARY, piece, endgame, PESTO, piece_color, position)
+        if piece[1] == 'p':
+            # count doubled pawns
+            columns[piece_color][position % 8] += 1
+            # count blocked pawns
+            if position + 8 * [-1, 1][piece_color] in board:
+                blocked_pawns[piece_color] += 1
+            # count isolated pawns
+            surrounding_pawns = False
+            for direction in [-1, 7, 8, 9, 1, -7, -8, -9]:
+                if (position + direction) in board and board[position + direction] == board[position]:
+                    surrounding_pawns = True
+            if not surrounding_pawns:
+                isolated_pawns[piece_color] += 1
+    for count_black, count_white in zip(columns[0], columns[1]):
+        doubled_pawns[0] += [0, count_black][count_black > 1]
+        doubled_pawns[1] += [0, count_white][count_white > 1]
+    return score[1] - score[0], \
+           doubled_pawns[1] - doubled_pawns[0], \
+           isolated_pawns[1] - isolated_pawns[0], \
+           blocked_pawns[1] - blocked_pawns[0]
 
 
 # _________________________ALPHA-BETA-PRUNING____________________________
@@ -182,10 +218,11 @@ def order_moves(board, legal_moves, PESTO, endgame, last_moved_piece, reverse):
 
 
 def alpha_beta_max(alpha, beta, depthleft, board, PESTO, last_moved_piece):
+    all_legal_moves = board.calculate_all_legal_moves()
     if depthleft == 0:
-        return evaluate(board, board.turn, PESTO)
+        return evaluate(board, board.turn, all_legal_moves, PESTO)
     endgame = is_endgame_2(board)
-    current_all_legal_moves = order_moves(board, board.calculate_all_legal_moves(),
+    current_all_legal_moves = order_moves(board, all_legal_moves,
                                           PESTO, endgame, last_moved_piece, True)
     for move in current_all_legal_moves:
         board.make_move(move[0], move[1])
@@ -199,11 +236,12 @@ def alpha_beta_max(alpha, beta, depthleft, board, PESTO, last_moved_piece):
 
 
 def alpha_beta(board, alpha, beta, depthleft, PESTO, last_moved_piece):
-    bestscore = -9999
+    all_legal_moves = board.calculate_all_legal_moves()
+    bestscore = float("-inf")
     if depthleft <= 0:
-        return evaluate(board, board.turn, board.calculate_all_legal_moves(), PESTO)
+        return evaluate(board, board.turn, all_legal_moves, PESTO)
     endgame = is_endgame_2(board)
-    current_all_legal_moves = order_moves(board, board.calculate_all_legal_moves(),
+    current_all_legal_moves = order_moves(board, all_legal_moves,
                                           PESTO, endgame, last_moved_piece, True)
     for move in current_all_legal_moves:
         board.make_move(move[0], move[1])
@@ -239,10 +277,11 @@ def quiesce(board, alpha, beta, PESTO):
 
 
 def alpha_beta_min(alpha, beta, depthleft, board, PESTO, last_moved_piece):
+    all_legal_moves = board.calculate_all_legal_moves()
     if depthleft == 0:
-        return -evaluate(board, board.turn, PESTO)
+        return -evaluate(board, board.turn, all_legal_moves, PESTO)
     endgame = is_endgame_2(board)
-    current_all_legal_moves = order_moves(board, board.calculate_all_legal_moves(),
+    current_all_legal_moves = order_moves(board, all_legal_moves,
                                           PESTO, endgame, last_moved_piece, True)
     for move in current_all_legal_moves:
         board.make_move(move[0], move[1])
@@ -257,6 +296,52 @@ def alpha_beta_min(alpha, beta, depthleft, board, PESTO, last_moved_piece):
 
 def alpha_beta_score(depth, board, PESTO):
     return alpha_beta_max(float("-inf"), float("inf"), depth, board, PESTO, 0)
+
+
+def read_val_data(filepath="chessData.csv"):
+    x_val = []
+    y_val = []
+    with open(filepath) as data:
+        data.readline()
+        for i in range(1, 1000):
+            exception = False
+            try:
+                line = data.readline()
+                x, y = line.split(",")
+            except ValueError:
+                exception = True
+            if not exception:
+                y = y.replace("#", "")
+                y = int(y.replace("\n", ""))
+                x_val.append(x)
+                y_val.append(int(y) / 100)
+    # file = open(filepath)
+    # lines = file.readlines()
+    # for i in range(1, len(lines) // 10):
+    #     exception = False
+    #     try:
+    #         x, y = lines[i].split(",")
+    #     except ValueError:
+    #         exception = True
+    #     if not exception:
+    #         x_val.append(x)
+    #         y_val.append(y / 100)
+    return x_val, y_val
+
+
+def test(x_val, y_val):
+    board = Board()
+    y_pred = y_pred2 = y_pred3 = 0
+    for x, y in zip(x_val, y_val):
+        if y <= 0:
+            board.initialize_board(x)
+            # y_pred = alpha_beta(board, -100000, 100000, 3, True, 0)
+            # y_pred2 = alpha_beta(board, -100000, 100000, 3, False, 0)
+            # y_pred3 = alpha_beta(board, -100000, 100000, 5, True, 0)
+            y_pred = alpha_beta(board, -100000, 100000, 3, False, 0)
+            # y_pred2 = alpha_beta(board, -100000, 100000, 5, False, 0)
+            # y_pred = alpha_beta_score(4, board, True)
+            print(f'{x},\t\t {y_pred}, {y_pred2}, {y_pred3}, \t{y}')
 
 
 leaf_count = 0
@@ -276,20 +361,21 @@ if __name__ == '__main__':
     #     _ = order_moves(board, moves, True, False, None, True)
     # end = datetime.now()
     # print(end - start)
-
+    x_val, y_val = read_val_data()
+    test(x_val, y_val)
     print("r3k2r/pb2qpbp/1pn1pnp1/2PpP3/2B2B2/2N2N2/PPPQ1PPP/R3K2R w KQkq - 0 1")
-    for i in range(20):
-        move_count = 0
-        start = datetime.now()
-        print(-alpha_beta(board, -100000, -100000, i - 1, True, 0))
-        end = datetime.now()
-        print(i, end - start, move_count, leaf_count)
-        leaf_count = 0
     # for i in range(20):
     #     move_count = 0
     #     start = datetime.now()
-    #     print(alpha_beta_score(i, board, True))
+    #     print(-alpha_beta(board, -100000, -100000, i - 1, True, 0))
     #     end = datetime.now()
-    #     print(i, end - start, move_count)
+    #     print(i, end - start, move_count, leaf_count)
+    #     leaf_count = 0
+    for i in range(20):
+        move_count = 0
+        start = datetime.now()
+        print(alpha_beta_score(i, board, True))
+        end = datetime.now()
+        print(i, end - start, move_count)
 
     order_moves(board, board.calculate_all_legal_moves(), True, True)
