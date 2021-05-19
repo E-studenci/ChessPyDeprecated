@@ -1,4 +1,6 @@
 import random
+from functools import partial
+
 import pygame
 
 from GUI.Constants import Display, Font, Colors
@@ -6,8 +8,10 @@ from GUI.Items.DropDownMenu import DropDownMenu
 from GUI.Items.MenuButton import MenuButton
 from GUI.Windows import GameScreen
 from GameManagerPackage.GameManager import GameManager
-from GameManagerPackage.Players.BotRandom import BotRandom
+from GameManagerPackage.Players.Bot import Bot
 from GameManagerPackage.Players.Human import Human
+from GameManagerPackage.Players.BotSelectMoveMethods import *
+from GUI.Windows.GameScreen import select_move_2
 
 NUMBER_OF_DROP_DOWN_MENUS = 2
 DROP_DOWN_MENUS_STARTING_POSITION = (Display.CENTER[0], Display.CENTER[1] - 150)
@@ -17,17 +21,18 @@ START_GAME_BUTTON_SIZE = (200, 50)
 DROP_DOWN_MENU_SIZE = (200, 50)
 OFFSET = DROP_DOWN_MENU_SIZE[1] + 5
 
-CHOICES = ["HUMAN", "BOT RANDOM"]
+PLAYERS_DICTIONARY = {"HUMAN":          partial(Human, select_move_method=select_move_2),
+                      "BOT RANDOM":     partial(Bot, select_move_method=random_move),
+                      "BOT ALPHA-BETA": partial(Bot, select_move_method=alpha_beta)}
+CHOICES = list(PLAYERS_DICTIONARY.keys())
 DROP_DOWN_MENUS_TEXT = [("PLAYER ONE", CHOICES),
                         ("PLAYER TWO", CHOICES)]
-PLAYERS_DICTIONARY = {"HUMAN":      Human,
-                      "BOT RANDOM": BotRandom}
 
 
 def start_new_game(args, fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"):
     """
     Starts the game
-    
+
     :param args: (screen, clock, background)
     """
     screen = args[0]
@@ -112,7 +117,7 @@ def add_drop_down_menus(screen, text):
 
 
 def can_start_game(drop_down_menus):
-    """  
+    """
     :param drop_down_menus: menus used to select players
     :returns True if both players have been selected in [drop_down_menus] else False
     """
@@ -126,20 +131,12 @@ def start_game(args):
     """
     Invokes GameScreen.start_game(args) with a game created with iboth players
     """
-    from GUI.Windows.GameScreen import select_move_2
     player_one_color = bool(random.randint(0, 1))
     players = []
     for i in range(len(args[0])):
         player_name = None if args[4][i].text == args[4][i].initial_text else args[4][i].text
         color = player_one_color if i == 0 else not player_one_color
-        if args[0][i].main == CHOICES[0]:
-            players.append(PLAYERS_DICTIONARY[args[0][i].main](player_name,
-                                                               color,
-                                                               select_move_2
-                                                               ))
-        else:
-            players.append(PLAYERS_DICTIONARY[args[0][i].main](player_name,
-                                                               color))
+        players.append(PLAYERS_DICTIONARY[args[0][i].main](player_name, color))
     game = GameManager(players[0], players[1], args[1])
     args = args[3]
     GameScreen.start_game(args, game, player_one_color)

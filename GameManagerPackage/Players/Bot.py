@@ -4,7 +4,7 @@ import random
 from GameManagerPackage.Players.Player import Player
 
 
-class BotRandom(Player):
+class Bot(Player):
     """
     A class representing a bot making random moves
     Attributes:
@@ -23,9 +23,10 @@ class BotRandom(Player):
             uses sheer luck to select a move
     """
 
-    def __init__(self, name: str, color: bool, delay=1):
+    def __init__(self, name: str, color: bool, select_move_method, delay=1):
         super().__init__(name, True, color)
         self.delay = delay
+        self.select_move_method = select_move_method
 
     def make_move(self, board, args, move="essa"):
         """
@@ -41,8 +42,5 @@ class BotRandom(Player):
         """
         Selects a random legal move
         """
-        start_pos = random.choice(list(self.moves.keys()))
-        while not self.moves[start_pos]:
-            start_pos = random.choice(list(self.moves.keys()))
-        time.sleep(self.delay)
-        return start_pos, random.choice(self.moves[start_pos])
+        ret = (self.select_move_method())
+        return

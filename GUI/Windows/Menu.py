@@ -6,7 +6,7 @@ from GUI.Constants import Colors, Font, Display, Board
 from GUI.Backgrounds.ChessBackground import ChessBackground
 from GUI.Items.MenuButton import MenuButton
 from GUI.Backgrounds import Sprites_Loaded, ChessBoard
-from GameManagerPackage.Players.BotRandom import BotRandom
+from GameManagerPackage.Players.Bot import Bot
 
 NUMBER_OF_BUTTONS = 5
 BUTTON_SIZE = (240, 70)
@@ -32,7 +32,7 @@ def start_menu():
                           (Display.DISPLAY_WIDTH, Display.DISPLAY_HEIGHT))
     pygame.display.set_caption('')
     clock = pygame.time.Clock()
-    background = ChessBackground((Display.DISPLAY_WIDTH, Display.DISPLAY_HEIGHT), BotRandom, BotRandom, 2)
+    background = ChessBackground((Display.DISPLAY_WIDTH, Display.DISPLAY_HEIGHT), Bot, Bot, 2)
     background.render(screen)
     button_functionality = [(start_new_game, (screen, clock, background), "START NEW GAME"),
                             (start_load_game, (screen, clock, background), "LOAD GAME"),
