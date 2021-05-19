@@ -1,3 +1,5 @@
+import tensorflow as tensorflow
+
 from Chess.Board.Board import Board
 from Chess.Pieces.Bishop import Bishop
 from Chess.Pieces.King import King
@@ -219,3 +221,53 @@ def quiesce(board, alpha, beta, PESTO):
                 if score > alpha:
                     alpha = score
     return alpha
+
+
+to_name_later = {
+    (Pawn, 1):   0,
+    (Knight, 1): 1,
+    (Bishop, 1): 2,
+    (Rook, 1):   3,
+    (Queen, 1):  4,
+    (King, 1):   5,
+    (Pawn, 0):   6,
+    (Knight, 0): 7,
+    (Bishop, 0): 8,
+    (Rook, 0):   9,
+    (Queen, 0):  10,
+    (King, 0):   11,
+}
+
+
+def convert_board(board):
+    import numpy
+    ret_array = numpy.zeros((14, 8, 8))
+    attacked_fields_ = attacked_fields(board)
+    ret_array[12] = numpy.flip(numpy.reshape(attacked_fields_[1], (-1, 8)), 1)
+    ret_array[13] = numpy.flip(numpy.reshape(attacked_fields_[0], (-1, 8)), 1)
+    for i, piece in enumerate(board.board):
+        if piece is not None:
+            row, col = (7 - i // 8), i % 8
+            ret_array[to_name_later[(type(piece), piece.color)]][row][col] = 1
+
+    ret_array = numpy.expand_dims(ret_array, 0)
+    return ret_array
+
+
+def attacked_fields(board):
+    attacked_fields = [None, None]
+    attacked_fields[1 - board.turn] = board.attacked_fields[::-1]
+    board.turn = not board.turn
+    board.calculate_all_attacked_fields()
+    attacked_fields[1 - board.turn] = board.attacked_fields[::-1]
+    board.turn = not board.turn
+    return attacked_fields
+
+
+if __name__ == '__main__':
+    board = Board()
+    board.initialize_board("r3k2r/p3qpbp/1p2pnp1/8/3n4/2NQ3N/PPP2PbP/R3K2R b kq - 1 3")
+    model = tensorflow.keras.models.load_model('model.h5')
+    board.calculate_all_attacked_fields()
+    x = convert_board(board)
+    print(model.predict(x)[0][0])
