@@ -20,6 +20,9 @@ def initialize_list_from_FEN(fen: str):
 
     fen_string_list: list = fen.split(' ')
 
+    if len(fen_string_list) != 6:
+        return None, None, None, None, None
+
     piece_positions: str = fen_string_list[0]
 
     side_to_move: bool = True if fen_string_list[1] == 'w' else False
@@ -50,7 +53,7 @@ def initialize_list_from_FEN(fen: str):
                         king_pos[True] = index
                 index += 1
             else:
-                return [], True, 0, 0
+                return None, None, None, None, None
         else:
             index -= 16
 
