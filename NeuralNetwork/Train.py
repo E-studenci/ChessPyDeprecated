@@ -30,8 +30,8 @@ def train(picked_model, model_name, optimizer, loss, ):
               callbacks=[callbacks.ReduceLROnPlateau(monitor='loss', patience=10),
                          callbacks.EarlyStopping(monitor='loss', patience=15, min_delta=1e-4)])
 
-    model.save(f'{model_name}.h5')
+    model.save(f'TrainedModels/{model_name}.h5')
 
 
 if __name__ == '__main__':
-    train(build_model_residual(32, 4), 'new_model', optimizers.Adam(5e-4), 'mean_squared_error')
+    train(build_model(32, 4), 'convolutional_model_v1-32-4', optimizers.Adam(5e-4), 'mean_squared_error')
