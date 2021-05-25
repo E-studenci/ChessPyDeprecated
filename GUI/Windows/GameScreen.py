@@ -7,13 +7,13 @@ from Chess.Pieces.Rook import Rook
 from GUI import Shapes
 from GUI.Backgrounds import ChessBoard
 from GUI.Constants import Display, Font, Options, Colors
-from GUI.Constants.Board import *
+from GUI.Constants.BoardConst import *
 import pygame
 from GUI.Backgrounds.Sprites_Loaded import SPRITE_DICTIONARY
 
-from GameManagerPackage.GameStatus import GameStatus \
- \
- \
+from GameManagerPackage.GameStatus import GameStatus
+
+
 def start_game(args, game, player_one_color):
     """
     Starts a game and the running_loop
@@ -268,13 +268,3 @@ def get_square_index(mouse_pos):
     return index
 
 
-def select_move_2(moves, args):
-    """
-    :param moves: the legal moves to be put into args[1]
-    :param args: (q1,q2) queues for storing moves
-    :return: puts [moves] into q2, returns move from q1
-    """
-    args[1].put(moves)
-    move = args[0].get()
-    args[0].task_done()
-    return move

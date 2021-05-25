@@ -37,8 +37,8 @@ class ChessBackground:
         self.image = None
         self.board_image = None
         self.__pause = False
-        p_1 = bot_1("", True, bot_delay)
-        p_2 = bot_2("", False, bot_delay)
+        p_1 = bot_1("", True, delay=bot_delay)
+        p_2 = bot_2("", False, delay=bot_delay)
         self.__q3 = Queue()
         self.game = GameManager(p_1, p_2)
 
