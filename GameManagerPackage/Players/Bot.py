@@ -36,11 +36,11 @@ class Bot(Player):
         :param args: unused
         :param move: the move to be made
         """
-        super().make_move(board, None, self.select_move(args))
+        super().make_move(board, None, self.select_move((board, board.calculate_all_legal_moves())))
 
     def select_move(self, args):
         """
         Selects a random legal move
         """
-        ret = (self.select_move_method())
-        return
+        time.sleep(self.delay)
+        return self.select_move_method(*args)

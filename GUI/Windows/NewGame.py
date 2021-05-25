@@ -1,6 +1,3 @@
-import random
-from functools import partial
-
 import pygame
 
 from GUI.Constants import Display, Font, Colors
@@ -8,10 +5,7 @@ from GUI.Items.DropDownMenu import DropDownMenu
 from GUI.Items.MenuButton import MenuButton
 from GUI.Windows import GameScreen
 from GameManagerPackage.GameManager import GameManager
-from GameManagerPackage.Players.Bot import Bot
-from GameManagerPackage.Players.Human import Human
-from GameManagerPackage.Players.BotSelectMoveMethods import *
-from GUI.Windows.GameScreen import select_move_2
+from GameManagerPackage.Players.PlayerConstructors import *
 
 NUMBER_OF_DROP_DOWN_MENUS = 2
 DROP_DOWN_MENUS_STARTING_POSITION = (Display.CENTER[0], Display.CENTER[1] - 150)
@@ -21,9 +15,10 @@ START_GAME_BUTTON_SIZE = (200, 50)
 DROP_DOWN_MENU_SIZE = (200, 50)
 OFFSET = DROP_DOWN_MENU_SIZE[1] + 5
 
-PLAYERS_DICTIONARY = {"HUMAN":          partial(Human, select_move_method=select_move_2),
-                      "BOT RANDOM":     partial(Bot, select_move_method=random_move),
-                      "BOT ALPHA-BETA": partial(Bot, select_move_method=alpha_beta)}
+PLAYERS_DICTIONARY = {"HUMAN":          human,
+                      "BOT RANDOM":     random_bot,
+                      "BOT ALPHA-BETA": alpha_beta_handcrafted_bot}
+
 CHOICES = list(PLAYERS_DICTIONARY.keys())
 DROP_DOWN_MENUS_TEXT = [("PLAYER ONE", CHOICES),
                         ("PLAYER TWO", CHOICES)]

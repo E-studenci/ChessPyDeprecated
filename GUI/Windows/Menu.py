@@ -2,12 +2,11 @@ import sys
 
 import pygame
 
-from GUI.Constants import Colors, Font, Display, Board
+from GUI.Constants import Colors, Font, Display, BoardConst
 from GUI.Backgrounds.ChessBackground import ChessBackground
 from GUI.Items.MenuButton import MenuButton
 from GUI.Backgrounds import Sprites_Loaded, ChessBoard
-from GameManagerPackage.Players.Bot import Bot
-
+from GameManagerPackage.Players.PlayerConstructors import *
 NUMBER_OF_BUTTONS = 5
 BUTTON_SIZE = (240, 70)
 BUTTON_GAP = 13
@@ -22,7 +21,7 @@ def start_menu():
     pygame.font.init()
     pygame.freetype.init()
     pygame.mixer.init()
-    Sprites_Loaded.initialize((Board.SQUARE_SIZE, Board.SQUARE_SIZE))
+    Sprites_Loaded.initialize((BoardConst.SQUARE_SIZE, BoardConst.SQUARE_SIZE))
     from GUI.Windows.NewGame import start_new_game
     from GUI.Windows.LoadGame import start_load_game
     from GUI.Windows.Options import start_options
@@ -32,7 +31,10 @@ def start_menu():
                           (Display.DISPLAY_WIDTH, Display.DISPLAY_HEIGHT))
     pygame.display.set_caption('')
     clock = pygame.time.Clock()
-    background = ChessBackground((Display.DISPLAY_WIDTH, Display.DISPLAY_HEIGHT), Bot, Bot, 2)
+    background = ChessBackground((Display.DISPLAY_WIDTH, Display.DISPLAY_HEIGHT),
+                                 random_bot,
+                                 random_bot,
+                                 2)
     background.render(screen)
     button_functionality = [(start_new_game, (screen, clock, background), "START NEW GAME"),
                             (start_load_game, (screen, clock, background), "LOAD GAME"),
