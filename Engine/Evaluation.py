@@ -145,7 +145,14 @@ def eval_white_black(board, endgame=False, PESTO=True, evaluate_pawns=False):
 
 def move_value(board, start, move, endgame, PESTO, last_moved_piece):
     if move[1] != 0:
-        return float('inf')
+        if move[1] == 1:
+            return 1000000000
+        elif move[1] == 2:
+            return 1000000001
+        elif move[1] == 3:
+            return 1000000002
+        elif move[1] == 4:
+            return 1000000003
     piece_moved = board.board[start]
     before_value = piece_value(POINT_DICTIONARY_TYPES, (0, type(piece_moved)), endgame, PESTO,
                                [-1, 1][board.turn], start)
@@ -182,17 +189,17 @@ def order_moves(board, legal_moves, PESTO, endgame, last_moved_piece, reverse):
     return sorted_moves
 
 
-def alpha_beta(board, alpha, beta, depthleft, PESTO, last_moved_piece, eval_funtion, evaluate_pawns=False):
+def alpha_beta(board, alpha, beta, depthleft, last_moved_piece, eval_function, PESTO):
     all_legal_moves = board.calculate_all_legal_moves()
     bestscore = float("-inf")
     if depthleft <= 0:
-        return eval_funtion(board, all_legal_moves, PESTO, evaluate_pawns)
+        return eval_function(board, all_legal_moves)
     endgame = is_endgame_2(board)
     current_all_legal_moves = order_moves(board, all_legal_moves,
                                           PESTO, endgame, last_moved_piece, True)
     for move in current_all_legal_moves:
         board.make_move(move[0], move[1])
-        score = -alpha_beta(board, -beta, -alpha, depthleft - 1, PESTO, move[1][0], eval_funtion, evaluate_pawns)
+        score = -alpha_beta(board, -beta, -alpha, depthleft - 1, move[1][0], eval_function, PESTO)
         board.unmake_move()
         if score >= beta:
             return score
@@ -264,10 +271,7 @@ def attacked_fields(board):
     return attacked_fields
 
 
-if __name__ == '__main__':
-    board = Board()
-    board.initialize_board("r3k2r/p3qpbp/1p2pnp1/8/3n4/2NQ3N/PPP2PbP/R3K2R b kq - 1 3")
-    model = tensorflow.keras.models.load_model('model.h5')
-    board.calculate_all_attacked_fields()
-    x = convert_board(board)
-    print(model.predict(x)[0][0])
+def eval_model(board, unused, model):
+    converted_board = convert_board(board)
+    pred = model.predict(converted_board)[0][0] * 2 - 1
+    return pred * [-1, 1][board.turn]
