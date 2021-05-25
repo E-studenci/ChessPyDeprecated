@@ -15,9 +15,10 @@ START_GAME_BUTTON_SIZE = (200, 50)
 DROP_DOWN_MENU_SIZE = (200, 50)
 OFFSET = DROP_DOWN_MENU_SIZE[1] + 5
 
-PLAYERS_DICTIONARY = {"HUMAN":          human,
-                      "BOT RANDOM":     random_bot,
-                      "BOT ALPHA-BETA": alpha_beta_handcrafted_bot}
+PLAYERS_DICTIONARY = {"HUMAN":       human,
+                      "BOT RANDOM":  random_bot,
+                      "BOT WRITTEN": alpha_beta_handcrafted_bot,
+                      "BOT NEURAL":  alpha_beta_neural_bot}
 
 CHOICES = list(PLAYERS_DICTIONARY.keys())
 DROP_DOWN_MENUS_TEXT = [("PLAYER ONE", CHOICES),

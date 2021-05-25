@@ -1,6 +1,5 @@
+import copy
 import random
-
-from Chess.Board.Board import Board
 
 
 def select_move_human(moves, args):
@@ -36,12 +35,13 @@ def evaluated_move(board, all_legal_moves, evaluation_method):
     :param evaluation_method: method used to evaluate the board
     :return: start_pos, move
     """
+    board_ = copy.deepcopy(board)
     best_move = (float("inf"), None)
     for piece in all_legal_moves.keys():
         for move in all_legal_moves[piece]:
-            board.make_move(piece, move)
-            move_value = evaluation_method(board)
-            board.unmake_move()
+            board_.make_move(piece, move)
+            move_value = evaluation_method(board_)
+            board_.unmake_move()
             if move_value < best_move[0]:
                 best_move = (move_value, (piece, move))
     return best_move[1]

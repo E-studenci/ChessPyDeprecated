@@ -1,5 +1,5 @@
 import time
-import random
+from datetime import datetime
 
 from GameManagerPackage.Players.Player import Player
 
@@ -42,5 +42,10 @@ class Bot(Player):
         """
         Selects a random legal move
         """
-        time.sleep(self.delay)
-        return self.select_move_method(*args)
+        start_time = datetime.now().microsecond
+        start_pos, move = self.select_move_method(*args)
+        elapsed = datetime.now().microsecond - start_time
+        if elapsed < self.delay * 1000000:
+            to_sleep = (self.delay * 1000000 - elapsed) / 1000000
+            time.sleep(to_sleep)
+        return start_pos, move
