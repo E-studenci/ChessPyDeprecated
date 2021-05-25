@@ -7,7 +7,7 @@ from Chess.Pieces.Knight import Knight
 from Chess.Pieces.Pawn import Pawn
 from Chess.Pieces.Queen import Queen
 from Chess.Pieces.Rook import Rook
-from SquareTables import *
+from Engine.SquareTables import *
 
 PIECE_DICTIONARY = {Pawn:   ["bp", "wp"],
                     Bishop: ["bb", "wb"],
