@@ -1,6 +1,4 @@
-import tensorflow as tensorflow
 
-from Chess.Board.Board import Board
 from Chess.Pieces.Bishop import Bishop
 from Chess.Pieces.King import King
 from Chess.Pieces.Knight import Knight
