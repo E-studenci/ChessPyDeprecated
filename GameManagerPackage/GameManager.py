@@ -1,6 +1,7 @@
 import os
 import threading
 import time
+from queue import Empty
 
 from Chess.Board.Board import Board
 from GameManagerPackage.GameStatus import GameStatus
@@ -33,9 +34,9 @@ class GameManager:
     """
 
     def __init__(self, player_one, player_two, fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-                 leaderboards="Leaderboards.txt"):
+                 leaderboards="Leaderboards.txt", automatic_replay=False):
         self.board: Board = Board()
-        self.board.initialize_board(fen)
+        self.fen = fen
         self.player_one = player_one
         self.player_two = player_two
         self.leaderboards = leaderboards
@@ -44,8 +45,9 @@ class GameManager:
         self.game_status: GameStatus = GameStatus.ONGOING
         self.kill = False
         self.pause = False
+        self.automatic_replay = automatic_replay
 
-    def start_game(self, q1, q2, q3):
+    def start_game(self, q1, q2, q3, start=True):
         """
         Starts the game
 
@@ -53,14 +55,23 @@ class GameManager:
         :param q2: player will put legal moves into this queue
         :param q3: the current player's is_bot flag and current game status will be put here
         """
+        self.board.initialize_board(self.fen)
+        self.game_status: GameStatus = GameStatus.ONGOING
+        while not q3.empty():
+            try:
+                q3.get(False)
+            except Empty:
+                continue
+            q3.task_done()
         current_player = self.player_one if self.player_one.color == self.board.turn else self.player_two
         opposing_player = self.player_two if current_player == self.player_one else self.player_one
-        t = threading.Thread(target=self.__is_bot_notifier, args=(q3, self.board))
-        t.daemon = True
-        t.start()
-        self.__game_loop(current_player, opposing_player, q1, q2)
+        if start:
+            t = threading.Thread(target=self.__is_bot_notifier, args=(q3, self.board))
+            t.daemon = True
+            t.start()
+        self.__game_loop(current_player, opposing_player, q1, q2, q3)
 
-    def __game_loop(self, current, opposing, q1, q2):
+    def __game_loop(self, current, opposing, q1, q2, q3):
         """
         Handles turns and ends the game if necessary
 
@@ -68,6 +79,7 @@ class GameManager:
         :param opposing: the opposing player
         :param q1 player will get the selected move from this queue
         :param q2 player will put legal moves into this queue
+        :param q3 needed to replay - check start game
         """
         current_player = current
         opposing_player = opposing
@@ -83,6 +95,8 @@ class GameManager:
             self.history.append(parse_board(board.board))
             self.__check_game_ending_conditions(current_player)
         self.__update_leaderboards(self.leaderboards, current_player, opposing_player)
+        if self.automatic_replay:
+            self.start_game(q1, q2, q3, False)
 
     def __check_game_ending_conditions(self, player):
         """

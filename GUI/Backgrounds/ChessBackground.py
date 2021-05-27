@@ -40,7 +40,7 @@ class ChessBackground:
         p_1 = bot_1("", True, delay=bot_delay)
         p_2 = bot_2("", False, delay=bot_delay)
         self.__q3 = Queue()
-        self.game = GameManager(p_1, p_2)
+        self.game = GameManager(p_1, p_2, automatic_replay=True)
 
         t = threading.Thread(target=self.game.start_game, args=(Queue(), Queue(), self.__q3))
         t.daemon = True

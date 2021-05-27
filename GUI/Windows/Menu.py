@@ -2,11 +2,13 @@ import sys
 
 import pygame
 
+from GUI.Backgrounds.Sprites_Loaded import LOGO
 from GUI.Constants import Colors, Font, Display, BoardConst
 from GUI.Backgrounds.ChessBackground import ChessBackground
 from GUI.Items.MenuButton import MenuButton
 from GUI.Backgrounds import Sprites_Loaded, ChessBoard
 from GameManagerPackage.Players.PlayerConstructors import *
+
 NUMBER_OF_BUTTONS = 5
 BUTTON_SIZE = (240, 70)
 BUTTON_GAP = 13
@@ -33,7 +35,7 @@ def start_menu():
     clock = pygame.time.Clock()
     background = ChessBackground((Display.DISPLAY_WIDTH, Display.DISPLAY_HEIGHT),
                                  random_bot,
-                                 random_bot,
+                                 alpha_beta_handcrafted_bot,
                                  2)
     background.render(screen)
     button_functionality = [(start_new_game, (screen, clock, background), "START NEW GAME"),
@@ -56,6 +58,7 @@ def running_loop(screen, clock, buttons, background):
                 if button.handle_event(event):
                     break
         background.render(screen)
+        screen.blit(LOGO[0], LOGO[1])
         for button in buttons:
             button.render(screen, True if button.rect.collidepoint(pygame.mouse.get_pos()) else False)
         clock.tick(Display.MAX_FPS)
@@ -86,6 +89,7 @@ def add_buttons(screen, button_functionality):
         button.render(screen)
         buttons.append(button)
     return buttons
+
 
 if __name__ == '__main__':
     start_menu()

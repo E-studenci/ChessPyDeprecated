@@ -1,5 +1,6 @@
 import pygame
 
+from GUI.Items.TextInputBox import TextInputBox
 from GUI.Constants import Display, Font, Colors
 from GUI.Items.DropDownMenu import DropDownMenu
 from GUI.Items.MenuButton import MenuButton
@@ -79,7 +80,6 @@ def add_text_input_boxes(screen, text_input_box_functionality, initial_messages,
     """
     :returns a list of text_input_boxes with selected functionality
     """
-    from GUI.Items.TextInputBox import TextInputBox
     text_input_boxes = []
     for index in range(len(text_input_box_functionality)):
         center = (DROP_DOWN_MENUS_STARTING_POSITION[0], DROP_DOWN_MENUS_STARTING_POSITION[1] + OFFSET * index * 2)
