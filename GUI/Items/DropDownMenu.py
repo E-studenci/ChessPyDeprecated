@@ -60,7 +60,7 @@ class DropDownMenu:
         if self.draw_menu:
             for i, text in enumerate(self.options):
                 center = (self.center[0] + self.size[0] + 2, self.center[1] + i * self.rect.height)
-                Shapes.draw_rect(screen, center, self.size, self.color_option[1 if i == self.active_option else 0])
+                Shapes.draw_rect(screen, center, self.size, self.color_option[[0, 1][i == self.active_option]])
                 Shapes.draw_text(screen, center, text, self.font, self.font_color)
 
     def handle_event(self, event):
@@ -72,17 +72,16 @@ class DropDownMenu:
         mpos = pygame.mouse.get_pos()
         self.menu_active = self.rect.collidepoint(mpos)
 
-        self.active_option = -1
+        hovering_over_any = False
         for i in range(len(self.options)):
             rect = self.rect.copy()
             rect.x += self.size[0] + 2
             rect.y += i * self.rect.height
             if rect.collidepoint(mpos):
                 self.active_option = i
-                break
-
-        if not self.menu_active and self.active_option == -1:
-            self.draw_menu = False
+                hovering_over_any = True
+        if not hovering_over_any:
+            self.active_option = -1
 
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if self.menu_active:
@@ -90,3 +89,5 @@ class DropDownMenu:
             elif self.draw_menu and self.active_option >= 0:
                 self.draw_menu = False
                 self.main = self.options[self.active_option]
+            if not self.menu_active and self.active_option == -1:
+                self.draw_menu = False

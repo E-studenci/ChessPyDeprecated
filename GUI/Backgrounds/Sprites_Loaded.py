@@ -3,6 +3,8 @@ from Chess.Pieces import Bishop, King, Knight, Pawn, Queen, Rook
 import pygame
 from PIL import Image, ImageFilter
 
+from GUI.Constants import Display
+
 SPRITE_DICTIONARY = {(Pawn.Pawn, False):     None, (Pawn.Pawn, True): None,
                      (Knight.Knight, False): None, (Knight.Knight, True): None,
                      (Bishop.Bishop, False): None, (Bishop.Bishop, True): None,
@@ -11,6 +13,7 @@ SPRITE_DICTIONARY = {(Pawn.Pawn, False):     None, (Pawn.Pawn, True): None,
                      (King.King, False):     None, (King.King, True): None,
                      }
 
+LOGO = [None, None]
 
 def initialize(size):
     """
@@ -26,7 +29,10 @@ def initialize(size):
              (King.King, False):     'black_king.png', (King.King, True): 'white_king.png',
              }
     for key in paths:
-        SPRITE_DICTIONARY[key] = load_sprite(paths[key], size)
+        SPRITE_DICTIONARY[key] = load_sprite(os.path.join('..', "Sprites", 'Pieces', paths[key]), size)
+    global LOGO
+    LOGO[0] = load_sprite(os.path.join('..', 'Sprites', 'Logo.png'), [int(size[0] * 2.5)] * 2)
+    LOGO[1] = (Display.CENTER[0] - size[0] * 2.5 // 2, 0)
 
 
 def load_sprite(path, size):
@@ -37,7 +43,7 @@ def load_sprite(path, size):
     :param size: final size after resizing
     :return: returns the antialiased image
     """
-    image = pygame.image.load(os.path.join('..', "Sprites", 'Pieces', path))
+    image = pygame.image.load(path)
     image_string = pygame.image.tostring(image, 'RGBA')
     enhanced = Image.frombytes("RGBA", image.get_size(), bytes(image_string)).filter(ImageFilter.SMOOTH)
     resized = enhanced.resize(size, resample=Image.ANTIALIAS)

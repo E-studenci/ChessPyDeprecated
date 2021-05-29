@@ -42,8 +42,7 @@ def draw_pieces(screen, board, update):
                 if board.board[index] is not None:
                     current_piece = SPRITE_DICTIONARY[type(board.board[index]), board.board[index].color]
                     screen.blit(current_piece, (j * SQUARE_SIZE, i * SQUARE_SIZE))
-        size = (SQUARE_SIZE * 8, SQUARE_SIZE * 8)
         image_string = pygame.image.tostring(screen, 'RGBA', False)
-        image = pygame.image.fromstring(image_string, size, 'RGBA')
+        image = pygame.image.fromstring(image_string, screen.get_size(), 'RGBA')
         PIECES = image
     screen.blit(PIECES, (0, 0))

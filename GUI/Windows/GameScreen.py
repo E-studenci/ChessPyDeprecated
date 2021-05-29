@@ -9,9 +9,14 @@ from GUI.Backgrounds import ChessBoard
 from GUI.Constants import Display, Font, Options, Colors
 from GUI.Constants.BoardConst import *
 import pygame
+import threading
 from GUI.Backgrounds.Sprites_Loaded import SPRITE_DICTIONARY
+from GUI.Items.MenuButton import MenuButton
+from GameManagerPackage.GameManager import GameManager
 
 from GameManagerPackage.GameStatus import GameStatus
+
+DISPLAY_WIDTH_EXTENSION = 200
 
 
 def start_game(args, game, player_one_color):
@@ -21,19 +26,24 @@ def start_game(args, game, player_one_color):
     screen = args[0]
     clock = args[1]
     args[2].pause = True
+
     ChessBoard.draw_board(screen, (0, 0))
-    screen.fill(pygame.Color("white"))
-    import threading
     q1 = Queue(maxsize=0)
     q2 = Queue(maxsize=0)
     q3 = Queue(maxsize=0)
     t = threading.Thread(target=game.start_game, args=(q1, q2, q3))
     t.daemon = True
     t.start()
-    running_loop(screen, clock, args[2], q1, q2, q3, game, player_one_color)
+    screen = pygame.display.set_mode((Display.DISPLAY_WIDTH + DISPLAY_WIDTH_EXTENSION, Display.DISPLAY_HEIGHT))
+    screen.fill(pygame.color.Color("#B27F54"))
+    draw_button = MenuButton((Display.DISPLAY_WIDTH + DISPLAY_WIDTH_EXTENSION // 2, Display.CENTER[1]),
+                             GameManager.draw, game, (100, 50), Colors.BUTTON_BACKGROUND_COLOR,
+                             Font.FONT, Font.FONT_COLOR, 1.1, 5, "Draw")
+    move_sounds = [pygame.mixer.Sound("../Sounds/Move.mp3"), pygame.mixer.Sound("../Sounds/Capture.mp3")]
+    running_loop(screen, clock, args[2], q1, q2, q3, game, player_one_color, draw_button, move_sounds)
 
 
-def running_loop(screen, clock, background, q1, q2, q3, game, player_one_color):
+def running_loop(screen, clock, background, q1, q2, q3, game, player_one_color, draw_button, sounds):
     running = True
     selecting_move = False
     game_ended = False
@@ -62,6 +72,7 @@ def running_loop(screen, clock, background, q1, q2, q3, game, player_one_color):
                 running = False
                 background.pause = False
                 game.kill = True
+                screen = pygame.display.set_mode((Display.DISPLAY_WIDTH, Display.DISPLAY_HEIGHT))
                 break
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 3:
@@ -88,6 +99,7 @@ def running_loop(screen, clock, background, q1, q2, q3, game, player_one_color):
                                     move, start_pos = choose_move(moves, sq_index, start_pos)
                             else:
                                 start_pos, move = -1, -1
+            draw_button.handle_event(event)
         if do_select_move and not game_ended:
             if start_pos != -1 and move != -1:
                 if move[1] != -1:
@@ -95,12 +107,16 @@ def running_loop(screen, clock, background, q1, q2, q3, game, player_one_color):
                     q1.put((start_pos, move))
                     q2.task_done()
                     start_pos, move = -1, -1
+        screen.fill(pygame.color.Color("#B27F54"))
         ChessBoard.draw_board(screen, (0, 0))
         ChessBoard.draw_pieces(screen, game.board, True)
         draw_player_names(screen,
                           (game.player_one.name, game.player_two.name) if player_one_color else
                           (game.player_two.name, game.player_one.name),
+                          (game.player_one.clock.get_time(), game.player_two.clock.get_time()) if player_one_color else
+                          (game.player_two.clock.get_time(), game.player_one.clock.get_time()),
                           Font.FONT, Font.FONT_COLOR, Colors.BUTTON_BACKGROUND_COLOR)
+        draw_button.render(screen, draw_button.rect.collidepoint(pygame.mouse.get_pos()))
         draw_planning(screen, planning)
         if start_pos != -1:
             if move == -1:
@@ -110,30 +126,36 @@ def running_loop(screen, clock, background, q1, q2, q3, game, player_one_color):
                 # if chosen move leads to promotion, draw pieces depicting available promotions
                 draw_promotions(screen, move[0])
         if game_ended:
+            Shapes.draw_rect(screen, Display.CENTER,
+                             pygame.font.SysFont(*Font.FONT).render(game_status.name, True, Font.FONT_COLOR).get_size(),
+                             Colors.BUTTON_BACKGROUND_COLOR)
             Shapes.draw_text(screen, Display.CENTER, str(game_status.name), Font.FONT, Font.FONT_COLOR)
-        # if temp[2][0]:
-        #     play_sound(sounds, temp[2][1])
+        if temp[2][0]:
+            play_sound(sounds, temp[2][1])
         clock.tick(Display.MAX_FPS)
         q3.task_done()
         pygame.display.flip()
 
 
-def draw_player_names(screen, player_names, font, font_color, background_color):
+def draw_player_names(screen, player_names, player_timers, font, font_color, background_color):
     """
     :param screen: the screen the names should be rendered on
     :param player_names: (name of player one, name of player two)
+    :param player_timers: [string]: the timers for each player
     :param font: (font_name, font_size, bold, italic) the font of the text
     :param font_color: (r,g,b) the color of the font
     :param background_color: color in the background of the name
-    :return:
     """
     for i in range(2):
         font_ = pygame.font.SysFont(*font)
         text_rect = font_.render(player_names[i], True, font_color)
-        center = (0 + text_rect.get_size()[0] // 2,
-                  Display.DISPLAY_HEIGHT * (1 - i) + text_rect.get_size()[1] // 2 * (-1) ** (i + 1))
-        Shapes.draw_rect(screen, center, text_rect.get_size(), background_color)
-        Shapes.draw_text(screen, center, player_names[i], font, font_color)
+        center = (BOARD_SIZE[0] + DISPLAY_WIDTH_EXTENSION // 2,
+                  (Display.DISPLAY_HEIGHT - text_rect.get_size()[1]) * (1 - i) + text_rect.get_size()[1] // 2 * (
+                      -1) ** (i + 1))
+        if player_names[i]:
+            Shapes.draw_text(screen, center, player_names[i], font, font_color)
+        center = (center[0], center[1] + text_rect.get_size()[1])
+        Shapes.draw_text(screen, center, player_timers[i], font, font_color)
 
 
 def play_sound(sounds, take):
@@ -266,5 +288,3 @@ def get_square_index(mouse_pos):
     row = (7 - y // SQUARE_SIZE) * 8
     index = row + column
     return index
-
-

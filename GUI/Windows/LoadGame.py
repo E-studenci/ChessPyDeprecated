@@ -2,7 +2,7 @@ import pygame
 
 from Chess.Board.Converters import FenDecoder
 from GUI.Windows.NewGame import start_new_game
-from GUI import Shapes
+from GUI.Items.TextInputBox import TextInputBox
 
 # Starting Message
 from GUI.Constants import Font, Display, Colors
@@ -48,7 +48,6 @@ def add_text_input_box(screen, text_input_box_functionality):
     :param text_input_box_functionality: a list of tuples (function, args)
     :return: a list of text input boxes with chosen functionality and renders them
     """
-    from GUI.Items.TextInputBox import TextInputBox
     text_input_boxes = []
     for index in range(1):
         text_input_box = TextInputBox(Display.CENTER,

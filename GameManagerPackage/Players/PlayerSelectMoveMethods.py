@@ -5,22 +5,22 @@ import random
 from Engine.Evaluation import order_moves
 
 
-def select_move_human(moves, args):
+def select_move_human(board, all_legal_moves, args):
     """
-    :param moves: the legal moves to be put into args[1]
+    :param all_legal_moves: all the legal moves to be put into args[1]
     :param args: (q1,q2) queues for storing moves
     :return: puts [moves] into q2, returns move from q1
     """
-    args[1].put(moves)
+    args[1].put(all_legal_moves)
     move = args[0].get()
     args[0].task_done()
     return move
 
 
-def random_move(unused, all_legal_moves):
+def random_move(board, all_legal_moves, unused):
     """
     Finds a random move to make
-    :param unused: unused
+    :param board: unused
     :param all_legal_moves: all legal moves for current player
     :return: start_pos, move
     """
@@ -29,7 +29,7 @@ def random_move(unused, all_legal_moves):
         start_pos = random.choice(list(all_legal_moves.keys()))
     return start_pos, random.choice(all_legal_moves[start_pos])
 
-
+  
 def __worker(queue: multiprocessing.Queue, result, lock):
     """
     A function performed by a Process. It carries out the tasks until the queue is empty.
@@ -82,11 +82,3 @@ def evaluated_move(board, all_legal_moves, evaluation_method, number_of_processe
     start_pos = int(result[0])
     move = (int(result[1]), int(result[2]))
     return start_pos, move
-    # for piece in all_legal_moves.keys():
-    #     for move in all_legal_moves[piece]:
-    #         board_.make_move(piece, move)
-    #         move_value = evaluation_method(board_)
-    #         board_.unmake_move()
-    #         if move_value < best_move[0]:
-    #             best_move = (move_value, (piece, move))
-    # return best_move[1]
