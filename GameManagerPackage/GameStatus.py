@@ -8,4 +8,4 @@ class GameStatus(Enum):
     FIFTY_MOVES = 3
     THREEFOLD_REPETITION = 4
     INSUFFICIENT_MATERIAL = 5
-
+    DRAW = 6

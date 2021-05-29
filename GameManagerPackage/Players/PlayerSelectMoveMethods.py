@@ -2,22 +2,22 @@ import copy
 import random
 
 
-def select_move_human(moves, args):
+def select_move_human(board, all_legal_moves, args):
     """
-    :param moves: the legal moves to be put into args[1]
+    :param all_legal_moves: all the legal moves to be put into args[1]
     :param args: (q1,q2) queues for storing moves
     :return: puts [moves] into q2, returns move from q1
     """
-    args[1].put(moves)
+    args[1].put(all_legal_moves)
     move = args[0].get()
     args[0].task_done()
     return move
 
 
-def random_move(unused, all_legal_moves):
+def random_move(board, all_legal_moves, unused):
     """
     Finds a random move to make
-    :param unused: unused
+    :param board: unused
     :param all_legal_moves: all legal moves for current player
     :return: start_pos, move
     """
@@ -27,7 +27,7 @@ def random_move(unused, all_legal_moves):
     return start_pos, random.choice(all_legal_moves[start_pos])
 
 
-def evaluated_move(board, all_legal_moves, evaluation_method):
+def evaluated_move(board, all_legal_moves, unused, evaluation_method):
     """
     checks every possible move and selects the best one
     :param board: the board on which the game is played

@@ -97,4 +97,8 @@ def mute_music(mute):
 
     :param mute: True, if should mute, false if should turn on
     """
+    if Options.MUSIC:
+        pygame.mixer.music.pause()
+    else:
+        pygame.mixer.music.unpause()
     Options.MUSIC = not mute
