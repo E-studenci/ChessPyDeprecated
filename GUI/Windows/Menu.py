@@ -3,7 +3,7 @@ import sys
 import pygame
 
 from GUI.Backgrounds.Sprites_Loaded import LOGO
-from GUI.Constants import Colors, Font, Display, BoardConst
+from GUI.Constants import Colors, Font, Display, BoardConst, Options
 from GUI.Backgrounds.ChessBackground import ChessBackground
 from GUI.Items.MenuButton import MenuButton
 from GUI.Backgrounds import Sprites_Loaded, ChessBoard
@@ -35,7 +35,7 @@ def start_menu():
     clock = pygame.time.Clock()
     background = ChessBackground((Display.DISPLAY_WIDTH, Display.DISPLAY_HEIGHT),
                                  random_bot,
-                                 alpha_beta_handcrafted_bot,
+                                 random_bot,
                                  2)
     background.render(screen)
     button_functionality = [(start_new_game, (screen, clock, background), "START NEW GAME"),
@@ -44,6 +44,7 @@ def start_menu():
                             (start_options, (screen, clock, background), "OPTIONS"),
                             (sys.exit, 0, "EXIT")]
     buttons = add_buttons(screen, button_functionality)
+    load_music("../Sounds/music2.mp3")
     running_loop(screen, clock, buttons, background)
 
 
@@ -60,7 +61,7 @@ def running_loop(screen, clock, buttons, background):
         background.render(screen)
         screen.blit(LOGO[0], LOGO[1])
         for button in buttons:
-            button.render(screen, True if button.rect.collidepoint(pygame.mouse.get_pos()) else False)
+            button.render(screen, button.rect.collidepoint(pygame.mouse.get_pos()))
         clock.tick(Display.MAX_FPS)
         pygame.display.flip()
 
@@ -89,6 +90,14 @@ def add_buttons(screen, button_functionality):
         button.render(screen)
         buttons.append(button)
     return buttons
+
+
+def load_music(song):
+    pygame.mixer.music.set_volume(0.1)
+    pygame.mixer.music.load(song)
+    pygame.mixer.music.play(loops=-1)
+    if not Options.MUSIC:
+        pygame.mixer.music.pause()
 
 
 if __name__ == '__main__':

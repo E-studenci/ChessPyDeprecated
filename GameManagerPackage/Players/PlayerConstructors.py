@@ -3,17 +3,17 @@ from functools import partial
 
 import tensorflow
 
-from GameManagerPackage.Players.Bot import Bot
-from GameManagerPackage.Players.Human import Human
+from GameManagerPackage.Players.Player import Player
 from GameManagerPackage.Players.PlayerSelectMoveMethods import *
 import Engine.Evaluation as eval_methods
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 model = tensorflow.keras.models.load_model('../../Engine/model.h5')
 
-human = partial(Human, select_move_method=select_move_human)
-random_bot = partial(Bot, select_move_method=random_move)
-alpha_beta_handcrafted_bot = partial(Bot,
+human = partial(Player, is_bot=False, select_move_method=select_move_human)
+random_bot = partial(Player, is_bot=True, select_move_method=random_move)
+alpha_beta_handcrafted_bot = partial(Player,
+                                     is_bot=True,
                                      select_move_method=
                                      partial(evaluated_move,
                                              evaluation_method=
@@ -27,7 +27,8 @@ alpha_beta_handcrafted_bot = partial(Bot,
                                                              PESTO=True,
                                                              evaluate_pawns=False),
                                                      PESTO=True)))
-alpha_beta_neural_bot = partial(Bot,
+alpha_beta_neural_bot = partial(Player,
+                                is_bot=True,
                                 select_move_method=
                                 partial(evaluated_move,
                                         evaluation_method=

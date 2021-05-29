@@ -6,6 +6,7 @@ from GUI.Items.DropDownMenu import DropDownMenu
 from GUI.Items.MenuButton import MenuButton
 from GUI.Windows import GameScreen
 from GameManagerPackage.GameManager import GameManager
+from GameManagerPackage.PlayerClock import PlayerClock
 from GameManagerPackage.Players.PlayerConstructors import *
 
 NUMBER_OF_DROP_DOWN_MENUS = 2
@@ -38,7 +39,7 @@ def start_new_game(args, fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq
     background.render(screen)
     text_input_boxes_initial = ["PLAYER ONE NAME", "PLAYER TWO NAME"]
     text_input_boxes_functionality = [(None, (screen, clock, background))] * 2
-    text_input_boxes = add_text_input_boxes(screen, text_input_boxes_functionality, text_input_boxes_initial, 30)
+    text_input_boxes = add_text_input_boxes(screen, text_input_boxes_functionality, text_input_boxes_initial, 11)
     drop_down_menus = add_drop_down_menus(screen, DROP_DOWN_MENUS_TEXT)
     start_game_button = MenuButton(START_GAME_BUTTON_STARTING_POSITION, start_game,
                                    (drop_down_menus, fen, screen, (screen, clock, background), text_input_boxes),
@@ -70,8 +71,7 @@ def running_loop(screen, clock, background, drop_down_menus, start_game_button, 
         for text_input_box in text_input_boxes:
             text_input_box.render(screen)
         if can_start_game(drop_down_menus):
-            start_game_button.render(screen,
-                                     True if start_game_button.rect.collidepoint(pygame.mouse.get_pos()) else False)
+            start_game_button.render(screen, start_game_button.rect.collidepoint(pygame.mouse.get_pos()))
         clock.tick(Display.MAX_FPS)
         pygame.display.flip()
 
@@ -90,7 +90,7 @@ def add_text_input_boxes(screen, text_input_box_functionality, initial_messages,
                                       Colors.TEXT_INPUT_BOX_COLOR_ACTIVE,
                                       Colors.TEXT_INPUT_BOX_COLOR_INACTIVE,
                                       Colors.TEXT_INPUT_BOX_COLOR_INCORRECT,
-                                      Font.FONT, Font.FONT_COLOR, max_size=15)
+                                      Font.FONT, Font.FONT_COLOR, max_size=max_size)
         text_input_box.render(screen)
         text_input_boxes.append(text_input_box)
     return text_input_boxes
@@ -132,7 +132,7 @@ def start_game(args):
     for i in range(len(args[0])):
         player_name = None if args[4][i].text == args[4][i].initial_text else args[4][i].text
         color = player_one_color if i == 0 else not player_one_color
-        players.append(PLAYERS_DICTIONARY[args[0][i].main](player_name, color))
+        players.append(PLAYERS_DICTIONARY[args[0][i].main](name=player_name, color=color, player_clock=PlayerClock()))
     game = GameManager(players[0], players[1], args[1])
     args = args[3]
     GameScreen.start_game(args, game, player_one_color)

@@ -5,7 +5,7 @@ from queue import Empty
 
 from Chess.Board.Board import Board
 from GameManagerPackage.GameStatus import GameStatus
-from Chess.Board.Converters.FenEncoder import to_name_later, parse_board
+from Chess.Board.Converters.FenEncoder import parse_board
 
 
 class GameManager:
@@ -94,9 +94,13 @@ class GameManager:
             self.current_player_is_bot = current_player.is_bot
             self.history.append(parse_board(board.board))
             self.__check_game_ending_conditions(current_player)
-        self.__update_leaderboards(self.leaderboards, current_player, opposing_player)
-        if self.automatic_replay:
-            self.start_game(q1, q2, q3, False)
+        if not self.kill:
+            self.__update_leaderboards(self.leaderboards, current_player, opposing_player)
+            if self.automatic_replay:
+                self.start_game(q1, q2, q3, False)
+
+    def draw(self):
+        self.game_status = GameStatus.DRAW
 
     def __check_game_ending_conditions(self, player):
         """
@@ -223,4 +227,3 @@ class GameManager:
                     f.write('\n'.join(altered_lines) + '\n')
                 return True
         return False
-

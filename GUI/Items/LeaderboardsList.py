@@ -57,7 +57,7 @@ class LeaderboardsList:
         font = pygame.font.SysFont(*self.font)
         for i in range(min(len(row_list), self.max_amount_of_records)):
             text_rect = font.render(f"{row_list[i][0]} VS {row_list[i][1]}"
-                                    f" WINS: {row_list[i][2]} VS {row_list[i][3]}"
+                                    f" WINS: {row_list[i][2]} LOSSES {row_list[i][3]}"
                                     f" DRAWS: {row_list[i][4]}", True, self.font_color)
             if text_rect.get_size()[0] > max_width:
                 max_width, max_height = text_rect.get_size()[0], text_rect.get_size()[1]
@@ -97,7 +97,7 @@ class LeaderboardsList:
             for i in range(min(len(filtered_list), self.max_amount_of_records)):
                 row_center = (self.center[0], top_left[1] + self.single_row_size[1] // 2)
                 Shapes.draw_text(screen, row_center, f"{filtered_list[i][0]} VS {filtered_list[i][1]}"
-                                                     f" WINS: {filtered_list[i][2]} VS {filtered_list[i][3]}"
+                                                     f" WINS: {filtered_list[i][2]} LOSSES: {filtered_list[i][3]}"
                                                      f" DRAWS: {filtered_list[i][4]}", self.font, self.font_color)
                 top_left = (top_left[0], top_left[1] + (self.single_row_size[1] + 4))
         else:
