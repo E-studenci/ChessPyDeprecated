@@ -47,4 +47,4 @@ Our bot plays black against an 800 rating player. It has choosen the Nimzowitsch
 This time the bot went with the Barnes opening which is extremely popular in high level games. The incredible breakthrough happened at the 22nd move, when the bot trapped his opponents rook with his knight. After that it was just a formality to finish the job. The game ended with an incredible checkmate delivered by a rook.
 </br><img src="https://user-images.githubusercontent.com/67602274/120239832-76751b80-c25f-11eb-9175-c4bfb7de189f.gif" height=400/>
 ## Final
-You can dowload release, and play it by yourself but to open the game you have do download Cuda enviroment and cDNN. 
+You can dowload release, and play it by yourself but to use a neural-network-bot, you have do download Cuda enviroment and cDNN. 
