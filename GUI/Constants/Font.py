@@ -1,0 +1,4 @@
+FONT_SIZE = 20
+FONT_HEIGHT = 23
+FONT = ('arial', FONT_SIZE, True, False)
+FONT_COLOR = (255, 255, 255, 10)
