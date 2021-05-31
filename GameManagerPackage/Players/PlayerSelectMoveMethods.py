@@ -29,7 +29,7 @@ def random_move(board, all_legal_moves, unused):
         start_pos = random.choice(list(all_legal_moves.keys()))
     return start_pos, random.choice(all_legal_moves[start_pos])
 
-  
+
 def __worker(queue: multiprocessing.Queue, result, lock):
     """
     A function performed by a Process. It carries out the tasks until the queue is empty.
@@ -60,14 +60,7 @@ def __add_starting_objects_to_queue(queue, board, all_legal_moves, eval_method):
         queue.put((eval_method, chess_board_copy, (move[0], move[1])))
 
 
-def evaluated_move(board, all_legal_moves, evaluation_method, number_of_processes):
-    """
-    checks every possible move and selects the best one
-    :param board: the board on which the game is played
-    :param all_legal_moves: all legal moves for current player
-    :param evaluation_method: method used to evaluate the board
-    :return: start_pos, move
-    """
+def multiprocessing_eval(board, all_legal_moves, evaluation_method, number_of_processes):
     queue = multiprocessing.Queue(maxsize=0)
     lock = multiprocessing.Lock()
     result = multiprocessing.Array('f', [-1, -1, -1, 99999999999999])
@@ -81,4 +74,33 @@ def evaluated_move(board, all_legal_moves, evaluation_method, number_of_processe
         p.join()
     start_pos = int(result[0])
     move = (int(result[1]), int(result[2]))
+    return start_pos, move
+
+
+def sigle_thread_eval(board, all_legal_moves, evaluation_method):
+    board_ = copy.deepcopy(board)
+    best_move = (float("inf"), None)
+    for piece in all_legal_moves.keys():
+        for move in all_legal_moves[piece]:
+            board_.make_move(piece, move)
+            move_value = evaluation_method(board_)
+            board_.unmake_move()
+            if move_value < best_move[0]:
+                best_move = (move_value, (piece, move))
+    return best_move[1]
+
+
+def evaluated_move(board, all_legal_moves, unused, evaluation_method, number_of_processes):
+    """
+    checks every possible move and selects the best one
+    :param number_of_processes: the number of threads to use
+    :param board: the board on which the game is played
+    :param all_legal_moves: all legal moves for current player
+    :param evaluation_method: method used to evaluate the board
+    :return: start_pos, move
+    """
+    if number_of_processes > 1:
+        start_pos, move = multiprocessing_eval(board, all_legal_moves, evaluation_method, number_of_processes)
+    else:
+        start_pos, move = sigle_thread_eval(board, all_legal_moves, evaluation_method)
     return start_pos, move
