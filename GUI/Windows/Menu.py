@@ -1,5 +1,3 @@
-import sys
-
 import pygame
 
 from GUI.Backgrounds.Sprites_Loaded import LOGO
@@ -35,7 +33,7 @@ def start_menu():
     clock = pygame.time.Clock()
     background = ChessBackground((Display.DISPLAY_WIDTH, Display.DISPLAY_HEIGHT),
                                  random_bot,
-                                 random_bot,
+                                 alpha_beta_handcrafted_bot,
                                  2)
     background.render(screen)
     button_functionality = [(start_new_game, (screen, clock, background), "START NEW GAME"),
@@ -44,7 +42,7 @@ def start_menu():
                             (start_options, (screen, clock, background), "OPTIONS"),
                             (sys.exit, 0, "EXIT")]
     buttons = add_buttons(screen, button_functionality)
-    load_music("../Sounds/music2.mp3")
+    load_music("../Sounds/music4.mp3")
     running_loop(screen, clock, buttons, background)
 
 
