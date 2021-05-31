@@ -1,4 +1,7 @@
-import pygame
+import multiprocessing
+
+if multiprocessing.current_process().name == 'MainProcess':
+    import pygame
 
 from GUI.Items.TextInputBox import TextInputBox
 from GUI.Constants import Display, Font, Colors
@@ -17,10 +20,10 @@ START_GAME_BUTTON_SIZE = (200, 50)
 DROP_DOWN_MENU_SIZE = (200, 50)
 OFFSET = DROP_DOWN_MENU_SIZE[1] + 5
 
-PLAYERS_DICTIONARY = {"HUMAN":       human,
-                      "BOT RANDOM":  random_bot,
-                      "BOT WRITTEN": alpha_beta_handcrafted_bot,
-                      "BOT NEURAL":  alpha_beta_neural_bot}
+PLAYERS_DICTIONARY = {"HUMAN":       constructors["human"],
+                      "BOT RANDOM":  constructors["random_bot"],
+                      "BOT WRITTEN": constructors["alpha_beta_handcrafted_bot"],
+                      "BOT NEURAL":  constructors["alpha_beta_neural_bot"]}
 
 CHOICES = list(PLAYERS_DICTIONARY.keys())
 DROP_DOWN_MENUS_TEXT = [("PLAYER ONE", CHOICES),

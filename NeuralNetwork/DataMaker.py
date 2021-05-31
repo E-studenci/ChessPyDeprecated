@@ -1,3 +1,5 @@
+import sys
+
 from Chess.Board.Board import Board
 from Chess.Pieces.Bishop import Bishop
 from Chess.Pieces.King import King
@@ -11,6 +13,8 @@ import chess
 import chess.engine
 import numpy
 import os
+
+from Paths import FOLDER_PATHS
 
 piece_dict = {
     (Pawn, 1):   0,
@@ -48,14 +52,14 @@ def convert_fen_data(read_file_path, write_file_path, starting_point=0, ending_p
         write_file = open(write_file_path, mode='w')
         write_file.close()
     read_file = open(read_file_path)
-    print("Collecting viable fens...")
+    print("Collecting viable fens...", file=sys.stdout)
     time.sleep(0.01)
     for _ in tqdm(range(starting_point, ending_point)):
         line = read_file.readline()
         if line == '':
-            print("End...")
+            print("End...", file=sys.stdout)
             break
-        fen = line.split(',')[0]
+        fen = line.replace("\n", "")
         board = Board()
         if board.initialize_board(fen):
             better_board = chess.Board(fen=fen)
@@ -81,8 +85,8 @@ def remove_none(x_train, y_train):
 
 def stockfish(boards, depth):
     results = []
-    print("Evaluating collected fens...")
-    with chess.engine.SimpleEngine.popen_uci('Stockfish/stockfish.exe') as sf:
+    print("Evaluating collected fens...", file=sys.stdout)
+    with chess.engine.SimpleEngine.popen_uci(f'{FOLDER_PATHS["Stockfish"]}/stockfish.exe') as sf:
         for i in tqdm(range(len(boards))):
             result = sf.analyse(boards[i], chess.engine.Limit(depth=depth))
             score = result['score'].white().score()
@@ -100,7 +104,6 @@ def convert_board(board):
             row, col = (7 - i // 8), i % 8
             ret_array[piece_dict[(type(piece), piece.color)]][row][col] = 1
 
-    # ret_array = numpy.expand_dims(ret_array, 0)
     return ret_array
 
 

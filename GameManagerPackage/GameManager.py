@@ -57,6 +57,7 @@ class GameManager:
         """
         self.board.initialize_board(self.fen)
         self.game_status: GameStatus = GameStatus.ONGOING
+        self.history.clear()
         while not q3.empty():
             try:
                 q3.get(False)

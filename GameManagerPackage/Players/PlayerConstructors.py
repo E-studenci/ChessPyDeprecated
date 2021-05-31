@@ -1,15 +1,22 @@
 import os
 import sys
 from functools import partial
-import multiprocessing
+from GameManagerPackage.Players.PlayerSelectMoveMethods import *
+from GameManagerPackage.Players.Player import Player
+import Engine.Evaluation as EvalMethods
+
+from Paths import FOLDER_PATHS
 
 model = available_threads = None
-if multiprocessing.current_process().name == "MainProcess":
+constructors = {}
+
+
+def initialize_player_constructors():
+    os.environ['TF_CPP_MIN_VLOG_LEVEL'] = '3'
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
     import tensorflow
 
-    # os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
-    model = tensorflow.keras.models.load_model('../../Engine/model.h5')
-
+    model = tensorflow.keras.models.load_model(f'{FOLDER_PATHS["TrainedModels"]}/convolutional_model_v2-64-2.h5')
 
     def get_number_of_threads():
         if sys.platform == 'win32':
@@ -17,43 +24,38 @@ if multiprocessing.current_process().name == "MainProcess":
         else:
             return int(os.popen('grep -c cores /proc/cpuinfo').read())
 
-
     available_threads = get_number_of_threads() - 1
 
-from GameManagerPackage.Players.Player import Player
-from GameManagerPackage.Players.PlayerSelectMoveMethods import *
-import Engine.Evaluation as EvalMethods
-
-human = partial(Player, is_bot=False, select_move_method=select_move_human)
-random_bot = partial(Player, is_bot=True, select_move_method=random_move)
-alpha_beta_handcrafted_bot = partial(Player,
-                                     is_bot=True,
-                                     select_move_method=
-                                     partial(evaluated_move,
-                                             evaluation_method=
-                                             partial(EvalMethods.alpha_beta,
-                                                     alpha=-10000,
-                                                     beta=10000,
-                                                     depthleft=3,
-                                                     last_moved_piece=-1,
-                                                     eval_function=
-                                                     partial(EvalMethods.evaluate,
-                                                             PESTO=True,
-                                                             evaluate_pawns=True),
-                                                     PESTO=True),
-                                             number_of_processes=available_threads))
-alpha_beta_neural_bot = partial(Player,
-                                is_bot=True,
-                                select_move_method=
-                                partial(evaluated_move,
-                                        evaluation_method=
-                                        partial(EvalMethods.alpha_beta,
-                                                alpha=-10000,
-                                                beta=10000,
-                                                depthleft=3,
-                                                last_moved_piece=-1,
-                                                eval_function=
-                                                partial(EvalMethods.eval_model,
-                                                        model=1),
-                                                PESTO=True),
-                                        number_of_processes=1))
+    constructors["human"] = partial(Player, is_bot=False, select_move_method=select_move_human)
+    constructors["random_bot"] = partial(Player, is_bot=True, select_move_method=random_move)
+    constructors["alpha_beta_handcrafted_bot"] = partial(Player,
+                                                         is_bot=True,
+                                                         select_move_method=
+                                                         partial(evaluated_move,
+                                                                 evaluation_method=
+                                                                 partial(EvalMethods.alpha_beta,
+                                                                         alpha=-10000,
+                                                                         beta=10000,
+                                                                         depthleft=3,
+                                                                         last_moved_piece=-1,
+                                                                         eval_function=
+                                                                         partial(EvalMethods.evaluate,
+                                                                                 PESTO=True,
+                                                                                 evaluate_pawns=True),
+                                                                         PESTO=True),
+                                                                 number_of_processes=available_threads))
+    constructors["alpha_beta_neural_bot"] = partial(Player,
+                                                    is_bot=True,
+                                                    select_move_method=
+                                                    partial(evaluated_move,
+                                                            evaluation_method=
+                                                            partial(EvalMethods.alpha_beta,
+                                                                    alpha=-10000,
+                                                                    beta=10000,
+                                                                    depthleft=0,
+                                                                    last_moved_piece=-1,
+                                                                    eval_function=
+                                                                    partial(EvalMethods.eval_model,
+                                                                            model=model),
+                                                                    PESTO=True),
+                                                            number_of_processes=1))
