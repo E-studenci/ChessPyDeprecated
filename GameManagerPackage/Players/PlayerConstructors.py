@@ -4,11 +4,10 @@ from functools import partial
 import multiprocessing
 
 model = available_threads = None
+
 if multiprocessing.current_process().name == "MainProcess":
     import tensorflow
-
-    # os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
-    model = tensorflow.keras.models.load_model('../../Engine/model.h5')
+    model = tensorflow.keras.models.load_model('../../NeuralNetwork/TrainedModels/convolutional_model_v2-64-2.h5')
 
 
     def get_number_of_threads():
@@ -50,10 +49,10 @@ alpha_beta_neural_bot = partial(Player,
                                         partial(EvalMethods.alpha_beta,
                                                 alpha=-10000,
                                                 beta=10000,
-                                                depthleft=3,
+                                                depthleft=0,
                                                 last_moved_piece=-1,
                                                 eval_function=
                                                 partial(EvalMethods.eval_model,
-                                                        model=1),
+                                                        model=model),
                                                 PESTO=True),
                                         number_of_processes=1))
