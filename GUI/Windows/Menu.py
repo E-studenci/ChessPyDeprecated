@@ -1,10 +1,10 @@
 import pygame
 
-from GUI.Backgrounds.Sprites_Loaded import LOGO
+from GUI.Backgrounds.SpritesLoaded import LOGO
 from GUI.Constants import Colors, Font, Display, BoardConst, Options
 from GUI.Backgrounds.ChessBackground import ChessBackground
 from GUI.Items.MenuButton import MenuButton
-from GUI.Backgrounds import Sprites_Loaded, ChessBoard
+from GUI.Backgrounds import SpritesLoaded, ChessBoard
 from GameManagerPackage.Players.PlayerConstructors import *
 
 NUMBER_OF_BUTTONS = 5
@@ -21,7 +21,7 @@ def start_menu():
     pygame.font.init()
     pygame.freetype.init()
     pygame.mixer.init()
-    Sprites_Loaded.initialize((BoardConst.SQUARE_SIZE, BoardConst.SQUARE_SIZE))
+    SpritesLoaded.initialize((BoardConst.SQUARE_SIZE, BoardConst.SQUARE_SIZE))
     from GUI.Windows.NewGame import start_new_game
     from GUI.Windows.LoadGame import start_load_game
     from GUI.Windows.Options import start_options
@@ -32,8 +32,8 @@ def start_menu():
     pygame.display.set_caption('')
     clock = pygame.time.Clock()
     background = ChessBackground((Display.DISPLAY_WIDTH, Display.DISPLAY_HEIGHT),
-                                 random_bot,
-                                 alpha_beta_handcrafted_bot,
+                                 constructors["random_bot"],
+                                 constructors["alpha_beta_handcrafted_bot"],
                                  2)
     background.render(screen)
     button_functionality = [(start_new_game, (screen, clock, background), "START NEW GAME"),
@@ -42,7 +42,7 @@ def start_menu():
                             (start_options, (screen, clock, background), "OPTIONS"),
                             (sys.exit, 0, "EXIT")]
     buttons = add_buttons(screen, button_functionality)
-    load_music("GUI/Sounds/music4.mp3")
+    load_music("music4.mp3")
     running_loop(screen, clock, buttons, background)
 
 
@@ -92,7 +92,7 @@ def add_buttons(screen, button_functionality):
 
 def load_music(song):
     pygame.mixer.music.set_volume(0.1)
-    pygame.mixer.music.load(song)
+    pygame.mixer.music.load(f"{FOLDER_PATHS['Sounds']}/{song}")
     pygame.mixer.music.play(loops=-1)
     if not Options.MUSIC:
         pygame.mixer.music.pause()

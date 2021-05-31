@@ -1,3 +1,5 @@
+import os
+import sys
 from queue import Queue
 
 from Chess.Pieces.Bishop import Bishop
@@ -10,11 +12,12 @@ from GUI.Constants import Display, Font, Options, Colors
 from GUI.Constants.BoardConst import *
 import pygame
 import threading
-from GUI.Backgrounds.Sprites_Loaded import SPRITE_DICTIONARY
+from GUI.Backgrounds.SpritesLoaded import SPRITE_DICTIONARY
 from GUI.Items.MenuButton import MenuButton
 from GameManagerPackage.GameManager import GameManager
 
 from GameManagerPackage.GameStatus import GameStatus
+from Paths import FOLDER_PATHS
 
 DISPLAY_WIDTH_EXTENSION = 200
 
@@ -39,8 +42,15 @@ def start_game(args, game, player_one_color):
     draw_button = MenuButton((Display.DISPLAY_WIDTH + DISPLAY_WIDTH_EXTENSION // 2, Display.CENTER[1]),
                              GameManager.draw, game, (100, 50), Colors.BUTTON_BACKGROUND_COLOR,
                              Font.FONT, Font.FONT_COLOR, 1.1, 5, "Draw")
-    move_sounds = [pygame.mixer.Sound("GUI/Sounds/Move.mp3"), pygame.mixer.Sound("GUI/Sounds/Capture.mp3")]
+    move_sounds = load_sounds(["Move.mp3", "Capture.mp3"])
     running_loop(screen, clock, args[2], q1, q2, q3, game, player_one_color, draw_button, move_sounds)
+
+
+def load_sounds(file_names):
+    ret_list = []
+    for file in file_names:
+        ret_list.append(pygame.mixer.Sound(f"{FOLDER_PATHS['Sounds']}/{file}"))
+    return ret_list
 
 
 def running_loop(screen, clock, background, q1, q2, q3, game, player_one_color, draw_button, sounds):

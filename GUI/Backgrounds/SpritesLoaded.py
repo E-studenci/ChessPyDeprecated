@@ -1,9 +1,12 @@
 import os
+import sys
+
 from Chess.Pieces import Bishop, King, Knight, Pawn, Queen, Rook
 import pygame
 from PIL import Image, ImageFilter
 
 from GUI.Constants import Display
+from Paths import FOLDER_PATHS
 
 SPRITE_DICTIONARY = {(Pawn.Pawn, False):     None, (Pawn.Pawn, True): None,
                      (Knight.Knight, False): None, (Knight.Knight, True): None,
@@ -29,9 +32,8 @@ def initialize(size):
              (King.King, False):     'black_king.png', (King.King, True): 'white_king.png',
              }
     for key in paths:
-        SPRITE_DICTIONARY[key] = load_sprite(os.path.join('GUI', "Sprites", 'Pieces', paths[key]), size)
-    global LOGO
-    LOGO[0] = load_sprite(os.path.join('GUI', 'Sprites', 'Logo.png'), [int(size[0] * 2.5)] * 2)
+        SPRITE_DICTIONARY[key] = load_sprite(os.path.join(FOLDER_PATHS['Pieces'], paths[key]), size)
+    LOGO[0] = load_sprite(os.path.join(FOLDER_PATHS['Sprites'], 'Logo.png'), [int(size[0] * 2.5)] * 2)
     LOGO[1] = (Display.CENTER[0] - size[0] * 2.5 // 2, 0)
 
 

@@ -1,3 +1,5 @@
+import sys
+
 from Chess.Board.Board import Board
 from Chess.Pieces.Bishop import Bishop
 from Chess.Pieces.King import King
@@ -11,6 +13,8 @@ import chess
 import chess.engine
 import numpy
 import os
+
+from Paths import FOLDER_PATHS
 
 piece_dict = {
     (Pawn, 1):   0,
@@ -82,7 +86,7 @@ def remove_none(x_train, y_train):
 def stockfish(boards, depth):
     results = []
     print("Evaluating collected fens...")
-    with chess.engine.SimpleEngine.popen_uci('Stockfish/stockfish.exe') as sf:
+    with chess.engine.SimpleEngine.popen_uci(f'{FOLDER_PATHS["Stockfish"]}/stockfish.exe') as sf:
         for i in tqdm(range(len(boards))):
             result = sf.analyse(boards[i], chess.engine.Limit(depth=depth))
             score = result['score'].white().score()

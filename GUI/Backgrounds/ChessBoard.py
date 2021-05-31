@@ -1,6 +1,6 @@
 import pygame
 
-from GUI.Backgrounds.Sprites_Loaded import SPRITE_DICTIONARY
+from GUI.Backgrounds.SpritesLoaded import SPRITE_DICTIONARY
 from GUI.Constants import Colors
 
 CHESS_BOARD = None

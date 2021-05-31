@@ -1,5 +1,6 @@
 import sys
-from GUI.Windows.Menu import start_menu
+from GUI.Windows.Menu import start_menu, initialize_player_constructors
+from Paths import initialize_paths
 
 
 def parse_args():
@@ -16,5 +17,10 @@ def parse_args():
 
 
 if __name__ == '__main__':
+    import sys
+    import os
+
+    initialize_paths(getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__))))
+    initialize_player_constructors()
     parse_args()
     start_menu()

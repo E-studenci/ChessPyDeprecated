@@ -3,6 +3,7 @@ import pygame
 from GUI.Items.TextInputBox import TextInputBox
 from GUI.Constants import Display, Font, Colors
 from GUI.Items.LeaderboardsList import LeaderboardsList
+from Paths import FOLDER_PATHS
 
 AMOUNT_OF_RECORDS = 5
 
@@ -14,7 +15,7 @@ def start_leaderboards(args):
     background.render(screen)
     leaderboards = LeaderboardsList(Display.CENTER, Font.FONT,
                                     Font.FONT_COLOR, Colors.BUTTON_BACKGROUND_COLOR, AMOUNT_OF_RECORDS,
-                                    "Leaderboards.txt")
+                                    f"{FOLDER_PATHS['Leaderboards']}/Leaderboards.txt")
 
     text_input_boxes_functionality = [(None, None)]
     text_input_boxes = add_text_input_box(screen, text_input_boxes_functionality)
