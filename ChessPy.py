@@ -20,10 +20,6 @@ if __name__ == '__main__':
     import sys
     import os
 
-    output = io.StringIO()
-
-    output.write("asdasda")
-    print("1231", file=output)
     multiprocessing.freeze_support()
     initialize_paths(getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__))))
     initialize_player_constructors()
