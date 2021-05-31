@@ -1,8 +1,11 @@
+import multiprocessing
+
+if multiprocessing.current_process().name == 'MainProcess':
+    import pygame
 import threading
 from queue import Queue
 
 from GUI.Backgrounds import ChessBoard
-import pygame
 from PIL import Image, ImageFilter
 from GameManagerPackage.GameManager import GameManager
 

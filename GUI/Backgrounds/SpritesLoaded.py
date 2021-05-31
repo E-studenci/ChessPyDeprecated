@@ -1,8 +1,9 @@
 import os
-import sys
+import multiprocessing
 
+if multiprocessing.current_process().name == 'MainProcess':
+    import pygame
 from Chess.Pieces import Bishop, King, Knight, Pawn, Queen, Rook
-import pygame
 from PIL import Image, ImageFilter
 
 from GUI.Constants import Display

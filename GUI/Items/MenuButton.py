@@ -1,5 +1,8 @@
-import pygame
-import pygame.freetype
+import multiprocessing
+
+if multiprocessing.current_process().name == 'MainProcess':
+    import pygame
+    import pygame.freetype
 from GUI import Shapes
 
 

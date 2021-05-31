@@ -1,7 +1,8 @@
-import os
-import sys
-from queue import Queue
+import multiprocessing
 
+if multiprocessing.current_process().name == 'MainProcess':
+    import pygame
+from queue import Queue
 from Chess.Pieces.Bishop import Bishop
 from Chess.Pieces.Knight import Knight
 from Chess.Pieces.Queen import Queen
@@ -10,7 +11,6 @@ from GUI import Shapes
 from GUI.Backgrounds import ChessBoard
 from GUI.Constants import Display, Font, Options, Colors
 from GUI.Constants.BoardConst import *
-import pygame
 import threading
 from GUI.Backgrounds.SpritesLoaded import SPRITE_DICTIONARY
 from GUI.Items.MenuButton import MenuButton

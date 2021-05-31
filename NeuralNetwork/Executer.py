@@ -1,3 +1,5 @@
+import sys
+
 from NeuralNetwork.Helpers import *
 from NeuralNetwork.DataMaker import start_making_data
 from NeuralNetwork.Train import start_training
@@ -6,7 +8,7 @@ from NeuralNetwork.Test import start_testing
 
 def _help_check(parameters):
     if HELP_FLAG == parameters[0] or HELP_FULL == parameters[0]:
-        print(HELP_MESSAGE)
+        print(HELP_MESSAGE, file=sys.stdout)
         return True
     return False
 
@@ -42,7 +44,7 @@ def _test_check(parameters):
 
 def main(parameters):
     if len(parameters) == 0:
-        print('No parameters.')
+        print('No parameters.', file=sys.stdout)
         return 0
     if _help_check(parameters):
         return 0

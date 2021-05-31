@@ -1,4 +1,7 @@
-import pygame
+import multiprocessing
+
+if multiprocessing.current_process().name == 'MainProcess':
+    import pygame
 
 from GUI.Backgrounds.SpritesLoaded import LOGO
 from GUI.Constants import Colors, Font, Display, BoardConst, Options
@@ -27,6 +30,7 @@ def start_menu():
     from GUI.Windows.Options import start_options
     from GUI.Windows.Leaderboards import start_leaderboards
     screen = pygame.display.set_mode((Display.DISPLAY_WIDTH, Display.DISPLAY_HEIGHT))
+    pygame.display.set_icon(LOGO[0])
     ChessBoard.initialize(screen,
                           (Display.DISPLAY_WIDTH, Display.DISPLAY_HEIGHT))
     pygame.display.set_caption('')
@@ -51,8 +55,7 @@ def running_loop(screen, clock, buttons, background):
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
-                break
+                sys.exit(0)
             for button in buttons:
                 if button.handle_event(event):
                     break

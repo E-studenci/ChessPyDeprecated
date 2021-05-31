@@ -1,4 +1,7 @@
-import pygame
+import multiprocessing
+
+if multiprocessing.current_process().name == 'MainProcess':
+    import pygame
 
 from GUI.Items.TextInputBox import TextInputBox
 from GUI.Constants import Display, Font, Colors

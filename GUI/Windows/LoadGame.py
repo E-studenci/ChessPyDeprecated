@@ -1,9 +1,11 @@
-import pygame
+import multiprocessing
+
+if multiprocessing.current_process().name == 'MainProcess':
+    import pygame
 
 from Chess.Board.Converters import FenDecoder
 from GUI.Windows.NewGame import start_new_game
 from GUI.Items.TextInputBox import TextInputBox
-
 # Starting Message
 from GUI.Constants import Font, Display, Colors
 

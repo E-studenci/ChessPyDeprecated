@@ -1,4 +1,7 @@
-import pygame
+import multiprocessing
+
+if multiprocessing.current_process().name == 'MainProcess':
+    import pygame
 
 from GUI.Backgrounds.SpritesLoaded import SPRITE_DICTIONARY
 from GUI.Constants import Colors

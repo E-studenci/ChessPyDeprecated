@@ -12,6 +12,8 @@ constructors = {}
 
 
 def initialize_player_constructors():
+    os.environ['TF_CPP_MIN_VLOG_LEVEL'] = '3'
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
     import tensorflow
 
     model = tensorflow.keras.models.load_model(f'{FOLDER_PATHS["TrainedModels"]}/convolutional_model_v2-64-2.h5')
