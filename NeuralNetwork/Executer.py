@@ -2,7 +2,6 @@ from NeuralNetwork.Helpers import *
 from NeuralNetwork.DataMaker import start_making_data
 from NeuralNetwork.Train import start_training
 from NeuralNetwork.Test import start_testing
-import sys
 
 
 def _help_check(parameters):
@@ -55,6 +54,3 @@ def main(parameters):
         return 0
     return -1
 
-
-if __name__ == '__main__':
-    sys.exit(main(sys.argv[1:]))
