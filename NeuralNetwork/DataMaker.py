@@ -59,7 +59,7 @@ def convert_fen_data(read_file_path, write_file_path, starting_point=0, ending_p
         if line == '':
             print("End...", file=sys.stdout)
             break
-        fen = line.split(',')[0]
+        fen = line.replace("\n", "")
         board = Board()
         if board.initialize_board(fen):
             better_board = chess.Board(fen=fen)

@@ -174,4 +174,11 @@ class Board:
         :return: initializes chess_board from the given string
         """
         from Chess.Board.Converters.FenDecoder import initialize_list_from_FEN
-        self.board, self.turn, self.fifty_move_rule, self.move_count, self.king_pos = initialize_list_from_FEN(fen)
+        try:
+            board, turn, fifty_move_rule, move_count, king_pos = initialize_list_from_FEN(fen)
+            if board:
+                self.board, self.turn, self.fifty_move_rule, self.move_count, self.king_pos = \
+                    board, turn, fifty_move_rule, move_count, king_pos
+        except:
+            return False
+        return True
