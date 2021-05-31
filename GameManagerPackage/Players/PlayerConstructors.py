@@ -7,7 +7,7 @@ model = available_threads = None
 
 if multiprocessing.current_process().name == "MainProcess":
     import tensorflow
-    model = tensorflow.keras.models.load_model('../../NeuralNetwork/TrainedModels/convolutional_model_v2-64-2.h5')
+    model = tensorflow.keras.models.load_model('NeuralNetwork/TrainedModels/convolutional_model_v2-64-2.h5')
 
 
     def get_number_of_threads():

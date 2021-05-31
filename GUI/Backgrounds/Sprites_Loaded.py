@@ -29,9 +29,9 @@ def initialize(size):
              (King.King, False):     'black_king.png', (King.King, True): 'white_king.png',
              }
     for key in paths:
-        SPRITE_DICTIONARY[key] = load_sprite(os.path.join('..', "Sprites", 'Pieces', paths[key]), size)
+        SPRITE_DICTIONARY[key] = load_sprite(os.path.join('GUI', "Sprites", 'Pieces', paths[key]), size)
     global LOGO
-    LOGO[0] = load_sprite(os.path.join('..', 'Sprites', 'Logo.png'), [int(size[0] * 2.5)] * 2)
+    LOGO[0] = load_sprite(os.path.join('GUI', 'Sprites', 'Logo.png'), [int(size[0] * 2.5)] * 2)
     LOGO[1] = (Display.CENTER[0] - size[0] * 2.5 // 2, 0)
 
 

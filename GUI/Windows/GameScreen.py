@@ -39,7 +39,7 @@ def start_game(args, game, player_one_color):
     draw_button = MenuButton((Display.DISPLAY_WIDTH + DISPLAY_WIDTH_EXTENSION // 2, Display.CENTER[1]),
                              GameManager.draw, game, (100, 50), Colors.BUTTON_BACKGROUND_COLOR,
                              Font.FONT, Font.FONT_COLOR, 1.1, 5, "Draw")
-    move_sounds = [pygame.mixer.Sound("../Sounds/Move.mp3"), pygame.mixer.Sound("../Sounds/Capture.mp3")]
+    move_sounds = [pygame.mixer.Sound("GUI/Sounds/Move.mp3"), pygame.mixer.Sound("GUI/Sounds/Capture.mp3")]
     running_loop(screen, clock, args[2], q1, q2, q3, game, player_one_color, draw_button, move_sounds)
 
 

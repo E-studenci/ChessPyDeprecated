@@ -1,4 +1,3 @@
-
 from Chess.Pieces.Bishop import Bishop
 from Chess.Pieces.King import King
 from Chess.Pieces.Knight import Knight
